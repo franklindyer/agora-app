@@ -27,6 +27,7 @@ Frontend/view:
 - [ ] User public profile view
 - [ ] User portal view
 - [ ] Post view
+- [ ] Feed view
 - [ ] Search page view
 - [ ] Post writing page view
 - [ ] Image uploading page view
