@@ -17,16 +17,8 @@ class AgoraSyntacticFilter:
             raise AgoraEInvalidPassword
         return hashlib.new('sha256').update(password.encode()).hexdigest()
 
-    TOKEN_LENGTHS = {
-        "creation": ACCOUNT_CREATION_TOKEN_LENGTH,
-        "deletion": ACCOUNT_DELETION_TOKEN_LENGTH,
-        "recovery": ACCOUNT_RECOVERY_TOKEN_LENGTH,
-        "backup": ACCOUNT_BACKUP_KEY_LENGTH,
-        "session": SESSION_TOKEN_LENGTH
-    }
-
     def validateToken(self, token, tokenType):
-        expectLength = self.TOKEN_LENGTHS[tokenType]
+        expectLength = TOKEN_LENGTHS[tokenType]
         if len(token) != expectLength:
             raise AgoraEInvalidToken
         if not token.isalnum():
@@ -234,25 +226,25 @@ class AgoraSyntacticFilter:
 
     def adminGetUser(self, sessionToken, uid):
         self.validateToken(sessionToken, "session")
-        if not self.isValidId(uid)
+        if not self.isValidId(uid):
             raise AgoraENoSuchUser
         return self.next.adminGetUser(sessionToken, int(uid))
 
     def adminSuspend(self, sessionToken, uid):
         self.validateToken(sessionToken, "session")
-        if not self.isValidId(uid)
+        if not self.isValidId(uid):
             raise AgoraENoSuchUser
         return self.next.adminSuspendUser(sessionToken, int(uid))
 
     def adminUnsuspend(self, sessionToken, uid):
         self.validateToken(sessionToken, "session")
-        if not self.isValidId(uid)
+        if not self.isValidId(uid):
             raise AgoraENoSuchUser
         return self.next.adminUnsuspendUser(sessionToken, int(uid))
     
     def adminDelete(self, sessionToken, uid, password):
         self.validateToken(sessionToken, "session")
-        if not self.isValidId(uid)
+        if not self.isValidId(uid):
             raise AgoraENoSuchUser
         hpassword = self.validatePassword(password)
         return self.next.adminDelete(sessionToken, int(uid), hpassword)
