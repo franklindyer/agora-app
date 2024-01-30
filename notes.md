@@ -1,3 +1,43 @@
+Here's a list of allowed database actions on the backend:
+```
+usernameExists     : RO check if username exists
+emailExists        : RO check if email exists
+passwordCorrect    : RO check if password is correct for username
+getRecovery        : RO get user with given recovery code, if any
+
+userExists         : RO check if user ID exists
+postExists         : RO check if post ID exists
+imgExists          : RO check is img ID exists
+
+getPublicUser      : RO get public info of user by ID (name, pfp, friends, likes, posts)
+getPrivateUser     : RO get private info of user by ID (public info + email, images)
+searchUser         : RO get list of users with usernames like query
+searchPost         : RO get list of posts with title like query
+
+createToken        : RW create token of specific type for user
+expireToken        : RW delete token of specific type for user
+
+setStatus          : RW set status of a given user by ID
+setPicture         : RW set profile picture of a given user by ID
+setEmail           : RW set email of a given user by ID
+setUsername        : RW set username of a given user by ID
+
+insertPost         : RW create a new post entry with given info
+insertImage        : RW create a new image with given info
+insertComment      : RW create a comment from given user on given post by ID, with given content
+
+insertFriendReq    : RW create a new friend request between users with given IDs
+confirmFriendReq   : RW confirm an existing friend request between users with given IDs
+deleteFriendReq    : RW remove an existing freind request between users with given IDs
+
+deletePost         : RW delete a post with a given ID
+deleteImage        : RW delete an image entry with a given ID
+deleteUser         : RW delete a user with a given ID, as well as all of their posts, images, likes, comments etc.
+
+suspendUser        : RW suspend user
+unsuspendUser      : RW unsuspend user
+```
+
 Some notes about user actions:
 
 ```
