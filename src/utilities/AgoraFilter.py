@@ -1,78 +1,81 @@
 class AgoraFilter:
-    def createAccount(emailAddress, username, password):
+    def __init__(self, nextFilter):
+        self.next = nextFilter
+
+    def createAccount(self, emailAddress, username, password):
         raise NotImplementedError
-    def confirmCreate(creationToken):
+    def confirmCreate(self, creationToken):
         raise NotImplementedError
 
-    def login(username, password):
+    def login(self, username, password):
         raise NotImplementedError
-    def logout(sessionToken):
-        raise NotImplementedError
-
-    def deleteAccount(sessionToken, password):
-        raise NotImplementedError
-    def confirmDelete(deletionToken):
+    def logout(self, sessionToken):
         raise NotImplementedError
 
-    def recoverAccount(emailAddress):
+    def deleteAccount(self, sessionToken, password):
         raise NotImplementedError
-    def backupRecover(backupCode, emailAddress):
-        raise NotImplementedError
-    def confirmRecover(recoveryToken, password):
+    def confirmDelete(self, deletionToken):
         raise NotImplementedError
 
-    def getUser(uid):
+    def recoverAccount(self, emailAddress):
         raise NotImplementedError
-    def getPost(pid):
+    def backupRecover(self, backupCode, emailAddress):
         raise NotImplementedError
-    def getImage(imageId):
-        raise NotImplementedError
-    def searchUsers(query):
-        raise NotImplementedError
-    def searchPosts(query):
+    def confirmRecover(self, recoveryToken, password):
         raise NotImplementedError
 
-    def getMyUser(sessionToken):
+    def getUser(self, uid):
+        raise NotImplementedError
+    def getPost(self, pid):
+        raise NotImplementedError
+    def getImage(self, imageId):
+        raise NotImplementedError
+    def searchUsers(self, query):
+        raise NotImplementedError
+    def searchPosts(self, query):
         raise NotImplementedError
 
-    def changeStatus(sessionToken, newStatus):
-        raise NotImplementedError
-    def changePicture(sessionToken, imageId):
-        raise NotImplementedError
-    def changeEmail(sessionToken, emailAddress):
-        raise NotImplementedError
-    def changeUsername(sessionToken, username):
+    def getMyUser(self, sessionToken):
         raise NotImplementedError
 
-    def writePost(sessionToken, title, content):
+    def changeStatus(self, sessionToken, newStatus):
         raise NotImplementedError
-    def deletePost(sessionToken, pid):
+    def changePicture(self, sessionToken, imageId):
         raise NotImplementedError
-    def uploadImage(sessionToken, title, imgData):
+    def changeEmail(self, sessionToken, emailAddress):
         raise NotImplementedError
-    def deleteImage(sessionToken, imageId):
-        raise NotImplementedError
-    def listImages(sessionToken):
+    def changeUsername(self, sessionToken, username):
         raise NotImplementedError
 
-    def friendRequest(sessionToken, uid):
+    def writePost(self, sessionToken, title, content):
         raise NotImplementedError
-    def viewFriendReqs(sessionToken):
+    def deletePost(self, sessionToken, pid):
         raise NotImplementedError
-    def acceptFriendReq(sessionToken, uid):
+    def uploadImage(self, sessionToken, title, imgData):
         raise NotImplementedError
-
-    def comment(sessionToken, pid):
+    def deleteImage(self, sessionToken, imageId):
         raise NotImplementedError
-
-    def bugReport(sessionToken, content):
+    def listImages(self, sessionToken):
         raise NotImplementedError
 
-    def adminGetUser(sessionToken, uid):
+    def friendRequest(self, sessionToken, uid):
         raise NotImplementedError
-    def adminSuspend(sessionToken, uid):
+    def viewFriendReqs(self, sessionToken):
         raise NotImplementedError
-    def adminUnsuspend(sessionToken, uid):
+    def acceptFriendReq(self, sessionToken, uid):
         raise NotImplementedError
-    def adminDelete(sessionToken, uid, password):
+
+    def comment(self, sessionToken, pid):
+        raise NotImplementedError
+
+    def bugReport(self, sessionToken, content):
+        raise NotImplementedError
+
+    def adminGetUser(self, sessionToken, uid):
+        raise NotImplementedError
+    def adminSuspend(self, sessionToken, uid):
+        raise NotImplementedError
+    def adminUnsuspend(self, sessionToken, uid):
+        raise NotImplementedError
+    def adminDelete(self, sessionToken, uid, password):
         raise NotImplementedError

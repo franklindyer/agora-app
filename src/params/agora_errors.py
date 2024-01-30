@@ -18,6 +18,14 @@ class AgoraEInvalidTitle(AgoraException):
     pass
 class AgoraEInvalidReport(AgoraException):
     pass
+class AgoraEInvalidPost(AgoraException):
+    pass
+class AgoraEInvalidStatus(AgoraException):
+    pass
+class AgoraEInvalidComment(AgoraException):
+    pass
+class AgoraEInvalidQuery(AgoraException):
+    pass
 
 # Authentication errors
 class AgoraEIncorrectCreds(AgoraException):
