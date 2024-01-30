@@ -6,7 +6,8 @@ CREATE TABLE users (
     hpassword   TEXT NOT NULL,
     hrecovery   TEXT NOT NULL,
     status      TEXT,
-    admin       INTEGER DEFAULT 0
+    admin       INTEGER DEFAULT 0,
+    suspended   INTEGER DEFAULT 0
 );
 
 CREATE TABLE tokens (
