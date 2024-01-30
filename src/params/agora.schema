@@ -1,0 +1,62 @@
+CREATE TABLE users (
+    uid         INTEGER PRIMARY KEY,
+    email       VARCHAR(254) NOT NULL,
+    confirmed   INTEGER DEFAULT 0,
+    username    TEXT NOT NULL,
+    hpassword   TEXT NOT NULL,
+    hrecovery   TEXT NOT NULL,
+    status      TEXT,
+    admin       INTEGER DEFAULT 0
+);
+
+CREATE TABLE tokens (
+    owner       INTEGER,
+    value       TEXT NOT NULL,
+    issued      TEXT DEFAULT CURRENT_TIMESTAMP,
+    type        TEXT NOT NULL
+);
+
+CREATE TABLE posts (
+    pid         INTEGER PRIMARY KEY,
+    owner       INTEGER,
+    title       TEXT,
+    timestamp   TEXT DEFAULT CURRENT_TIMESTAMP,
+    filename    TEXT NOT NULL
+);
+
+CREATE TABLE comments (
+    cid         INTEGER PRIMARY KEY,
+    post        INTEGER,
+    owner       INTEGER,
+    content     TEXT,
+    timestamp   TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE images (
+    imgid       INTEGER PRIMARY KEY,
+    accessid    TEXT,
+    owner       INTEGER,
+    title       TEXT,
+    filename    TEXT NOT NULL
+);
+
+CREATE TABLE reports (
+    rid         INTEGER PRIMARY KEY,
+    owner       INTEGER,
+    timestamp   TEXT DEFAULT CURRENT_TIMESTAMP,
+    filename    TEXT NOT NULL
+);
+
+CREATE TABLE friendships (
+    user1       INTEGER NOT NULL,
+    user2       INTEGER NOT NULL,
+    accept1     INTEGER DEFAULT 1,
+    accept2     INTEGER DEFAULT 0,
+    timestamp   TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE votes (
+    owner       INTEGER,
+    postid      INTEGER,
+    likes       INTEGER
+);

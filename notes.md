@@ -52,6 +52,8 @@ viewFriendReqs  : SessionToken -> [(String, UserID)]
 acceptFriendReq : SessionToken -> UserID -> ()
 
 comment         : SessionToken -> PostID -> String -> ()
+likePost        : SessionToken -> PostID -> ()
+dislikePost     : SessionToken -> PostID -> ()
 
 bugReport       : SessionToken -> String -> ReportID
 
