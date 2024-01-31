@@ -23,6 +23,10 @@ Intended project structure:
    ╚═ TODO.md
 ```
 
+To add a (empty) database, run the following from inside of `volumes`:
+```
+sqlite3 agora.db < ../params/agora.schema
+```
 To build with docker:
 ```
 sudo docker build -t <YOUR_NAME>/agora-app:latest .
