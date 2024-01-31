@@ -124,11 +124,11 @@ class AgoraDatabaseManager:
         return res[0]["owner"]
 
     def searchUser(self, substr):
-        res = self.query("SELECT uid, username FROM users WHERE username LIKE CONCAT('%', ?,'%')", (substr,))
+        res = self.query("SELECT uid, username FROM users WHERE username LIKE '%' || ? || '%'", (substr,))
         return (None if res is None else [r for r in res])
 
     def searchPost(self, substr):
-        res = self.query("SELECT pid, title FROM posts WHERE title LIKE CONCAT('%', ?, '%') ORDER BY timestamp DESC", (substr,))
+        res = self.query("SELECT pid, title FROM posts WHERE title LIKE '%' || ? || '%' ORDER BY timestamp DESC", (substr,))
         return (None if res is None else [r for r in res])
 
 
