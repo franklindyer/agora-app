@@ -52,8 +52,7 @@ CREATE TABLE reports (
 CREATE TABLE friendships (
     user1       INTEGER NOT NULL,
     user2       INTEGER NOT NULL,
-    accept1     INTEGER DEFAULT 1,
-    accept2     INTEGER DEFAULT 0,
+    accepted    INTEGER DEFAULT 0,
     timestamp   TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
