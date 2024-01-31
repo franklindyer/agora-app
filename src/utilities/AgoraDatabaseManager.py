@@ -77,8 +77,8 @@ class AgoraDatabaseManager:
         info = res[0]
         res = self.query("SELECT pid, title FROM posts WHERE owner = ?", (uid,))
         info["posts"] = [] if res is None else [post for post in res]
-        res = self.query("SELECT user1, user2 FROM friendships WHERE (user1 = ? OR user2 = ?) AND accepted = 1", (uid, uid,))
-        info["friends"] = [] if res is None else [tup['user1'] if tup['user1'] != uid else tup['user2'] for tup in res] 
+        res = self.query("SELECT F.user1, F.user2, U1.username as username1, U2.username as username2 FROM friendships F join users U1 on U1.uid = F.user1 join users U2 on U2.uid = F.user2 WHERE (user1 = ? OR user2 = ?) AND accepted = 1", (uid, uid,))
+        info["friends"] = [] if res is None else [(tup['user1'], tup['username1']) if tup['user1'] != uid else (tup['user2'], tup['username2']) for tup in res] 
         return info
 
     def isUserSuspended(self, uid):
@@ -111,7 +111,6 @@ class AgoraDatabaseManager:
         return info
 
     def getPostInfo(self, pid):
-        # res = self.query("SELECT pid, title, timestamp, owner, filename FROM posts WHERE pid = ?", (pid,))
         res = self.query("SELECT P.pid, P.title, P.timestamp, P.owner, P.filename, U.username FROM posts P JOIN users U ON P.owner = U.uid WHERE P.pid = ?", (pid,))
         info = res[0]
         res = self.query("SELECT SUM(2*likes-1) as votes FROM votes WHERE postid = ?", (pid,))
