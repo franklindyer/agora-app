@@ -25,6 +25,12 @@ agoraModel = agoraSyntax
 
 POSTDIR = './volumes/posts/'
 
+def handleAgoraError(err):
+    return {
+        "success": 0,
+        "error": type(err).__name__
+    }
+
 app = Flask(__name__)
 app.debug = True
 
@@ -34,23 +40,37 @@ def error500(err):
 
 @app.route('/')
 def home():
-    return "Home page!"
+    try:
+        return "Home page!"
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
 
 @app.route('/users')
 def users():
-    return "Coming soon..."
+    try:
+        return "Coming soon..."
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
 
 @app.route('/user/<uid>')
 def user(uid):
-    user_info = agoraModel.getUser(uid)
-    return render_template('profile.html', data=user_info)
+    try:
+        user_info = agoraModel.getUser(uid)
+        user_info["success"] = 1
+        return render_template('profile.html', data=user_info)
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
 
 @app.route('/post/<pid>')
 def post(pid):
-    post_info = agoraModel.getPost(pid)
-    content = open(os.path.join(POSTDIR, post_info['filename'])).read()
-    html_content = markdown.markdown(content)
-    post_info["content"] = html_content
-    return render_template('post.html', data=post_info)
+    try:
+        post_info = agoraModel.getPost(pid)
+        content = open(os.path.join(POSTDIR, post_info['filename'])).read()
+        html_content = markdown.markdown(content)
+        post_info["content"] = html_content
+        post_info["success"] = 1
+        return render_template('post.html', data=post_info)
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
 
 app.run(host = "0.0.0.0", port = sys.argv[1])

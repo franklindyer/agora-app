@@ -1,4 +1,5 @@
 from AgoraFilter import *
+from agora_errors import *
 
 class AgoraSemanticFilter(AgoraFilter):
     def setDBManager(self, db):
