@@ -37,7 +37,7 @@ sudo docker build -t <YOUR_NAME>/agora-app:latest .
 ```
 and to run your image:
 ```
-sudo docker run -p 8080:8080 \ 
+sudo docker run -p 8080:8080 \
                 -v ./src/volumes:/app/volumes \
                 -v ./src/templates:/app/templates \
                 <YOUR_NAME>/agora-app:latest
