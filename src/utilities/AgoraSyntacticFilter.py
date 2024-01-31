@@ -217,6 +217,8 @@ class AgoraSyntacticFilter:
         self.validateComment(content)
         return self.next.comment(sessionToken, int(pid), content)
 
+
+
     def bugReport(self, sessionToken, content):
         self.validateToken(sessionToken, "session")
         self.validateReport(content)

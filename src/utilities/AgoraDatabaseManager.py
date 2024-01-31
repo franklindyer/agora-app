@@ -58,8 +58,8 @@ class AgoraDatabaseManager:
         return (None if res is None else pid)
 
     def imgExists(self, imgId):
-        res = self.query("SELECT imgid FROM images WHERE accessid = ?", (imgId))
-        return (None if res is None else res[0]['imgid'])
+        res = self.query("SELECT filepath FROM images WHERE accessid = ?", (imgId,))
+        return (None if res is None else res[0]['filepath'])
 
     def tokenExists(self, token, type):
         res = self.query("SELECT owner FROM tokens WHERE value = ? AND type = ?", (token, type,))
@@ -106,7 +106,7 @@ class AgoraDatabaseManager:
         return info
 
     def getPostInfo(self, pid):
-        res = self.query("SELECT pid, title, timestamp, owner FROM posts WHERE pid = ?", (pid,))
+        res = self.query("SELECT pid, title, timestamp, owner, filepath FROM posts WHERE pid = ?", (pid,))
         info = res[0]
         res = self.query("SELECT uid, username FROM users WHERE uid = ?", info["owner"])
         info["owner"] = res[0]
@@ -115,6 +115,10 @@ class AgoraDatabaseManager:
         res = self.query("SELECT owner, content, timestamp FROM comments WHERE postid = ?", (pid,))
         info["comments"] = res[0]
         return info
+
+    def getImageOwner(self, accessid):
+        res = self.query("SELECT owner FROM images WHERE accessid = ?", (accessid,))
+        return res[0]["owner"]
 
     def searchUser(self, substr):
         res = self.query("SELECT uid, username FROM users WHERE username LIKE CONCAT('%', ?,'%')", (substr,))
