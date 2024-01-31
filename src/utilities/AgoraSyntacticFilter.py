@@ -1,4 +1,6 @@
-class AgoraSyntacticFilter:
+from AgoraFilter import *
+
+class AgoraSyntacticFilter(AgoraFilter):
 
     def validateEmail(self, emailAddress):
         if email.utils.parseaddr(emailAddress) == ('', ''):

@@ -13,6 +13,11 @@ class AgoraDatabaseManager:
         self.conn.row_factory = dict_factory
 
     def cur(self):
+        # Making a new connection each time is only a temporary band-aid, not a long-term fix.
+        # It solves the problem of a single connection being unshareable between threads, and Flask being multithreaded.
+        # The ultimate solution will be to create a "job queue" as part of this class.
+        self.conn = sqlite3.connect(self.dbname)
+        self.conn.row_factory = dict_factory
         return self.conn.cursor()
 
     def commit(self):

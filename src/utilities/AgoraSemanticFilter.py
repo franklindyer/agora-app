@@ -1,9 +1,11 @@
-class AgoraSemanticFilter:
+from AgoraFilter import *
+
+class AgoraSemanticFilter(AgoraFilter):
     def setDBManager(self, db):
         self.db = db
 
 
-    def do_login(self, sessionToken)
+    def do_login(self, sessionToken):
         uid = self.db.tokenExists(sessionToken, "session")
         if uid is None:
             raise AgoraEInvalidToken

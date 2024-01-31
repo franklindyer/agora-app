@@ -9,10 +9,11 @@ RUN python3 -m pip install flask markdown
 RUN mkdir /app
 ENV AP /app
 RUN mkdir $AP/volumes
+RUN mkdir $AP/templates
 ENV PORT 8080
 
 RUN useradd -m -d $AP agora
-USER agora
+# USER agora
 
 COPY ./src/server.py $AP/
 COPY ./src/utilities/ $AP/utilities/
