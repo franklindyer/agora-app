@@ -1,0 +1,16 @@
+<h1>{{ data['title'] }}</h1>
+
+By <b>{{ data['username'] }}</b>
+
+{{ data['content'] | safe }}
+
+<hr>
+
+Votes: {{ data['votes'] }}
+
+<h2>Comments:</h2>
+<ul>
+{% for c in data['comments'] %}
+<li><a href="/user/{{ c['uid'] }}"><b>@{{ c['username'] }}</b></a>: &nbsp; {{ c['content'] }}</li>
+{% endfor %}
+</ul>

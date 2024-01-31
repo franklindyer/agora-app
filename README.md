@@ -22,3 +22,26 @@ Intended project structure:
    ╠═ README.md
    ╚═ TODO.md
 ```
+
+Create a `volumes` folder inside of `src` to house your copy of the database:
+```
+mkdir src/volumes
+```
+To add a (empty) database, run the following from inside of `volumes`:
+```
+sqlite3 agora.db < ../params/agora.schema
+```
+To build with docker, run the following in the top level of the repository (where the `Dockerfile` is):
+```
+sudo docker build -t <YOUR_NAME>/agora-app:latest .
+```
+and to run your image:
+```
+sudo docker run -p 8080:8080 \
+                -v ./src/volumes:/app/volumes \
+                -v ./src/templates:/app/templates \
+                <YOUR_NAME>/agora-app:latest
+```
+Notes:
+* The `-p` parameter essentially links a port on your machine to one of Docker's internal ports. `1234:8080` maps your machine's port `1234` to Docker's port `8080`. For this command to work, you must use Docker's `8080` port.
+
