@@ -1,3 +1,7 @@
+If a GET request is successful, the `data` object passed to the template shall have `"success": 1`. Otherwise it will have `"success": 0`, and the error name will be present at the `"error"` key.
+
+The following keys will also be present in the `data` object passed to other specific pages.
+
 To the public user view:
 ```
 {
