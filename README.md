@@ -13,6 +13,7 @@ Intended project structure:
    ║  ╠═ css
    ║  ╠═ templates
    ║  ╠═ params
+   ║  ╠═ tests
    ║  ╚═ volumes (GITIGNORE)
    ║     ╠═ db
    ║     ╠═ img

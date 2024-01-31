@@ -3,6 +3,7 @@ CREATE TABLE users (
     email       VARCHAR(254) NOT NULL,
     confirmed   INTEGER DEFAULT 0,
     username    TEXT NOT NULL,
+    pfp         INTEGER,
     hpassword   TEXT NOT NULL,
     hrecovery   TEXT NOT NULL,
     status      TEXT,
@@ -51,8 +52,7 @@ CREATE TABLE reports (
 CREATE TABLE friendships (
     user1       INTEGER NOT NULL,
     user2       INTEGER NOT NULL,
-    accept1     INTEGER DEFAULT 1,
-    accept2     INTEGER DEFAULT 0,
+    accepted    INTEGER DEFAULT 0,
     timestamp   TEXT DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -1,0 +1,3 @@
+rm ../volumes/test.db 2> /dev/null
+sqlite3 ../volumes/test.db < ../params/agora.schema
+python3 dbmanager_tests.py
