@@ -11,6 +11,7 @@ imgExists          : RO check is img ID exists
 
 getPublicUser      : RO get public info of user by ID (name, pfp, friends, likes, posts)
 getPrivateUser     : RO get private info of user by ID (public info + email, images)
+getPostInfo        : RO get post title and filename (to be replaced with content) as well as likes/dislikes and comments
 searchUser         : RO get list of users with usernames like query
 searchPost         : RO get list of posts with title like query
 

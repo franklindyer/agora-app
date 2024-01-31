@@ -3,6 +3,7 @@ CREATE TABLE users (
     email       VARCHAR(254) NOT NULL,
     confirmed   INTEGER DEFAULT 0,
     username    TEXT NOT NULL,
+    pfp         INTEGER,
     hpassword   TEXT NOT NULL,
     hrecovery   TEXT NOT NULL,
     status      TEXT,
