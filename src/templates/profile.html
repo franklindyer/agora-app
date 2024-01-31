@@ -1,2 +1,22 @@
-<h1>{{ data['username'] }}</h1>
-<p>Status: "{{ data['status'] }}"</p>
+{% extends 'base.html' %}
+
+<h1>{% block title %}{{ data['username'] }} {% endblock %}</h1>
+
+{% block content %}
+
+<div class="group">
+    <img class="profile-picture" src="{{ url_for('static', filename='img/default-pfp.png') }}" alt="the user's profile picture">
+    <div class="group hbox">
+	    <h3 id="profile-username">@{{ data['username'] }}</h3>
+	    <p>Status: "{{ data['status'] }}"</p>
+
+    </div>
+</div>
+
+<div id="friends-box" class="group">
+    <h4>Friends:</h4>
+</div>
+
+<div id="posts-box"></div>
+
+{% endblock %}

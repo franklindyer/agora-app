@@ -1,0 +1,9 @@
+<div id="nav-bar">
+    <img class="thumbnail profile-picture" id="header-profile-picture" src="{{ url_for('static', filename='img/default-pfp.png') }}" alt="the user's profile picture">
+    <a class="nav-button" id="profile-button" href="/user/{{ data['uid'] }}">@{{ data['username'] }}</a>
+	<a class="nav-button" id="home-button" href="/">Agora</a>
+	<input type="text" id="search-bar" placeholder="Search..."/>
+</div>
+
+<hr>
+

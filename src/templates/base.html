@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>{% block title %} {% endblock %} - Agora</title>
+  </head>
+  <body>
+    {% include 'header.html' %}
+    <div class="content">
+        {% block content %} {% endblock %}
+    </div>
+</body>
+</html>
+
