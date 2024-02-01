@@ -20,6 +20,23 @@ class AgoraEmailer:
         server.sendmail(self.username, receiver, message)
         server.close()
 
-# send_email(username, password, "franklin@dyer.me", "Hello from python", "Hey bish")
-agEm = AgoraEmailer(sys.argv[1], sys.argv[2])
-agEm.send_email("franklin@dyer.me", "Hey", "I'm here to kick ass and chew gum. And I'm all out of gum.")
+    def confirm_account_email(self, receiver, url):
+        subject = "Confirm your Agora account"
+        message = f"Confirm your new Agora account by visiting the following page:\n{url}"
+        self.send_email(receiver, subject, message)
+
+    def recover_account_email(self, receiver, url):
+        subject = "Recover your Agora account"
+        message = f"Recover your Agora account by visiting the following page:\n{url}"
+        self.send_email(receiver, subject, message)
+
+    def change_account_email(self, receiver, url):
+        subject = "Confirm your new Agora email"
+        message = f"Confirm that this is your new email for your Agora account by visiting the following page:\n{url}"
+        self.send_email(receiver, subject, message)
+
+    def delete_account_email(self, receiver, url):
+        subject = "Confirm deletion of your Agora account"
+        message = f"Visit the following page to confirm the deletion of your Agora account:\n{url}"
+        self.send_email(receiver, subject, message)
+
