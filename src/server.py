@@ -12,6 +12,10 @@ from AgoraSyntacticFilter import *
 from AgoraSemanticFilter import *
 from AgoraFilter import *
 from AgoraDatabaseManager import *
+from AgoraEmailer import *
+
+PORT = sys.argv[1]
+GMAIL_KEY = sys.argv[2]
 
 agoraInterpreter = AgoraFilter(None)
 agoraSemantics = AgoraSemanticFilter(agoraInterpreter)
@@ -19,6 +23,8 @@ agoraSyntax = AgoraSyntacticFilter(agoraSemantics)
 
 agoraDB = AgoraDatabaseManager("./volumes/agora.db")
 agoraSemantics.setDBManager(agoraDB)
+
+agoraEmail = AgoraEmailer("agoradevel@gmail.com", GMAIL_KEY)
 
 # Entry point for Agora Model
 agoraModel = agoraSyntax
@@ -73,4 +79,4 @@ def post(pid):
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
-app.run(host = "0.0.0.0", port = sys.argv[1])
+app.run(host = "0.0.0.0", port = PORT)
