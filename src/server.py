@@ -85,7 +85,6 @@ def post(pid):
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
-
 @app.route('/join')
 def join_get():
     try:
