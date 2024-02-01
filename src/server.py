@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, request, redirect
 import markdown
 
 sys.path.insert(1, './params')
@@ -10,21 +10,27 @@ from limits import *
 from agora_errors import *
 from AgoraSyntacticFilter import *
 from AgoraSemanticFilter import *
+from AgoraInterpreterFilter import *
 from AgoraFilter import *
 from AgoraDatabaseManager import *
 from AgoraEmailer import *
 
 PORT = sys.argv[1]
 GMAIL_KEY = sys.argv[2]
+HOST = sys.argv[3]
 
-agoraInterpreter = AgoraFilter(None)
+agoraInterpreter = AgoraInterpreterFilter(None)
 agoraSemantics = AgoraSemanticFilter(agoraInterpreter)
 agoraSyntax = AgoraSyntacticFilter(agoraSemantics)
 
 agoraDB = AgoraDatabaseManager("./volumes/agora.db")
 agoraSemantics.setDBManager(agoraDB)
+agoraInterpreter.setDBManager(agoraDB)
 
 agoraEmail = AgoraEmailer("agoradevel@gmail.com", GMAIL_KEY)
+agoraInterpreter.setEmailer(agoraEmail)
+
+agoraInterpreter.setHost(HOST)
 
 # Entry point for Agora Model
 agoraModel = agoraSyntax
@@ -76,6 +82,23 @@ def post(pid):
         post_info["content"] = html_content
         post_info["success"] = 1
         return render_template('post.html', data=post_info)
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
+
+@app.route('/join', methods=['POST'])
+def join():
+    data = request.form
+    try:
+        agoraModel.createAccount(data['email'], data['username'], data['password'])
+        return "Check your email."
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
+
+@app.route('/confirm/<token>')
+def confirm(token):
+    try:
+        agoraModel.confirmCreate(token)
+        return redirect("/")
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 

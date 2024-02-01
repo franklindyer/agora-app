@@ -1,7 +1,8 @@
-from limits import *
+import hashlib
 import random, string
+from limits import *
 
-class AgoraFilter:
+class AgoraInterpreterFilter:
     def __init__(self, nextFilter):
         self.next = nextFilter
 
@@ -14,21 +15,21 @@ class AgoraFilter:
     def setHost(self, host):
         self.host = host
 
-    def generate_token(ttype):
+    def generate_token(self, ttype):
         return ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(TOKEN_LENGTHS[ttype]))
 
     def createAccount(self, emailAddress, username, hpassword, acceptable):
         old_uid = self.db.emailExists(emailAddress)
         if not old_uid is None:
-            self.db.deleteUser(uid)     # Delete any unconfirmed accounts with this address
+            self.db.deleteUser(old_uid)     # Delete any unconfirmed accounts with this address
         if acceptable:
             recovery = self.generate_token("recovery")
-            hrecovery = hashlib.new('sha256').update(recovery.encode()).hexdigest()
+            hrecovery = hashlib.sha256(recovery.encode()).hexdigest()
             uid = self.db.createUser(emailAddress, username, hpassword, hrecovery)
             confirm = self.generate_token("creation")
             confirm_url = f'https://{self.host}/confirm/{confirm}'
             self.eml.confirm_account_email(emailAddress, confirm_url)
-            self.db.createToken(uid, "creation")
+            self.db.createToken(uid, confirm, "creation")
         
     
     def confirmCreate(self, uid, creationToken):

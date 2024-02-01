@@ -203,7 +203,7 @@ class AgoraDatabaseManager:
         self.execute("DELETE FROM comments WHERE owner = ?", (uid,))
         self.execute("DELETE FROM images WHERE owner = ?", (uid,))
         self.execute("DELETE FROM reports WHERE owner = ?", (uid,))
-        self.execute("DELETE FROM friendships WHERE user1 = ? OR user2 = ?", (uid,))
+        self.execute("DELETE FROM friendships WHERE user1 = ? OR user2 = ?", (uid, uid,))
         self.execute("DELETE FROM votes WHERE owner = ?", (uid,))
 
 

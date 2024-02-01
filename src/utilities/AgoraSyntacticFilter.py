@@ -1,4 +1,7 @@
+import email
+import hashlib
 from AgoraFilter import *
+from limits import *
 from agora_errors import *
 
 class AgoraSyntacticFilter(AgoraFilter):
@@ -9,7 +12,7 @@ class AgoraSyntacticFilter(AgoraFilter):
     
     def isLengthBetween(self, str, lower, upper):
         length = len(str)
-        return ((length > upper) or (length < lower))
+        return not ((length > upper) or (length < lower))
 
     def validateUsername(self, username):
         if not self.isLengthBetween(username, USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH):
@@ -18,7 +21,7 @@ class AgoraSyntacticFilter(AgoraFilter):
     def validatePassword(self, password):
         if not self.isLengthBetween(password, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH):
             raise AgoraEInvalidPassword
-        return hashlib.new('sha256').update(password.encode()).hexdigest()
+        return hashlib.sha256(password.encode()).hexdigest()
 
     def validateToken(self, token, tokenType):
         expectLength = TOKEN_LENGTHS[tokenType]
