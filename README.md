@@ -9,11 +9,13 @@ Intended project structure:
    ║  ╠═ Dockerfile
    ║  ╠═ server.py
    ║  ╠═ utilities
-   ║  ╠═ js
-   ║  ╠═ css
    ║  ╠═ templates
    ║  ╠═ params
    ║  ╠═ tests
+   ║  ╠═ static
+   ║  ║  ╠═ css
+   ║  ║  ╠═ js
+   ║  ║  ╚═ img
    ║  ╚═ volumes (GITIGNORE)
    ║     ╠═ db
    ║     ╠═ img
@@ -40,6 +42,7 @@ and to run your image:
 sudo docker run -p 8080:8080 \
                 -v ./src/volumes:/app/volumes \
                 -v ./src/templates:/app/templates \
+                -v ./src/static:/app/static \
                 <YOUR_NAME>/agora-app:latest
 ```
 Notes:
