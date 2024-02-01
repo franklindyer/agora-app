@@ -22,5 +22,5 @@ COPY ./src/params/ $AP/params/
 
 WORKDIR $AP
 
-CMD ["sh", "-c", "python3 server.py ${PORT}"]
+CMD ["sh", "-c", "python3 server.py ${PORT} ${GMAIL_KEY}"]
 
