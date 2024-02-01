@@ -9,12 +9,16 @@
     <div class="group hbox">
 	    <h3 id="profile-username">@{{ data['username'] }}</h3>
 	    <p>Status: "{{ data['status'] }}"</p>
-
     </div>
 </div>
 
-<div id="friends-box" class="group">
-    <h4>Friends:</h4>
+<div class="group">
+    <h4>Friends: {{ data['friends']|length }}</h4>
+    <ul id="friends-list">
+    {% for (id, name) in data['friends'] %}
+        <li><a href="/user/{{ id }}">@{{ name }}</a></li>
+    {% endfor %}
+    </ul>
 </div>
 
 <div id="posts-box"></div>
