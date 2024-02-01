@@ -3,6 +3,10 @@
 	font-family: Courier;
 }
 
+hr {
+    border-style: dashed;
+}
+
 .hbox {
 	display: inline-block;
     position: fixed;
@@ -25,11 +29,11 @@
 
 /* header */
 
-#nav-bar {
+nav {
     display: flex;
 }
 
-#nav-bar * {
+nav * {
 	text-align: center;
     align-self: center;
 	display: flex;
@@ -49,12 +53,20 @@
     left: 1%;
 }
 
+#login-button {
+/* TODO: this is definitely a temporary styling until I get better at CSS */
+    padding: 15px;
+    position: static;
+    margin-left: 1%;
+    vertical-align: baseline;
+}
+
 #home-button {
     right: 50%;
     left: 50%;
 }
 
-#search-bar {
+#nav-search-bar {
     right: 2%;
 	padding-left: 10px;
 	text-align: left;
@@ -63,15 +75,16 @@
 
 /* profile */
 
+#friends-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
 /* posts */
 
 #post-preview {
     border-style: solid;
     width: 50%;
 }
-
-#post-preview * {
-    padding: 1%;
-}
-
 
