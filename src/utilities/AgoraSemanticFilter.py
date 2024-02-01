@@ -18,7 +18,8 @@ class AgoraSemanticFilter(AgoraFilter):
 
     def createAccount(self, emailAddress, username, hpassword):
         uid = self.db.emailExists(emailAddress)     # We don't raise an error when uid is None, in order to avoid disclosing emails
-        if self.db.usernameExists(username):
+        old_uid =  self.db.usernameExists(username)
+        if (not old_uid is None) and self.db.isUserConfirmed(old_uid):
             raise AgoraEInvalidUsername
         existing_user_confirmed = (uid is None) or (not self.db.isUserConfirmed(uid))   # Unconfirmed accounts get clobbered by new account creation attempts
         return self.next.createAccount(emailAddress, username, hpassword, existing_user_confirmed)
