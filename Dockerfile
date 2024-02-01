@@ -10,6 +10,7 @@ RUN mkdir /app
 ENV AP /app
 RUN mkdir $AP/volumes
 RUN mkdir $AP/templates
+RUN mkdir $AP/static
 ENV PORT 8080
 
 RUN useradd -m -d $AP agora
