@@ -1,11 +1,41 @@
+from limits import *
+import random, string
+
 class AgoraFilter:
     def __init__(self, nextFilter):
         self.next = nextFilter
 
+    def setDBManager(self, db):
+        self.db = db
+
+    def setEmailer(self, eml):
+        self.eml = eml
+
+    def setHost(self, host):
+        self.host = host
+
+    def generate_token(ttype):
+        return ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(TOKEN_LENGTHS[ttype]))
+
     def createAccount(self, emailAddress, username, hpassword, acceptable):
-        raise NotImplementedError
-    def confirmCreate(self, uid):
-        raise NotImplementedError
+        old_uid = self.db.emailExists(emailAddress)
+        if not old_uid is None:
+            self.db.deleteUser(uid)     # Delete any unconfirmed accounts with this address
+        if acceptable:
+            recovery = self.generate_token("recovery")
+            hrecovery = hashlib.new('sha256').update(recovery.encode()).hexdigest()
+            uid = self.db.createUser(emailAddress, username, hpassword, hrecovery)
+            confirm = self.generate_token("creation")
+            confirm_url = f'https://{self.host}/confirm/{confirm}'
+            self.eml.confirm_account_email(emailAddress, confirm_url)
+            self.db.createToken(uid, "creation")
+        
+    
+    def confirmCreate(self, uid, creationToken):
+        self.db.expireToken(creationToken)
+        self.db.verifyUser(uid)
+
+
 
     def login(self, uid):
         raise NotImplementedError
