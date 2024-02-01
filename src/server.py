@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 import markdown
 
 sys.path.insert(1, './params')
@@ -47,7 +47,7 @@ def error500(err):
 @app.route('/')
 def home():
     try:
-        return "Home page!"
+        return render_template('index.html')
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 

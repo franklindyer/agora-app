@@ -1,6 +1,29 @@
+/* general */
 * {
 	font-family: Courier;
 }
+
+.hbox {
+	display: inline-block;
+    position: fixed;
+    vertical-align: baseline;
+}
+
+.group {
+    margin: 1%;
+}
+
+.thumbnail {
+	width: 50px;
+	height: 50px;
+}
+
+.profile-picture {
+	border-style: solid;
+    border-width: thin;
+}
+
+/* header */
 
 #nav-bar {
     display: flex;
@@ -15,16 +38,6 @@
 	font-size: 20;
 }
 
-.thumbnail {
-	width: 50px;
-	height: 50px;
-}
-
-.profile-picture {
-	border-style: solid;
-    border-width: thin;
-}
-
 #header-profile-picture {
     position: static;
     margin-left: 1%;
@@ -32,7 +45,8 @@
 
 #profile-button {
 	width: 250px;
-    left: 6%;
+    position: relative;
+    left: 1%;
 }
 
 #home-button {
@@ -48,12 +62,6 @@
 }
 
 /* profile */
-
-#profile-info-box {
-	display: inline-block;
-	position: fixed;
-	margin: 20px;
-}
 
 /* posts */
 
