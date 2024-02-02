@@ -1,9 +1,18 @@
-<div id="nav-bar">
-    <img class="thumbnail profile-picture" id="header-profile-picture" src="{{ url_for('static', filename='img/default-pfp.png') }}" alt="the user's profile picture">
-    <a class="nav-button" id="profile-button" href="/user/{{ data['uid'] }}">@{{ data['username'] }}</a>
-	<a class="nav-button" id="home-button" href="/">Agora</a>
-	<input type="text" id="search-bar" placeholder="Search..."/>
-</div>
+<nav>
+    {# TODO: This is a debug workaround to view the home page until I get the logged-in user token situation sorted #}
+    {% if 1 != 1 -%}
+        <img class="thumbnail profile-picture" 
+                id="header-profile-picture" 
+                src="{{ url_for('static', filename='img/default-pfp.png') }}" 
+                alt="the user's profile picture">
+        <a id="profile-button" href="/user/{{ data['uid'] }}">@{{ data['username'] }}</a>
+    {% else -%}
+        <a id="login-button" href="/login">Log In</a>
+    {% endif %}
+	
+    <a id="home-button" href="/">Agora</a>
+    <input type="text" id="nav-search-bar" placeholder="Search..."/>
+</nav>
 
 <hr>
 
