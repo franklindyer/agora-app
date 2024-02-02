@@ -39,4 +39,3 @@ class AgoraEmailer:
         subject = "Confirm deletion of your Agora account"
         message = f"Visit the following page to confirm the deletion of your Agora account:\n{url}"
         self.send_email(receiver, subject, message)
-

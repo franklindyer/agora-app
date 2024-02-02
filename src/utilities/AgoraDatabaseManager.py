@@ -135,6 +135,8 @@ class AgoraDatabaseManager:
 
     def createUser(self, email, username, hpassword, hrecovery):
         self.execute("INSERT INTO users (email, username, hpassword, hrecovery) VALUES (?, ?, ?, ?)", (email, username, hpassword, hrecovery,))
+        res = self.query("SELECT uid FROM users WHERE email = ?", (email,))
+        return res[0]['uid']
 
     def verifyUser(self, uid):
         self.execute("UPDATE users SET confirmed = 1 WHERE uid = ?", (uid,))
@@ -201,7 +203,7 @@ class AgoraDatabaseManager:
         self.execute("DELETE FROM comments WHERE owner = ?", (uid,))
         self.execute("DELETE FROM images WHERE owner = ?", (uid,))
         self.execute("DELETE FROM reports WHERE owner = ?", (uid,))
-        self.execute("DELETE FROM friendships WHERE user1 = ? OR user2 = ?", (uid,))
+        self.execute("DELETE FROM friendships WHERE user1 = ? OR user2 = ?", (uid, uid,))
         self.execute("DELETE FROM votes WHERE owner = ?", (uid,))
 
 
