@@ -113,6 +113,15 @@ def login():
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
+@app.route('/logout', methods=['POST'])
+def logout():
+    sessionToken = request.cookies.get("session")
+    try:
+        agoraModel.logout(sessionToken)
+        return redirect("/login")
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
+
 @app.route('/account')
 def account():
     sessionToken = request.cookies.get("session")

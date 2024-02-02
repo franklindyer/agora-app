@@ -45,7 +45,6 @@ class AgoraInterpreterFilter:
 
     def logout(self, sessionToken):
         self.db.expireToken(sessionToken)
-        raise NotImplementedError
 
 
 
@@ -53,6 +52,8 @@ class AgoraInterpreterFilter:
         raise NotImplementedError
     def confirmDelete(self, uid):
         raise NotImplementedError
+
+
 
     def recoverAccount(self, emailAddress, acceptable):
         raise NotImplementedError
