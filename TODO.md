@@ -1,12 +1,12 @@
 
 Backend/model:
 
-- [ ] Account creation
-- [ ] Login and logout
+- [x] Account creation
+- [x] Login and logout
 - [ ] Account recovery
 - [ ] Account deletion
-- [ ] Public user account information retrieval
-- [ ] Private user account information retrieval
+- [x] Public user account information retrieval
+- [x] Private user account information retrieval
 - [ ] User account information modification
 - [ ] Delete own account
 - [ ] Publish post
@@ -23,6 +23,7 @@ Backend/model:
 Frontend/view:
 
 - [ ] Header/footer for all pages
+- [ ] Create account page view
 - [ ] Login/logout page view
 - [ ] User public profile view
 - [ ] User portal view
@@ -33,4 +34,3 @@ Frontend/view:
 - [ ] Image uploading page view
 - [ ] Admin portal view
 - [ ] Bug report/contact page view
-- [ ] Styling (low priority)
