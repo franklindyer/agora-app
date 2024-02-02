@@ -43,6 +43,8 @@ sudo docker run -p 8080:8080 \
                 -v ./src/volumes:/app/volumes \
                 -v ./src/templates:/app/templates \
                 -v ./src/static:/app/static \
+                -e HOST="<THE DOMAIN YOU ARE USING>" \
+                -e GMAIL_KEY="<YOUR GMAIL KEY>"
                 <YOUR_NAME>/agora-app:latest
 ```
 Notes:
