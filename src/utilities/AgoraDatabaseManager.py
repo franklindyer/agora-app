@@ -45,7 +45,7 @@ class AgoraDatabaseManager:
         return (None if res is None else res[0]['uid'])
 
     def passwordCorrect(self, username, hpassword):
-        res = self.query("SELECT uid FROM users WHERE username = ? AND password = ?", (username, hpassword,))
+        res = self.query("SELECT uid FROM users WHERE username = ? AND hpassword = ?", (username, hpassword,))
         return (None if res is None else res[0]['uid'])
 
     def getRecovery(self, hrecovery):

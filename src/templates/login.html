@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+<h1>{% block title %}login{% endblock %}</h1>
+
+{% block content %}
+    <div class="group" id="login-box">
+        <form method="post" class="group">
+            <div>
+                <label for="username">username:</label>
+                <input type="text" id="username" name="username" required />
+            </div>
+            <div>
+                <label for="password">password:</label>
+                <input type="text" id="password" name="password" required />
+            </div>
+            <input type="submit" value="log in"/>
+        </form>
+        <div class="group" id="login-options">
+            <a class="nav-button" href="/join">create account</a>
+            {# TODO: this is going to redirect to forgetting pwd page #}
+            <a class="nav-button" href="/">forgot password</a>
+        </div>
+    </div>
+{% endblock %}
