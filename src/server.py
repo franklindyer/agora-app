@@ -102,4 +102,24 @@ def confirm(token):
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.form
+    try:
+        sessionToken = agoraModel.login(data['username'], data['password'])
+        resp = redirect("/account")
+        resp.set_cookie("session", sessionToken)
+        return resp
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
+
+@app.route('/account')
+def account():
+    sessionToken = request.cookies.get("session")
+    try:
+        data = agoraModel.getMyUser(sessionToken)
+        return render_template('account.html', data=data)
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
+
 app.run(host = "0.0.0.0", port = PORT)

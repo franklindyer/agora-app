@@ -25,7 +25,7 @@ class AgoraSyntacticFilter(AgoraFilter):
 
     def validateToken(self, token, tokenType):
         expectLength = TOKEN_LENGTHS[tokenType]
-        if len(token) != expectLength:
+        if token is None or len(token) != expectLength:
             raise AgoraEInvalidToken
         if not token.isalnum():
             raise AgoraEInvalidToken

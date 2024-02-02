@@ -15,7 +15,7 @@ class AgoraInterpreterFilter:
     def setHost(self, host):
         self.host = host
 
-    def generate_token(self, ttype):
+    def generateToken(self, ttype):
         return ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(TOKEN_LENGTHS[ttype]))
 
     def createAccount(self, emailAddress, username, hpassword, acceptable):
@@ -23,12 +23,12 @@ class AgoraInterpreterFilter:
         if not old_uid is None:
             self.db.deleteUser(old_uid)     # Delete any unconfirmed accounts with this address
         if acceptable:
-            recovery = self.generate_token("recovery")
+            recovery = self.generateToken("recovery")
             hrecovery = hashlib.sha256(recovery.encode()).hexdigest()
             uid = self.db.createUser(emailAddress, username, hpassword, hrecovery)
-            confirm = self.generate_token("creation")
+            confirm = self.generateToken("creation")
             confirm_url = f'https://{self.host}/confirm/{confirm}'
-            self.eml.confirm_account_email(emailAddress, confirm_url)
+            self.eml.confirmAccountEmail(emailAddress, confirm_url)
             self.db.createToken(uid, confirm, "creation")
         
     
@@ -39,9 +39,15 @@ class AgoraInterpreterFilter:
 
 
     def login(self, uid):
-        raise NotImplementedError
+        session = self.generateToken("session")
+        self.db.createToken(uid, session, "session")
+        return session
+
     def logout(self, sessionToken):
+        self.db.expireToken(sessionToken)
         raise NotImplementedError
+
+
 
     def deleteAccount(self, uid, email):
         raise NotImplementedError
