@@ -1,6 +1,6 @@
 /* general */
 * {
-	font-family: Courier;
+	font-family: monaco, monospace;
 }
 
 hr {
@@ -62,8 +62,8 @@ nav * {
 }
 
 #home-button {
-    right: 50%;
-    left: 50%;
+/* TODO: this button needs to be actually centered! */
+    left: 48%;
 }
 
 #nav-search-bar {
@@ -71,6 +71,30 @@ nav * {
 	padding-left: 10px;
 	text-align: left;
 	min-width: 300px;
+}
+
+/* login */
+
+#login-box {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+#login-box * {
+    padding: 1%;
+    align-self: center;
+    width: auto;
+}
+
+#login-options {
+    display: flex;
+    width: 25%;
+    text-align: center;
+    align-items: center;
+    justify-content: space-around;
 }
 
 /* profile */
