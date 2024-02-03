@@ -27,7 +27,7 @@ class AgoraInterpreterFilter:
             hrecovery = hashlib.sha256(recovery.encode()).hexdigest()
             uid = self.db.createUser(emailAddress, username, hpassword, hrecovery)
             confirm = self.generateToken("creation")
-            confirm_url = f'https://{self.host}/confirm/{confirm}'
+            confirm_url = f'{self.host}/confirm/{confirm}'
             self.eml.confirmAccountEmail(emailAddress, confirm_url)
             self.db.createToken(uid, confirm, "creation")
         
