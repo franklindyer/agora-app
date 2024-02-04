@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
-<h1>home page</h1>
+<h1>{% block title %}home{% endblock %}</h1>
 
-<div id="feed-posts-box">
-    {# include 'post-preview.html' #}
+{% block content %}
+<div class="group">
+
+    <h1>Welcome to Agora!</h1>
+    <p>See my code on <a href="https://github.com/franklindyer/agora-app" target="_blank" rel="noopener noreferrer">GitHub</a>!</p>
+
 </div>
+{% endblock %}
+

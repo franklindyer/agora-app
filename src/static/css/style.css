@@ -8,13 +8,19 @@ hr {
 }
 
 .hbox {
-	display: inline-block;
+/* a box for displaying things spaced horizontally */
+    display: inline-block;
     position: fixed;
     vertical-align: baseline;
 }
 
+.vbox {
+/* a box for displaying things spaced vertically */
+
+}
+
 .group {
-    margin: 1%;
+    margin: 2%;
 }
 
 .thumbnail {
@@ -106,16 +112,24 @@ nav * {
 
 /* profile */
 
-#friends-list {
+.naked-list {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-/* posts */
+/* post */
 
 #post-preview {
     border-style: solid;
     width: 50%;
+}
+
+/* comment */
+
+.comment {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 

@@ -1,3 +1,14 @@
-God dammit! Something went wrong!
+{% extends 'base.html' %}
 
-The error is called {{ data['error'] }}. That mean anything to you?
+<h1>{% block title %}tab-name-here{% endblock %}</h1>
+
+{% block content %}
+
+<div class="group">
+    <p>God dammit! Something went wrong!</p>
+
+    <p>The error is called {{ data['error'] }}. That mean anything to you?</p>
+
+</div>
+{% endblock %}
+

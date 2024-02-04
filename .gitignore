@@ -2,3 +2,4 @@ src/volumes
 **/.DS_Store
 **/*.swp
 **/__pycache__
+build-and-run.sh

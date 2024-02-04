@@ -10,7 +10,7 @@ To the public user view:
     "pfp":          access ID of the user's profile picture (string),
     "status":       user's status (string),
     "suspended":    whether or not user is suspended (0 or 1),
-    "posts":        list of user's posts, as pairs of post IDs and titles ([(int, string)]),
+    "posts":        list of user's posts, as a dictionary with post IDs and titles ({'pid': int, 'title': string}),
     "friends":      list of friends, as pairs of user IDs and usernames ([(int, string)]),
 }
 ```
