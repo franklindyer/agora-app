@@ -94,7 +94,7 @@ class AgoraInterpreterFilter:
         raise NotImplementedError
 
     def comment(self, uid, pid, content):
-        raise NotImplementedError
+        self.db.insertComment(uid, pid, content)
 
     def bugReport(self, uid, content):
         raise NotImplementedError

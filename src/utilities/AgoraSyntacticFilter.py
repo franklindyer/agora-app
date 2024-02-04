@@ -50,7 +50,7 @@ class AgoraSyntacticFilter(AgoraFilter):
         raise NotImplementedError
 
     def validateComment(self, comment):
-        if not self.isLengthBetween(content, COMMENT_MIN_LENGTH, COMMENT_MAX_LENGTH):
+        if not self.isLengthBetween(comment, COMMENT_MIN_LENGTH, COMMENT_MAX_LENGTH):
             raise AgoraEInvalidComment
 
     def validateReport(self, content):

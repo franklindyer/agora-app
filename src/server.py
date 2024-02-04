@@ -171,4 +171,14 @@ def write_post():
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
+@app.route('/comment', methods=['POST'])
+def write_comment():
+    sessionToken = request.cookies.get("session")
+    data = request.form
+    try:
+        agoraModel.comment(sessionToken, data['pid'], data['content'])
+        return redirect(f"/post/{data['pid']}")
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
+
 app.run(host = "0.0.0.0", port = PORT)
