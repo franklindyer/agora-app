@@ -75,7 +75,7 @@ nav * {
 
 /* login */
 
-#login-box {
+.center-option-box {
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -83,18 +83,25 @@ nav * {
     justify-content: center;
 }
 
-#login-box * {
+.center-option-box * {
     padding: 1%;
     align-self: center;
     width: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 #login-options {
     display: flex;
+    flex-direction: row;
     width: 25%;
     text-align: center;
     align-items: center;
     justify-content: space-around;
+}
+
+#login-options * {
+    margin: 0% 2%;
 }
 
 /* profile */

@@ -85,8 +85,16 @@ def post(pid):
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
+
+@app.route('/join')
+def join_get():
+    try:
+        return render_template('join.html', limits=INPUT_LENGTH_LIMITS)
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
+
 @app.route('/join', methods=['POST'])
-def join():
+def join_post():
     data = request.form
     try:
         agoraModel.createAccount(data['email'], data['username'], data['password'])
