@@ -117,16 +117,16 @@ class AgoraSemanticFilter(AgoraFilter):
 
     def changeStatus(self, sessionToken, newStatus):
         uid = self.do_login(sessionToken)
-        return self.db.changeStatus(uid, newStatus)
+        return self.next.changeStatus(uid, newStatus)
 
     def changePicture(self, sessionToken, imageId):
         uid = self.do_login(sessionToken)
-        return self.db.changePicture(uid, imageId)
+        return self.next.changePicture(uid, imageId)
     
     def changeEmail(self, sessionToken, emailAddress):
         uid = self.do_login(sessionToken)
         otherOwner = self.db.emailExists(emailAddress)  # We don't raise an error when uid is None, in order to avoid disclosing emails
-        return self.db.changeEmail(uid, emailAddress, otherOwner is None)
+        return self.next.changeEmail(uid, emailAddress, otherOwner is None)
     
     def changeUsername(self, sessionToken, username):
         uid = self.do_login(sessionToken)

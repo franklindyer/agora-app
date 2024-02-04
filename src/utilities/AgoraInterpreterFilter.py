@@ -55,14 +55,21 @@ class AgoraInterpreterFilter:
     def confirmRecover(self, uid, hpassword):
         raise NotImplementedError
 
+
+
     def changeStatus(self, uid, newStatus):
-        raise NotImplementedError
+        self.db.setStatus(uid, newStatus)
+
     def changePicture(self, uid, imageId):
         raise NotImplementedError
+    
     def changeEmail(self, uid, emailAddress, acceptable):
         raise NotImplementedError
+    
     def changeUsername(self, uid, username):
-        raise NotImplementedError
+        self.db.setUsername(uid, username)
+
+
 
     def writePost(self, uid, title, content):
         raise NotImplementedError

@@ -145,4 +145,17 @@ def account():
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
+@app.route('/set', methods=['POST'])
+def account_set():
+    sessionToken = request.cookies.get("session")
+    data = request.form
+    try:
+        if "status" in data:
+            agoraModel.changeStatus(sessionToken, data['status'])
+        if "username" in data:
+            agoraModel.changeUsername(sessionToken, data['username'])
+        return redirect("/account")
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
+
 app.run(host = "0.0.0.0", port = PORT)
