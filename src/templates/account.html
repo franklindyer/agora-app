@@ -1,3 +1,12 @@
+{% extends 'base.html' %}
+
+<h1>{% block title %}{{ data['username'] }}{% endblock %}</h1>
+
+{% block content %}
+
 <h1>Welcome to your account page, {{ data['username'] }}!</h1>
 <p>Your status: "{{ data['status'] }}"</p>
 <p>Your email: {{ data['email'] }}</p>
+
+{% endblock %}
+
