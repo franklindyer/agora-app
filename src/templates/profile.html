@@ -5,7 +5,9 @@
 {% block content %}
 
 <div class="group">
-    <img class="profile-picture" src="{{ url_for('static', filename='img/default-pfp.png') }}" alt="the user's profile picture">
+    <img class="profile-picture" 
+         src="{{ url_for('static', filename='img/default-pfp.png') }}" 
+         alt="the user's profile picture">
     <div class="group hbox">
 	    <h2 id="profile-username" class="group-header">@{{ data['username'] }}</h2>
 	    <p>Status: "{{ data['status'] }}"</p>
@@ -14,13 +16,20 @@
 
 <div class="group">
     <h2 class="group-header">Friends: {{ data['friends']|length }}</h2>
-    <ul id="friends-list">
-    {% for (id, name) in data['friends'] %}
-        <li><a href="/user/{{ id }}">@{{ name }}</a></li>
+    <ul class="naked-list">
+    {% for (uid, name) in data['friends'] %}
+        <li><a href="/user/{{ uid }}">@{{ name }}</a></li>
     {% endfor %}
     </ul>
 </div>
 
-<div id="posts-box"></div>
+<div class="group">
+    <h2>Posts: {{ data['posts']|length }}</h2>
+    <ul class="naked-list">
+    {% for post in data['posts'] %}
+        <li><a href="/post/{{ post['pid'] }}">{{ post['title'] }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
 
 {% endblock %}
