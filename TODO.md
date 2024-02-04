@@ -22,15 +22,22 @@ Backend/model:
 
 Frontend/view:
 
-- [ ] Header/footer for all pages
-- [ ] Create account page view
-- [ ] Login/logout page view
-- [ ] User public profile view
+- [x] Header/footer for all pages (need fix styling)
+- [x] Create account page view
+- [x] Login/logout page view
+- [x] Create account check email page
+- [x] Email verification confirmation page
+- [ ] Password reset form page
+- [x] Password reset check email page
+- [x] Password reset confirmation page
+- [x] User public profile view (need more styling)
 - [ ] User portal view
-- [ ] Post view
+- [ ] Read post view (post page)
+- [ ] Create post view
 - [ ] Feed view
 - [ ] Search page view
 - [ ] Post writing page view
 - [ ] Image uploading page view
 - [ ] Admin portal view
 - [ ] Bug report/contact page view
+- [x] Feedback sent confirmation view

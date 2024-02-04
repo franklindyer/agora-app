@@ -98,7 +98,7 @@ def join_post():
     data = request.form
     try:
         agoraModel.createAccount(data['email'], data['username'], data['password'])
-        return "Check your email."
+        return render_template('info.html', msg='confirm-sent-email')
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
@@ -106,7 +106,7 @@ def join_post():
 def confirm(token):
     try:
         agoraModel.confirmCreate(token)
-        return redirect("/")
+        return redirect('/')
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
@@ -133,7 +133,7 @@ def logout():
     sessionToken = request.cookies.get("session")
     try:
         agoraModel.logout(sessionToken)
-        return redirect("/login")
+        return render_template('info.html', msg='logout')
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
