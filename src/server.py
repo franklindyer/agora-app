@@ -153,6 +153,12 @@ def write_post():
     agoraModel.writePost(sessionToken, data["title"], data["content"])
     return redirect("/account")
 
+@app.route('/deletepost/<pid>', methods=['POST'])
+def delete_post(pid):
+    sessionToken = request.cookies.get("session")
+    agoraModel.deletePost(sessionToken, pid)
+    return redirect("/account")
+
 @app.route('/comment', methods=['POST'])
 def write_comment():
     sessionToken = request.cookies.get("session")
