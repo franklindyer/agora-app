@@ -67,9 +67,9 @@ def agoraError(err):
 @app.before_request
 def agoraPreproc():
     g.data = {}
-    sessionToken = request.cookies.get("session")
+    g.sessionToken = request.cookies.get("session")
     try:
-        g.data["logged_in_user"] = agoraModel.getMyUser(sessionToken, concise=True)
+        g.data["logged_in_user"] = agoraModel.getMyUser(g.sessionToken, concise=True)
     except AgoraEInvalidToken as err:
         g.data["logged_in_user"] = None
 
