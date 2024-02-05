@@ -80,7 +80,7 @@ class AgoraInterpreterFilter:
         self.fm.writePost(filename, content)
 
     def deletePost(self, pid):
-        raise NotImplementedError
+        self.db.deletePost(pid)
     
     def uploadImage(self, uid, title, imgData):
         raise NotImplementedError

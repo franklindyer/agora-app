@@ -59,7 +59,8 @@ app.debug = True
 
 @app.errorhandler(AgoraException)
 def agoraError(err):
-    return render_template('error.html', data=handleAgoraError(err))
+    g.data.update(handleAgoraError(err))
+    return render_template('error.html', data=g.data)
 
 @app.before_request
 def agoraPreproc():
@@ -98,7 +99,7 @@ def join_get():
 def join_post():
     data = request.form
     agoraModel.createAccount(data['email'], data['username'], data['password'])
-    return render_template('info.html', msg='confirm-sent-email')
+    return render_template('info.html', data=g.data, msg='confirm-sent-email')
 
 @app.route('/confirm/<token>')
 def confirm(token):
@@ -121,7 +122,7 @@ def login_post():
 def logout():
     sessionToken = request.cookies.get("session")
     agoraModel.logout(sessionToken)
-    return render_template('info.html', msg='logout')
+    return render_template('info.html', data=g.data, msg='logout')
 
 @app.route('/account')
 def account():
@@ -145,6 +146,12 @@ def write_post():
     sessionToken = request.cookies.get("session")
     data = request.form
     agoraModel.writePost(sessionToken, data["title"], data["content"])
+    return redirect("/account")
+
+@app.route('/deletepost/<pid>', methods=['POST'])
+def delete_post(pid):
+    sessionToken = request.cookies.get("session")
+    agoraModel.deletePost(sessionToken, pid)
     return redirect("/account")
 
 @app.route('/comment', methods=['POST'])
