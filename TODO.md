@@ -9,7 +9,7 @@ Backend/model:
 - [x] Private user account information retrieval
 - [x] User account information modification
 - [ ] Delete own account
-- [ ] Publish post
+- [x] Publish post
 - [x] Upload image
 - [ ] Like and dislike
 - [ ] Friend request

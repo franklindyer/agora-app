@@ -55,6 +55,8 @@ class AgoraInterpreterFilter:
     def confirmDelete(self, uid):
         self.db.deleteUser(uid)
 
+
+
     def recoverAccount(self, emailAddress, acceptable):
         raise NotImplementedError
     
@@ -121,7 +123,10 @@ class AgoraInterpreterFilter:
 
 
     def friendRequest(self, uid1, uid2):
-        raise NotImplementedError
+        self.db.insertFriendReq(uid1, uid2)
+
+    def unfriend(self, uid1, uid2):
+        self.db.deleteFriendReq(uid1, uid2)
 
     def comment(self, uid, pid, content):
         self.db.insertComment(uid, pid, content)

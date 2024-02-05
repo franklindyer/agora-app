@@ -241,7 +241,13 @@ class AgoraSemanticFilter(AgoraFilter):
         if self.db.userExists(uid2) is None:
             raise AgoraENoSuchUser
         return self.next.friendRequest(uid, uid2)
-    
+
+    def unfriend(self, sessionToken, uid2):
+        uid = self.do_login(sessionToken)
+        if self.db.userExists(uid2) is None:
+             raise AgoraENoSuchUser
+        return self.next.unfriend(uid, uid2)
+
     def viewFriendReqs(self, sessionToken):
         uid = self.doLogin(sessionToken)
         info = self.db.getPrivateUser(uid)

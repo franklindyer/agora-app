@@ -228,6 +228,12 @@ class AgoraSyntacticFilter(AgoraFilter):
             raise AgoraENoSuchUser
         return self.next.friendRequest(sessionToken, int(uid))
 
+    def unfriend(self, sessionToken, uid):
+        self.validateToken(sessionToken, "session")
+        if not self.isValidId(uid):
+            raise AgoraENoSuchUser
+        return self.next.unfriend(sessionToken, int(uid))
+
     def viewFriendReqs(self, sessionToken):
         self.validateToken(sessionToken, "session")
         return self.next.viewFriendReqs(sessionToken)
