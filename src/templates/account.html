@@ -1,12 +1,19 @@
+{% from 'editable-profile-option.html' import editable_option with context %}
 {% extends 'base.html' %}
 
 <h1>{% block title %}{{ data['username'] }}{% endblock %}</h1>
 
 {% block content %}
+<div class="group">
 
-<h1>Welcome to your account page, {{ data['username'] }}!</h1>
-<p>Your status: "{{ data['status'] }}"</p>
-<p>Your email: {{ data['email'] }}</p>
+    <h1>Welcome to your account page, {{ data['username'] }}!</h1>
+    
+    {{ editable_option("status", data['status']) }}
+    
+    {{ editable_option("username", data['username']) }}
 
+    {{ editable_option("email", data['email']) }}
+
+</div>
 {% endblock %}
 

@@ -1,0 +1,9 @@
+{% macro editable_option(option, value) %}
+<form method="post" class="editable-profile-option" autocomplete="off">
+    <label for="{{ option }}">{{ option }}:</label>
+    <input type="text" 
+           name="{{ option }}" 
+           value="{{ value }}">
+    <input type="submit" value="update {{ option }}">
+</form>
+{% endmacro %}

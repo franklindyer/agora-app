@@ -148,7 +148,7 @@ def account():
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
-@app.route('/set', methods=['POST'])
+@app.route('/account', methods=['POST'])
 def account_set():
     sessionToken = request.cookies.get("session")
     data = request.form
