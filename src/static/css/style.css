@@ -92,6 +92,21 @@ nav {
 
 /* profile */
 
+/* account */
+.editable-profile-option > input[type=text] {
+    border: none;
+    width: 100%;
+    padding: 1% 0%;
+}
+
+.editable-profile-option > input[type=text]:focus-visible {
+    outline: transparent;
+}
+
+.editable-profile-option * {
+    margin 0% 1%;
+}
+
 /* post */
 
 #post-preview {
