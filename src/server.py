@@ -51,7 +51,9 @@ def agoraerror(pageserver):
         try:
             pageserver(*args)
         except AgoraException as err:
-            return render_template('error.html', data=handleAgoraError(err))
+            g.data['logged_in_user'] = None
+            g.data.update(handleAgoraError(err))
+            return render_template('error.html', data=g.data)
 
 app = Flask(__name__)
 app.debug = True
@@ -66,11 +68,14 @@ def agoraError(err):
 def agoraPreproc():
     g.data = {}
     sessionToken = request.cookies.get("session")
-    g.data["logged_in_user"] = agoraModel.getMyUser(sessionToken, concise=True)
+    try:
+        g.data["logged_in_user"] = agoraModel.getMyUser(sessionToken, concise=True)
+    except AgoraEInvalidToken as err:
+        g.data["logged_in_user"] = None
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html', data=g.data)
 
 @app.route('/users')
 def users():
@@ -93,7 +98,7 @@ def post(pid):
 
 @app.route('/join')
 def join_get():
-    return render_template('join.html', limits=INPUT_LENGTH_LIMITS)
+    return render_template('join.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/join', methods=['POST'])
 def join_post():
@@ -108,7 +113,7 @@ def confirm(token):
 
 @app.route('/login')
 def login_get():
-    return render_template('login.html')
+    return render_template('login.html', data=g.data)
 
 @app.route('/login', methods=['POST'])
 def login_post():
