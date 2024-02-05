@@ -143,7 +143,14 @@ def account_set():
     if "status" in data:
         agoraModel.changeStatus(sessionToken, data['status'])
     if "username" in data:
-        agoraModel.changeUsername(sessionToken, data['username'])
+        agoraModel.changeUsername(g.sessionToken, data['username'])
+    if "email" in data:
+        agoraModel.changeEmail(g.sessionToken, data['email'])
+    return redirect("/account")
+
+@app.route('/confirmemail/<token>')
+def confirm_email(token):
+    agoraModel.confirmEmail(token)
     return redirect("/account")
 
 @app.route('/write', methods=['POST'])

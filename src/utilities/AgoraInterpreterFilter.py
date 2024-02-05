@@ -67,8 +67,16 @@ class AgoraInterpreterFilter:
         raise NotImplementedError
     
     def changeEmail(self, uid, emailAddress, acceptable):
-        raise NotImplementedError
-    
+        emailToken = self.generateToken("email")
+        self.db.createToken(uid, emailToken, "email", data=emailAddress)
+        confirmUrl = f'{self.host}/confirmemail/{emailToken}'
+        self.eml.changeAccountEmail(emailAddress, confirmUrl)
+   
+    def confirmEmail(self, uid, emailToken):
+        newEmail = self.db.tokenData(emailToken)
+        self.db.expireToken(emailToken)
+        self.db.setEmail(uid, newEmail)
+
     def changeUsername(self, uid, username):
         self.db.setUsername(uid, username)
 

@@ -127,7 +127,13 @@ class AgoraSemanticFilter(AgoraFilter):
         uid = self.do_login(sessionToken)
         otherOwner = self.db.emailExists(emailAddress)  # We don't raise an error when uid is None, in order to avoid disclosing emails
         return self.next.changeEmail(uid, emailAddress, otherOwner is None)
-    
+   
+    def confirmEmail(self, emailToken):
+        uid = self.db.tokenExists(emailToken, "email")
+        if uid is None:
+            raise AgoraEInvalidToken
+        return self.next.confirmEmail(uid, emailToken)
+
     def changeUsername(self, sessionToken, username):
         uid = self.do_login(sessionToken)
         if not self.db.usernameExists(username) is None:

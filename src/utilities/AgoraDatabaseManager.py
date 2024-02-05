@@ -70,6 +70,9 @@ class AgoraDatabaseManager:
         res = self.query("SELECT owner FROM tokens WHERE value = ? AND type = ?", (token, type,))
         return (None if res is None else res[0]['owner'])
 
+    def tokenData(self, token):
+        res = self.query("SELECT data FROM tokens WHERE value = ?", (token,))
+        return (None if res is None else res[0]['data'])
 
 
     def getPublicUser(self, uid):
@@ -145,8 +148,11 @@ class AgoraDatabaseManager:
 
 
 
-    def createToken(self, uid, token, ttype):
-        self.execute("INSERT INTO tokens (owner, value, type) VALUES (?, ?, ?)", (uid, token, ttype))
+    def createToken(self, uid, token, ttype, data=None):
+        if data is None:
+            self.execute("INSERT INTO tokens (owner, value, type) VALUES (?, ?, ?)", (uid, token, ttype,))
+        else:
+            self.execute("INSERT INTO tokens (owner, value, type, data) VALUES (?, ?, ?, ?)", (uid, token, ttype, data,))
 
     def expireToken(self, token):
         self.execute("DELETE FROM tokens WHERE value = ?", (token,))

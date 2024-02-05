@@ -163,6 +163,10 @@ class AgoraSyntacticFilter(AgoraFilter):
         self.validateEmail(emailAddress)
         return self.next.changeEmail(sessionToken, emailAddress)
 
+    def confirmEmail(self, emailToken):
+        self.validateToken(emailToken, "email")
+        return self.next.confirmEmail(emailToken)
+
     def changeUsername(self, sessionToken, username):
         self.validateToken(sessionToken, "session")
         self.validateUsername(username)
