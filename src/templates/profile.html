@@ -4,18 +4,20 @@
 
 {% block content %}
 
-<div class="group">
+{# profile info area #}
+<div class="group hbox">
     <img class="profile-picture" 
          src="{{ url_for('static', filename='img/default-pfp.png') }}" 
          alt="the user's profile picture">
-    <div class="group hbox">
-	    <h2 id="profile-username" class="group-header">@{{ data['username'] }}</h2>
-	    <p>Status: "{{ data['status'] }}"</p>
-    </div>
+    <ul class="naked-list group">
+	    <li><h2 id="profile-username" class="group-header">@{{ data['username'] }}</h2></li>
+	    <li>Status: "{{ data['status'] }}"</li>
+    </ul>
 </div>
 
+{# friends list #}
 <div class="group">
-    <h2 class="group-header">Friends: {{ data['friends']|length }}</h2>
+    <h2>Friends: {{ data['friends']|length }}</h2>
     <ul class="naked-list">
     {% for (uid, name) in data['friends'] %}
         <li><a href="/user/{{ uid }}">@{{ name }}</a></li>
@@ -23,6 +25,7 @@
     </ul>
 </div>
 
+{# posts list #}
 <div class="group">
     <h2>Posts: {{ data['posts']|length }}</h2>
     <ul class="naked-list">

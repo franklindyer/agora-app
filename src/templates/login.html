@@ -3,7 +3,7 @@
 <h1>{% block title %}login{% endblock %}</h1>
 
 {% block content %}
-    <div class="group center-option-box">
+    <div class="group center-option-box vbox">
         <form method="post" class="group">
             <div>
                 <label for="username">username:</label>
@@ -15,7 +15,7 @@
             </div>
             <input type="submit" value="log in"/>
         </form>
-        <div class="group" id="login-options">
+        <div class="group hbox" id="login-options">
             <a class="nav-button" href="/join">create account</a>
             {# TODO: this is going to redirect to forgetting pwd page #}
             <a class="nav-button" href="/">forgot password</a>

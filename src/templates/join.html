@@ -3,9 +3,9 @@
 <h1>{% block title %}create account{% endblock %}</h1>
 
 {% block content %}
-    <div class="group center-option-box">
+    <div class="group center-option-box vbox">
         <form method="post" class="group">
-            <div>
+            <div class="vbox">
                 <label for="username">username:</label>
                 <input type="text" 
                        name="username"
@@ -13,7 +13,7 @@
                        maxlength="{{ limits['username'][1] }}" 
                        required />
             </div>
-            <div>
+            <div class="vbox">
                 <label for="password">password:</label>
                 <input type="text" 
                        name="password" 
@@ -21,12 +21,12 @@
                        maxlength="{{ limits['password'][1] }}" 
                        required />
             </div>
-            <div>
+            <div class="vbox">
             {# TODO: this functionality needs to be added #}
                 <label for="confirm-password">confirm password:</label>
                 <input type="text" name="confirm-password" required />
             </div>
-            <div>
+            <div class="vbox">
                 <label for="email">email:</label>
                 <input type="email" name="email" required />
             </div>

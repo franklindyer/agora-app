@@ -1,4 +1,10 @@
 /* general */
+
+:root {
+/* variables for use through all templates */
+    --thumbnail-size: 50px;
+}
+
 * {
 	font-family: monaco, monospace;
 }
@@ -9,23 +15,28 @@ hr {
 
 .hbox {
 /* a box for displaying things spaced horizontally */
-    display: inline-block;
-    position: fixed;
-    vertical-align: baseline;
+    width: auto;
+    display: flex;
+    flex-direction: row;
 }
 
 .vbox {
 /* a box for displaying things spaced vertically */
-
+    width: auto;
+    display: flex;
+    flex-direction: column;
 }
 
-.group {
-    margin: 2%;
+.naked-list {
+/* list with no bullets or indentation */
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .thumbnail {
-	width: 50px;
-	height: 50px;
+    width: var(--thumbnail-size);
+    height: var(--thumbnail-size);
 }
 
 .profile-picture {
@@ -33,57 +44,34 @@ hr {
     border-width: thin;
 }
 
+.group {
+    margin: 2%;
+}
+
 /* header */
 
 nav {
     display: flex;
-}
-
-nav * {
-	text-align: center;
-    align-self: center;
-	display: flex;
-    justify-content: space-between;
-    position: absolute;
-	font-size: 20;
-}
-
-#header-profile-picture {
-    position: static;
-    margin-left: 1%;
-}
-
-#profile-button {
-	width: 250px;
-    position: relative;
-    left: 1%;
-}
-
-#login-button {
-/* TODO: this is definitely a temporary styling until I get better at CSS */
-    padding: 15px;
-    position: static;
-    margin-left: 1%;
-    vertical-align: baseline;
+    padding: 0.5% 2%;
+    align-items: center;
+    column-gap: 1%;
+    min-height: var(--thumbnail-size);
 }
 
 #home-button {
-/* TODO: this button needs to be actually centered! */
+/* TODO: surely, there is a better way to do this - but I cannot find it */
+    position: absolute;
     left: 48%;
 }
 
 #nav-search-bar {
-    right: 2%;
-	padding-left: 10px;
-	text-align: left;
-	min-width: 300px;
+    margin-left: auto;
+    min-width: 300px;
 }
 
-/* login */
+/* login & create account */
 
 .center-option-box {
-    display: flex;
-    flex-direction: column;
     text-align: center;
     align-items: center;
     justify-content: center;
@@ -93,30 +81,16 @@ nav * {
     padding: 1%;
     align-self: center;
     width: auto;
-    display: flex;
-    flex-direction: column;
 }
 
 #login-options {
-    display: flex;
-    flex-direction: row;
     width: 25%;
     text-align: center;
-    align-items: center;
     justify-content: space-around;
-}
-
-#login-options * {
     margin: 0% 2%;
 }
 
 /* profile */
-
-.naked-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
 
 /* post */
 
@@ -125,11 +99,22 @@ nav * {
     width: 50%;
 }
 
-/* comment */
+.sub-info {
+    font-size: 0.90em;
+}
 
-.comment {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+.timestamp {
+    font-style: bold;
+}
+
+.author {
+    font-style: oblique 5deg;
+}
+
+.post-body {
+    border-style: solid;
+    border-color: lightgray;
+    border-width: thin;
+    padding: 2%;
 }
 
