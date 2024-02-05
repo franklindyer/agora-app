@@ -23,6 +23,7 @@ To the post view:
     "timestamp":    timestamp of the post (string),
     "content":      content of the post (HTML string)
     "votes":        net up/downvotes of the post (int),
+    "owner":        ID of the post author,
     "comments":     list of comments, which are dictionaries with the following structure:
     {
         "uid":          ID of the posting user (int),
