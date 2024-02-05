@@ -192,7 +192,7 @@ class AgoraSemanticFilter(AgoraFilter):
         uid = self.do_login(sessionToken)
         if self.db.postExists(pid) is None:
             raise AgoraENoSuchPost
-        return self.comment(uid, pid, content)
+        return self.next.comment(uid, pid, content)
 
 
 

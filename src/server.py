@@ -14,10 +14,12 @@ from AgoraInterpreterFilter import *
 from AgoraFilter import *
 from AgoraDatabaseManager import *
 from AgoraEmailer import *
+from AgoraFileManager import *
 
 PORT = sys.argv[1]
 GMAIL_KEY = sys.argv[2]
 HOST = sys.argv[3]
+POSTDIR = './volumes/posts/'
 
 agoraInterpreter = AgoraInterpreterFilter(None)
 agoraSemantics = AgoraSemanticFilter(agoraInterpreter)
@@ -30,12 +32,13 @@ agoraInterpreter.setDBManager(agoraDB)
 agoraEmail = AgoraEmailer("agoradevel@gmail.com", GMAIL_KEY)
 agoraInterpreter.setEmailer(agoraEmail)
 
+agoraFM = AgoraFileManager(POSTDIR)
+agoraInterpreter.setFileManager(agoraFM)
+
 agoraInterpreter.setHost(HOST)
 
 # Entry point for Agora Model
 agoraModel = agoraSyntax
-
-POSTDIR = './volumes/posts/'
 
 def handleAgoraError(err):
     return {
@@ -155,6 +158,26 @@ def account_set():
         if "username" in data:
             agoraModel.changeUsername(sessionToken, data['username'])
         return redirect("/account")
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
+
+@app.route('/write', methods=['POST'])
+def write_post():
+    sessionToken = request.cookies.get("session")
+    data = request.form
+    try:
+        agoraModel.writePost(sessionToken, data["title"], data["content"])
+        return redirect("/account")
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
+
+@app.route('/comment', methods=['POST'])
+def write_comment():
+    sessionToken = request.cookies.get("session")
+    data = request.form
+    try:
+        agoraModel.comment(sessionToken, data['pid'], data['content'])
+        return redirect(f"/post/{data['pid']}")
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 

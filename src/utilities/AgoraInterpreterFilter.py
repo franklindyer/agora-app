@@ -15,7 +15,10 @@ class AgoraInterpreterFilter:
     def setHost(self, host):
         self.host = host
 
-    def generate_token(self, ttype):
+    def setFileManager(self, fm):
+        self.fm = fm
+
+    def generateToken(self, ttype):
         return ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(TOKEN_LENGTHS[ttype]))
 
     def createAccount(self, emailAddress, username, hpassword, acceptable):
@@ -72,22 +75,31 @@ class AgoraInterpreterFilter:
 
 
     def writePost(self, uid, title, content):
-        raise NotImplementedError
+        filename = f"post{self.generateToken('postid')}.md"
+        self.db.insertPost(uid, title, filename)
+        self.fm.writePost(filename, content)
+
     def deletePost(self, pid):
         raise NotImplementedError
+    
     def uploadImage(self, uid, title, imgData):
         raise NotImplementedError
+    
     def deleteImage(self, imageId):
         raise NotImplementedError
+
+
 
     def friendRequest(self, uid1, uid2):
         raise NotImplementedError
 
     def comment(self, uid, pid, content):
-        raise NotImplementedError
+        self.db.insertComment(uid, pid, content)
 
     def bugReport(self, uid, content):
         raise NotImplementedError
+
+
 
     def adminSuspend(self, uid):
         raise NotImplementedError

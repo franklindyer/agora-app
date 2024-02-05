@@ -39,7 +39,7 @@ class AgoraSyntacticFilter(AgoraFilter):
             raise AgoraEInvalidPost
 
     def validatePostTitle(self, title):
-        if not self.isLengthBetween(content, POST_TITLE_MIN_LENGTH, POST_TITLE_MAX_LENGTH):
+        if not self.isLengthBetween(title, POST_TITLE_MIN_LENGTH, POST_TITLE_MAX_LENGTH):
             raise AgoraEInvalidTitle
 
     def validateImageTitle(self, title):
@@ -50,7 +50,7 @@ class AgoraSyntacticFilter(AgoraFilter):
         raise NotImplementedError
 
     def validateComment(self, comment):
-        if not self.isLengthBetween(content, COMMENT_MIN_LENGTH, COMMENT_MAX_LENGTH):
+        if not self.isLengthBetween(comment, COMMENT_MIN_LENGTH, COMMENT_MAX_LENGTH):
             raise AgoraEInvalidComment
 
     def validateReport(self, content):
