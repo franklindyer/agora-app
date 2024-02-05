@@ -1,11 +1,11 @@
 <nav>
     {# TODO: This is a debug workaround to view the home page 
        until I get the logged-in user token situation sorted #}
-    {% if 1 != 1 -%}
+    {% if not data['logged_in_user'] == None -%}
         <img class="thumbnail profile-picture" 
                 src="{{ url_for('static', filename='img/default-pfp.png') }}" 
                 alt="the user's profile picture">
-        <a id="profile-button" href="/user/{{ data['uid'] }}">@{{ data['username'] }}</a>
+        <a id="profile-button" href="/user/{{ data['logged_in_user']['uid'] }}">@{{ data['logged_in_user']['username'] }}</a>
     {% else -%}
         <a id="login-button" href="/login">log in</a>
     {% endif %}

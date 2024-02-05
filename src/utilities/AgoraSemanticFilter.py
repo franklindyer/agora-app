@@ -109,9 +109,9 @@ class AgoraSemanticFilter(AgoraFilter):
 
 
 
-    def getMyUser(self, sessionToken):
+    def getMyUser(self, sessionToken, concise=False):
         uid = self.do_login(sessionToken)
-        return self.db.getPrivateUser(uid)        
+        return self.db.getPrivateUser(uid, concise=concise)
 
 
 
