@@ -46,139 +46,105 @@ def handleAgoraError(err):
         "error": type(err).__name__
     }
 
+def agoraerror(pageserver):
+    def wrapper(*args):
+        try:
+            pageserver(*args)
+        except AgoraException as err:
+            return render_template('error.html', data=handleAgoraError(err))
+
 app = Flask(__name__)
 app.debug = True
 
-@app.errorhandler(500)
-def error500(err):
-    return "Something went wrong server-side. Oopsie!"
+
+@app.errorhandler(AgoraException)
+def agoraError(err):
+    return render_template('error.html', data=handleAgoraError(err))
 
 @app.route('/')
 def home():
-    try:
-        return render_template('index.html')
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    return render_template('index.html')
 
 @app.route('/users')
 def users():
-    try:
-        return "Coming soon..."
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    return "Coming soon..."
 
 @app.route('/user/<uid>')
 def user(uid):
-    try:
-        user_info = agoraModel.getUser(uid)
-        user_info["success"] = 1
-        return render_template('profile.html', data=user_info)
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    user_info = agoraModel.getUser(uid)
+    user_info["success"] = 1
+    return render_template('profile.html', data=user_info)
 
 @app.route('/post/<pid>')
 def post(pid):
-    try:
-        post_info = agoraModel.getPost(pid)
-        content = open(os.path.join(POSTDIR, post_info['filename'])).read()
-        html_content = markdown.markdown(content)
-        post_info["content"] = html_content
-        post_info["success"] = 1
-        return render_template('post.html', data=post_info)
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    post_info = agoraModel.getPost(pid)
+    content = open(os.path.join(POSTDIR, post_info['filename'])).read()
+    html_content = markdown.markdown(content)
+    post_info["content"] = html_content
+    post_info["success"] = 1
+    return render_template('post.html', data=post_info)
 
 @app.route('/join')
 def join_get():
-    try:
-        return render_template('join.html', limits=INPUT_LENGTH_LIMITS)
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    return render_template('join.html', limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/join', methods=['POST'])
 def join_post():
     data = request.form
-    try:
-        agoraModel.createAccount(data['email'], data['username'], data['password'])
-        return render_template('info.html', msg='confirm-sent-email')
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    agoraModel.createAccount(data['email'], data['username'], data['password'])
+    return render_template('info.html', msg='confirm-sent-email')
 
 @app.route('/confirm/<token>')
 def confirm(token):
-    try:
-        agoraModel.confirmCreate(token)
-        return redirect('/')
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    agoraModel.confirmCreate(token)
+    return redirect('/')
 
 @app.route('/login')
 def login_get():
-    try:
-        return render_template('login.html')
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def login_post():
     data = request.form
-    try:
-        sessionToken = agoraModel.login(data['username'], data['password'])
-        resp = redirect("/account")
-        resp.set_cookie("session", sessionToken)
-        return resp
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    sessionToken = agoraModel.login(data['username'], data['password'])
+    resp = redirect("/account")
+    resp.set_cookie("session", sessionToken)
+    return resp
 
 @app.route('/logout', methods=['POST'])
 def logout():
     sessionToken = request.cookies.get("session")
-    try:
-        agoraModel.logout(sessionToken)
-        return render_template('info.html', msg='logout')
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    agoraModel.logout(sessionToken)
+    return render_template('info.html', msg='logout')
 
 @app.route('/account')
 def account():
     sessionToken = request.cookies.get("session")
-    try:
-        data = agoraModel.getMyUser(sessionToken)
-        return render_template('account.html', data=data)
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    data = agoraModel.getMyUser(sessionToken)
+    return render_template('account.html', data=data)
 
 @app.route('/account', methods=['POST'])
 def account_set():
     sessionToken = request.cookies.get("session")
     data = request.form
-    try:
-        if "status" in data:
-            agoraModel.changeStatus(sessionToken, data['status'])
-        if "username" in data:
-            agoraModel.changeUsername(sessionToken, data['username'])
-        return redirect("/account")
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    if "status" in data:
+        agoraModel.changeStatus(sessionToken, data['status'])
+    if "username" in data:
+        agoraModel.changeUsername(sessionToken, data['username'])
+    return redirect("/account")
 
 @app.route('/write', methods=['POST'])
 def write_post():
     sessionToken = request.cookies.get("session")
     data = request.form
-    try:
-        agoraModel.writePost(sessionToken, data["title"], data["content"])
-        return redirect("/account")
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    agoraModel.writePost(sessionToken, data["title"], data["content"])
+    return redirect("/account")
 
 @app.route('/comment', methods=['POST'])
 def write_comment():
     sessionToken = request.cookies.get("session")
     data = request.form
-    try:
-        agoraModel.comment(sessionToken, data['pid'], data['content'])
-        return redirect(f"/post/{data['pid']}")
-    except AgoraException as err:
-        return render_template('error.html', data=handleAgoraError(err))
+    agoraModel.comment(sessionToken, data['pid'], data['content'])
+    return redirect(f"/post/{data['pid']}")
 
 app.run(host = "0.0.0.0", port = PORT)
