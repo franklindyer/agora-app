@@ -15,7 +15,7 @@ class AgoraInterpreterFilter:
     def setHost(self, host):
         self.host = host
 
-    def generateToken(self, ttype):
+    def generate_token(self, ttype):
         return ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(TOKEN_LENGTHS[ttype]))
 
     def createAccount(self, emailAddress, username, hpassword, acceptable):
@@ -30,13 +30,10 @@ class AgoraInterpreterFilter:
             confirm_url = f'{self.host}/confirm/{confirm}'
             self.eml.confirmAccountEmail(emailAddress, confirm_url)
             self.db.createToken(uid, confirm, "creation")
-        
     
     def confirmCreate(self, uid, creationToken):
         self.db.expireToken(creationToken)
         self.db.verifyUser(uid)
-
-
 
     def login(self, uid):
         session = self.generateToken("session")
@@ -46,14 +43,10 @@ class AgoraInterpreterFilter:
     def logout(self, sessionToken):
         self.db.expireToken(sessionToken)
 
-
-
     def deleteAccount(self, uid, email):
         raise NotImplementedError
     def confirmDelete(self, uid):
         raise NotImplementedError
-
-
 
     def recoverAccount(self, emailAddress, acceptable):
         raise NotImplementedError
@@ -62,14 +55,21 @@ class AgoraInterpreterFilter:
     def confirmRecover(self, uid, hpassword):
         raise NotImplementedError
 
+
+
     def changeStatus(self, uid, newStatus):
-        raise NotImplementedError
+        self.db.setStatus(uid, newStatus)
+
     def changePicture(self, uid, imageId):
         raise NotImplementedError
+    
     def changeEmail(self, uid, emailAddress, acceptable):
         raise NotImplementedError
+    
     def changeUsername(self, uid, username):
-        raise NotImplementedError
+        self.db.setUsername(uid, username)
+
+
 
     def writePost(self, uid, title, content):
         raise NotImplementedError

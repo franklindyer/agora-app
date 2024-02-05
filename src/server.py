@@ -85,7 +85,6 @@ def post(pid):
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
-
 @app.route('/join')
 def join_get():
     try:
@@ -143,6 +142,19 @@ def account():
     try:
         data = agoraModel.getMyUser(sessionToken)
         return render_template('account.html', data=data)
+    except AgoraException as err:
+        return render_template('error.html', data=handleAgoraError(err))
+
+@app.route('/set', methods=['POST'])
+def account_set():
+    sessionToken = request.cookies.get("session")
+    data = request.form
+    try:
+        if "status" in data:
+            agoraModel.changeStatus(sessionToken, data['status'])
+        if "username" in data:
+            agoraModel.changeUsername(sessionToken, data['username'])
+        return redirect("/account")
     except AgoraException as err:
         return render_template('error.html', data=handleAgoraError(err))
 
