@@ -48,15 +48,18 @@ class AgoraInterpreterFilter:
 
     def deleteAccount(self, uid, email):
         raise NotImplementedError
+
     def confirmDelete(self, uid):
         raise NotImplementedError
 
     def recoverAccount(self, emailAddress, acceptable):
         raise NotImplementedError
-    def backupRecover(self, uid, emailAddress):
-        raise NotImplementedError
+    
     def confirmRecover(self, uid, hpassword):
         raise NotImplementedError
+
+    def backupRecover(self, uid, emailAddress):
+        self.changeEmail(uid, emailAddress, True)
 
 
 
@@ -76,6 +79,10 @@ class AgoraInterpreterFilter:
         newEmail = self.db.tokenData(emailToken)
         self.db.expireToken(emailToken)
         self.db.setEmail(uid, newEmail)
+        recovery = self.generateToken("recovery")
+        hrecovery = hashlib.sha256(recovery.encode()).hexdigest()
+        self.eml.newRecoveryToken(newEmail, recovery)
+        self.db.setRecovery(uid, hrecovery)
 
     def changeUsername(self, uid, username):
         self.db.setUsername(uid, username)

@@ -146,6 +146,9 @@ class AgoraDatabaseManager:
     def verifyUser(self, uid):
         self.execute("UPDATE users SET confirmed = 1 WHERE uid = ?", (uid,))
 
+    def setRecovery(self, uid, hrecovery):
+        self.execute("UPDATE users SET hrecovery = ? WHERE uid = ?", (hrecovery, uid,))
+
 
 
     def createToken(self, uid, token, ttype, data=None):

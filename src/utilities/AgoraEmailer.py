@@ -30,6 +30,11 @@ class AgoraEmailer:
         message = f"Recover your Agora account by visiting the following page:\n{url}"
         self.sendEmail(receiver, subject, message)
 
+    def newRecoveryToken(self, receiver, recovery):
+        subject = "New recovery token"
+        message = f"You have recently changed your email or used your former recovery token.\n Here is your new recovery token: {recovery}"
+        self.sendEmail(receiver, subject, message)
+
     def changeAccountEmail(self, receiver, url):
         subject = "Confirm your new Agora email"
         message = f"Confirm that this is your new email for your Agora account by visiting the following page:\n{url}"
