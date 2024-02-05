@@ -29,6 +29,8 @@ class AgoraSyntacticFilter(AgoraFilter):
             raise AgoraEInvalidToken
         if not token.isalnum():
             raise AgoraEInvalidToken
+        if tokenType == "backup":
+            return hashlib.sha256(token.encode()).hexdigest()
 
     def validateStatus(self, status):
         if not self.isLengthBetween(status, STATUS_MIN_LENGTH, STATUS_MAX_LENGTH):
@@ -105,9 +107,9 @@ class AgoraSyntacticFilter(AgoraFilter):
         return self.next.recoverAccount(emailAddress)
 
     def backupRecover(self, backupCode, emailAddress):
-        self.validateToken(backupCode, "backup")
+        hbackupCode = self.validateToken(backupCode, "backup") 
         self.validateEmail(emailAddress)
-        return self.next.backupRecover(backupCode, emailAddress)
+        return self.next.backupRecover(hbackupCode, emailAddress)
 
     def confirmRecover(self, recoveryToken, password):
         self.validateToken(recoveryToken, "recovery")

@@ -148,6 +148,13 @@ def account_set():
         agoraModel.changeEmail(g.sessionToken, data['email'])
     return redirect("/account")
 
+@app.route('/backup/<code>', methods=['POST'])
+def backup_post(code):
+    data = request.form
+    if "email" in data:
+        agoraModel.backupRecover(code, data['email'])
+    return render_template('info.html', data=g.data, msg='backup-sent-email')
+
 @app.route('/confirmemail/<token>')
 def confirm_email(token):
     agoraModel.confirmEmail(token)
