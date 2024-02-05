@@ -93,9 +93,11 @@ class AgoraDatabaseManager:
         res = self.query("SELECT admin FROM users WHERE uid = ?", (uid,))
         return (res[0]['admin'] == 1)
 
-    def getPrivateUser(self, uid):
+    def getPrivateUser(self, uid, concise=False):
         res = self.query("SELECT uid, username, email, pfp, status, suspended, admin FROM users WHERE uid = ?", (uid,))
         info = res[0]
+        if concise:
+            return info
         res = self.query("SELECT pid, title FROM posts WHERE owner = ?", (uid,))
         info["posts"] = [] if res is None else [post for post in res]
         

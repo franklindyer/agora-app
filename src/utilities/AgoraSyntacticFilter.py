@@ -141,9 +141,9 @@ class AgoraSyntacticFilter(AgoraFilter):
 
 
 
-    def getMyUser(self, sessionToken):
+    def getMyUser(self, sessionToken, concise=False):
         self.validateToken(sessionToken, "session")
-        return self.next.getMyUser(sessionToken)
+        return self.next.getMyUser(sessionToken, concise=concise)
 
 
 

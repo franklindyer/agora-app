@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, g
 import markdown
 
 sys.path.insert(1, './params')
@@ -61,6 +61,12 @@ app.debug = True
 def agoraError(err):
     return render_template('error.html', data=handleAgoraError(err))
 
+@app.before_request
+def agoraPreproc():
+    g.data = {}
+    sessionToken = request.cookies.get("session")
+    g.data["logged_in_user"] = agoraModel.getMyUser(sessionToken, concise=True)
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -71,18 +77,18 @@ def users():
 
 @app.route('/user/<uid>')
 def user(uid):
-    user_info = agoraModel.getUser(uid)
-    user_info["success"] = 1
-    return render_template('profile.html', data=user_info)
+    userInfo = agoraModel.getUser(uid)
+    g.data.update(userInfo)
+    return render_template('profile.html', data=g.data)
 
 @app.route('/post/<pid>')
 def post(pid):
-    post_info = agoraModel.getPost(pid)
-    content = open(os.path.join(POSTDIR, post_info['filename'])).read()
+    postInfo = agoraModel.getPost(pid)
+    content = open(os.path.join(POSTDIR, postInfo['filename'])).read()
     html_content = markdown.markdown(content)
-    post_info["content"] = html_content
-    post_info["success"] = 1
-    return render_template('post.html', data=post_info)
+    postInfo["content"] = html_content
+    g.data.update(postInfo)
+    return render_template('post.html', data=g.data)
 
 @app.route('/join')
 def join_get():
@@ -121,7 +127,8 @@ def logout():
 def account():
     sessionToken = request.cookies.get("session")
     data = agoraModel.getMyUser(sessionToken)
-    return render_template('account.html', data=data)
+    g.data.update(data)
+    return render_template('account.html', data=g.data)
 
 @app.route('/account', methods=['POST'])
 def account_set():
