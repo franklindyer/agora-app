@@ -90,12 +90,17 @@ nav {
     margin: 0% 2%;
 }
 
-/* profile */
+/* profile & account */
+
+.editable-profile-option * {
+    margin: 0%;
+    padding: 0%;
+    align-items: top;
+}
 
 .editable-profile-option > input {
     border: none;
     width: 100%;
-    padding: 1% 0%;
 }
 
 .editable-profile-option > input:focus-visible {
@@ -115,7 +120,7 @@ nav {
     font-weight: bold;
 }
 
-.status-main, .status-main * {
+.option-main, .option-main * {
     font-size: 18px;
 }
 
