@@ -14,6 +14,14 @@
 
     {{ editable_option("email", data['email']) }}
 
+    <!-- TODO: replace this with a fancier image list, or even put this in another template  -->
+    <h2>Here are your images:</h2>
+    <ul>
+    {% for img in data['images'] %}
+        <li><a href="/userimg/{{ img['accessid'] }}">{{ img['title'] }}</a></li>
+    {% endfor %}
+    </ul>
+
 </div>
 {% endblock %}
 
