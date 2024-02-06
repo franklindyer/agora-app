@@ -3,7 +3,7 @@ Backend/model:
 
 - [x] Account creation
 - [x] Login and logout
-- [ ] Account recovery
+- [x] Account recovery
 - [ ] Account deletion
 - [x] Public user account information retrieval
 - [x] Private user account information retrieval
