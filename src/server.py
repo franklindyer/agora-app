@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, render_template, request, redirect, g
+from flask import Flask, render_template, request, redirect, g, send_file
 import markdown
 
 sys.path.insert(1, './params')
@@ -20,6 +20,7 @@ PORT = sys.argv[1]
 GMAIL_KEY = sys.argv[2]
 HOST = sys.argv[3]
 POSTDIR = './volumes/posts/'
+IMGDIR = './volumes/img'
 
 agoraInterpreter = AgoraInterpreterFilter(None)
 agoraSemantics = AgoraSemanticFilter(agoraInterpreter)
@@ -32,7 +33,7 @@ agoraInterpreter.setDBManager(agoraDB)
 agoraEmail = AgoraEmailer("agoradevel@gmail.com", GMAIL_KEY)
 agoraInterpreter.setEmailer(agoraEmail)
 
-agoraFM = AgoraFileManager(POSTDIR)
+agoraFM = AgoraFileManager(POSTDIR, IMGDIR)
 agoraInterpreter.setFileManager(agoraFM)
 
 agoraInterpreter.setHost(HOST)
@@ -95,6 +96,12 @@ def post(pid):
     postInfo["content"] = html_content
     g.data.update(postInfo)
     return render_template('post.html', data=g.data)
+
+@app.route('/userimg/<accessid>')
+def user_image(accessid):
+    imgname = agoraModel.getImage(accessid)
+    filepath = agoraFM.relativizeImagePath(imgname)
+    return send_file(filepath, mimetype='image/gif')
 
 @app.route('/join')
 def join_get():

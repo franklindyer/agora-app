@@ -45,9 +45,18 @@ class AgoraSyntacticFilter(AgoraFilter):
     def validateImageTitle(self, title):
         if not self.isLengthBetween(content, IMG_TITLE_MIN_LENGTH, IMG_TITLE_MAX_LENGTH):
             raise AgoraEInvalidTitle
+        if '.' not in title:
+            raise AgoraEInvalidTitle
+        extension = title.rsplot('.', 1)[1].lower()
+        if extension not in USER_IMAGE_EXTENSIONS:
+            raise AgoraEInvalidTitle
+        return extension
 
     def validateImage(self, imgData):
-        raise NotImplementedError
+        imgSize = imgData.seek(0, os.SEEK_END)
+        if imgSize > IMG_MAX_SIZE_BYTES:
+            raise AgoraEBadImage
+        imgData.seek(0, 0)
 
     def validateComment(self, comment):
         if not self.isLengthBetween(comment, COMMENT_MIN_LENGTH, COMMENT_MAX_LENGTH):
@@ -61,9 +70,11 @@ class AgoraSyntacticFilter(AgoraFilter):
         if not self.isLengthBetween(content, 0, QUERY_MAX_LENGTH):
             raise AgoraEInvalidQuery
 
-    def isValidId(self, str):
-        return str.isdigit()
+    def isValidId(self, strid):
+        return strid.isdigit()
 
+    def isValidImgId(self, strid):
+        return strid.isalnum()
 
 
     def createAccount(self, emailAddress, username, password):
@@ -127,9 +138,9 @@ class AgoraSyntacticFilter(AgoraFilter):
         return self.next.getPost(int(pid))
     
     def getImage(self, imageId):
-        if not self.isValidId(imageId):
+        if not self.isValidImgId(imageId):
             raise AgoraENoSuchImage
-        return self.next.getImage(int(imageId))
+        return self.next.getImage(imageId)
     
     def searchUsers(self, query):
         self.validateQuery(query)
@@ -182,9 +193,9 @@ class AgoraSyntacticFilter(AgoraFilter):
     
     def uploadImage(self, sessionToken, title, imgData):
         self.validateToken(sessionToken, "session")
-        self.validateImageTitle(title)
+        extension = self.validateImageTitle(title)
         self.validateImage(imgData)
-        return self.next.uploadImage(sessionToken, title, imgData)
+        return self.next.uploadImage(sessionToken, title, extension, imgData)
     
     def deleteImage(self, sessionToken, imageId):
         self.validateToken(sessionToken, "session")

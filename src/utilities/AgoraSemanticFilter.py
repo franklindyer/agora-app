@@ -1,5 +1,6 @@
 from AgoraFilter import *
 from agora_errors import *
+from limits import *
 
 class AgoraSemanticFilter(AgoraFilter):
     def setDBManager(self, db):
@@ -151,6 +152,9 @@ class AgoraSemanticFilter(AgoraFilter):
     
     def uploadImage(self, sessionToken, title, imgData):
         uid = self.do_login(sessionToken)
+        numImages = self.db.getNumImages(uid)
+        if numImages > USER_MAX_IMAGES:
+            raise AgoraEBadImage
         return self.next.uploadImage(uid, title, imgData)
     
     def deleteImage(self, sessionToken, imageId):
