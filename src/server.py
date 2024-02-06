@@ -173,4 +173,11 @@ def write_comment():
     agoraModel.comment(sessionToken, data['pid'], data['content'])
     return redirect(f"/post/{data['pid']}")
 
+@app.route('/upload', methods=['POST'])
+def upload_image():
+    sessionToken = request.cookies.get("session")
+    imgData = request.files['file']
+    title = imgData.filename
+    return agoraModel.uploadImage(sessionToken, title, imgData)
+
 app.run(host = "0.0.0.0", port = PORT)

@@ -122,8 +122,8 @@ class AgoraDatabaseManager:
         return info
 
     def getNumImages(self, uid):
-        res = self.query("SELECT COUNT(*) FROM images WHERE owner = ?", (uid,))
-        return res[0][0]
+        res = self.query("SELECT COUNT(*) as cnt FROM images WHERE owner = ?", (uid,))
+        return res[0]['cnt']
 
     def getImageOwner(self, accessid):
         res = self.query("SELECT owner FROM images WHERE accessid = ?", (accessid,))

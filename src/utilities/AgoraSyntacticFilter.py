@@ -1,5 +1,6 @@
 import email
 import hashlib
+import os
 from AgoraFilter import *
 from limits import *
 from agora_errors import *
@@ -43,11 +44,11 @@ class AgoraSyntacticFilter(AgoraFilter):
             raise AgoraEInvalidTitle
 
     def validateImageTitle(self, title):
-        if not self.isLengthBetween(content, IMG_TITLE_MIN_LENGTH, IMG_TITLE_MAX_LENGTH):
+        if not self.isLengthBetween(title, IMG_TITLE_MIN_LENGTH, IMG_TITLE_MAX_LENGTH):
             raise AgoraEInvalidTitle
         if '.' not in title:
             raise AgoraEInvalidTitle
-        extension = title.rsplot('.', 1)[1].lower()
+        extension = title.rsplit('.', 1)[1].lower()
         if extension not in USER_IMAGE_EXTENSIONS:
             raise AgoraEInvalidTitle
         return extension
