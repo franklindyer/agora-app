@@ -14,5 +14,8 @@ class AgoraFileManager:
         path = os.path.join(self.imgdir, filename)
         file.save(path)
 
+    def deleteImage(self, filename):
+        os.remove(os.path.join(self.imgdir, filename))
+
     def relativizeImagePath(self, filename):
         return os.path.join(self.imgdir, filename)

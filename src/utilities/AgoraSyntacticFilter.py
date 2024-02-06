@@ -200,9 +200,9 @@ class AgoraSyntacticFilter(AgoraFilter):
     
     def deleteImage(self, sessionToken, imageId):
         self.validateToken(sessionToken, "session")
-        if not self.isValidId(imageId):
+        if not self.isValidImgId(imageId):
             raise AgoraENoSuchImage
-        return self.next.deleteImage(sessionToken, int(imageId))
+        return self.next.deleteImage(sessionToken, imageId)
 
     def listImages(self, sessionToken):
         self.validateToken(sessionToken, "session")

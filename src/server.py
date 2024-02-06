@@ -180,6 +180,13 @@ def upload_image():
     sessionToken = request.cookies.get("session")
     imgData = request.files['file']
     title = imgData.filename
-    return agoraModel.uploadImage(sessionToken, title, imgData)
+    agoraModel.uploadImage(sessionToken, title, imgData)
+    return redirect('/account')
+
+@app.route('/deleteimg/<imgid>', methods=['POST'])
+def delete_image(imgid):
+    sessionToken = request.cookies.get("session")
+    agoraModel.deleteImage(sessionToken, imgid)
+    return redirect('/account')
 
 app.run(host = "0.0.0.0", port = PORT)

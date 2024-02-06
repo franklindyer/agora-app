@@ -90,7 +90,9 @@ class AgoraInterpreterFilter:
         return accessid
 
     def deleteImage(self, imageId):
-        raise NotImplementedError
+        filename = self.db.imgExists(imageId)
+        self.db.deleteImage(imageId)
+        self.fm.deleteImage(filename) 
 
 
 
