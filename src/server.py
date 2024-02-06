@@ -66,6 +66,7 @@ def agoraError(err):
 
 @app.before_request
 def agoraPreproc():
+    agoraDB.connect()
     g.data = {}
     g.sessionToken = request.cookies.get("session")
     try:
