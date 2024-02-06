@@ -10,7 +10,8 @@ def dict_factory(cursor, row):
 class AgoraDatabaseManager:
     def __init__(self, dbname):
         self.dbname = dbname
-        self.connPool = ThreadPool(processes=1)
+        self.readPool = ThreadPool(processes=10)
+        self.writePool = ThreadPool(processes=1)
         self.connect()
 
     def connect(self):
@@ -35,10 +36,10 @@ class AgoraDatabaseManager:
         self.commit()
 
     def query(self, query, args=()):
-        return self.connPool.apply(self.pool_query, (query, args,))
+        return self.readPool.apply(self.pool_query, (query, args,))
 
     def execute(self, query, args=()):
-        return self.connPool.apply(self.pool_execute, (query, args,))
+        return self.writePool.apply(self.pool_execute, (query, args,))
 
 
     def usernameExists(self, username):
