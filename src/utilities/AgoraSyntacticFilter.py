@@ -166,9 +166,9 @@ class AgoraSyntacticFilter(AgoraFilter):
     
     def changePicture(self, sessionToken, imageId):
         self.validateToken(sessionToken, "session")
-        if not self.isValidId(imageId):
-            raise ENoSuchImage
-        return self.next.changePicture(sessionToken, int(imageId))
+        if not self.isValidImgId(imageId):
+            raise AgoraENoSuchImage
+        return self.next.changePicture(sessionToken, imageId)
     
     def changeEmail(self, sessionToken, emailAddress):
         self.validateToken(sessionToken, "session")

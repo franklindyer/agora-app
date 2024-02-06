@@ -64,7 +64,7 @@ class AgoraInterpreterFilter:
         self.db.setStatus(uid, newStatus)
 
     def changePicture(self, uid, imageId):
-        raise NotImplementedError
+        self.db.setPicture(uid, imageId)
     
     def changeEmail(self, uid, emailAddress, acceptable):
         raise NotImplementedError

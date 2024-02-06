@@ -151,6 +151,8 @@ def account_set():
         agoraModel.changeStatus(sessionToken, data['status'])
     if "username" in data:
         agoraModel.changeUsername(sessionToken, data['username'])
+    if "pfp" in data:
+        agoraModel.changePicture(sessionToken, data['pfp'])
     return redirect("/account")
 
 @app.route('/write', methods=['POST'])
