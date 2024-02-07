@@ -92,19 +92,35 @@ nav {
 
 /* profile */
 
-/* account */
-.editable-profile-option > input[type=text] {
+.editable-profile-option > input {
     border: none;
     width: 100%;
     padding: 1% 0%;
 }
 
-.editable-profile-option > input[type=text]:focus-visible {
+.editable-profile-option > input:focus-visible {
     outline: transparent;
 }
 
-.editable-profile-option * {
-    margin 0% 1%;
+.editable-profile-option > input:hover {
+    font-style: italic;
+}
+
+.editable-profile-option > input[type=submit] {
+    display: none;
+}
+
+.username-main, .username-main * {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.status-main, .status-main * {
+    font-size: 18px;
+}
+
+#profile-options {
+    width: 30%;
 }
 
 /* post */
