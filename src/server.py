@@ -106,10 +106,21 @@ def join_post():
     agoraModel.createAccount(data['email'], data['username'], data['password'])
     return render_template('info.html', data=g.data, msg='confirm-sent-email')
 
-@app.route('/confirm/<token>')
-def confirm(token):
+@app.route('/join/<token>')
+def join_confirm(token):
     agoraModel.confirmCreate(token)
     return redirect('/')
+
+@app.route('/leave', methods=['POST'])
+def leave_post():
+    formdata = request.form
+    agoraModel.deleteAccount(g.sessionToken, formdata['password'])
+    return render_template('info.html', data=g.data, msg='leave-sent-email')
+
+@app.route('/leave/<token>')
+def leave_confirm(token):
+    agoraModel.confirmDelete(token)
+    return render_template('info.html', data=g.data, msg='goodbye')
 
 @app.route('/login')
 def login_get():

@@ -94,10 +94,10 @@ class AgoraSyntacticFilter(AgoraFilter):
     def deleteAccount(self, sessionToken, password):
         self.validateToken(sessionToken, "session")
         hpassword = self.validatePassword(password)
-        return self.next.deleteAccount(sessionToken, password)
+        return self.next.deleteAccount(sessionToken, hpassword)
 
     def confirmDelete(self, deletionToken):
-        self.validateToken(sessionToken, "deletion")
+        self.validateToken(deletionToken, "deletion")
         return self.next.confirmDelete(deletionToken)
 
 

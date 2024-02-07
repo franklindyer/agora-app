@@ -53,7 +53,7 @@ class AgoraSemanticFilter(AgoraFilter):
         uid = self.db.tokenExists(sessionToken, "session")
         if uid is None:
             raise AgoraEInvalidToken
-        dat = self.db.getPublicUser(uid)
+        dat = self.db.getPrivateUser(uid)
         username = dat['username']
         email = dat['email']
         if not self.db.passwordCorrect(username, hpassword):

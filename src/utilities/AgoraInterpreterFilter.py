@@ -30,8 +30,8 @@ class AgoraInterpreterFilter:
             hrecovery = hashlib.sha256(recovery.encode()).hexdigest()
             uid = self.db.createUser(emailAddress, username, hpassword, hrecovery)
             confirm = self.generateToken("creation")
-            confirm_url = f'{self.host}/confirm/{confirm}'
-            self.eml.confirmAccountEmail(emailAddress, confirm_url)
+            confirmUrl = f'{self.host}/join/{confirm}'
+            self.eml.confirmAccountEmail(emailAddress, confirmUrl)
             self.db.createToken(uid, confirm, "creation")
     
     def confirmCreate(self, uid, creationToken):
@@ -46,11 +46,14 @@ class AgoraInterpreterFilter:
     def logout(self, sessionToken):
         self.db.expireToken(sessionToken)
 
-    def deleteAccount(self, uid, email):
-        raise NotImplementedError
+    def deleteAccount(self, uid, emailAddress):
+        confirm = self.generateToken("deletion")
+        self.db.createToken(uid, confirm, "deletion")
+        confirmUrl = f'{self.host}/leave/{confirm}'
+        self.eml.deleteAccountEmail(emailAddress, confirmUrl)
 
     def confirmDelete(self, uid):
-        raise NotImplementedError
+        self.db.deleteUser(uid)
 
     def recoverAccount(self, emailAddress, acceptable):
         raise NotImplementedError
