@@ -15,7 +15,8 @@ CREATE TABLE tokens (
     owner       INTEGER,
     value       TEXT NOT NULL,
     issued      TEXT DEFAULT CURRENT_TIMESTAMP,
-    type        TEXT NOT NULL
+    type        TEXT NOT NULL,
+    data        TEXT
 );
 
 CREATE TABLE posts (
