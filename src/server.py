@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, render_template, request, redirect, g
+from flask import Flask, render_template, request, redirect, g, send_file
 import markdown
 
 sys.path.insert(1, './params')
@@ -20,6 +20,7 @@ PORT = sys.argv[1]
 GMAIL_KEY = sys.argv[2]
 HOST = sys.argv[3]
 POSTDIR = './volumes/posts/'
+IMGDIR = './volumes/img'
 
 agoraInterpreter = AgoraInterpreterFilter(None)
 agoraSemantics = AgoraSemanticFilter(agoraInterpreter)
@@ -32,7 +33,7 @@ agoraInterpreter.setDBManager(agoraDB)
 agoraEmail = AgoraEmailer("agoradevel@gmail.com", GMAIL_KEY)
 agoraInterpreter.setEmailer(agoraEmail)
 
-agoraFM = AgoraFileManager(POSTDIR)
+agoraFM = AgoraFileManager(POSTDIR, IMGDIR)
 agoraInterpreter.setFileManager(agoraFM)
 
 agoraInterpreter.setHost(HOST)
@@ -97,6 +98,12 @@ def post(pid):
     g.data.update(postInfo)
     return render_template('post.html', data=g.data)
 
+@app.route('/userimg/<accessid>')
+def user_image(accessid):
+    imgname = agoraModel.getImage(accessid)
+    filepath = agoraFM.relativizeImagePath(imgname)
+    return send_file(filepath, mimetype='image/gif')
+
 @app.route('/join')
 def join_get():
     return render_template('join.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
@@ -145,6 +152,8 @@ def account_set():
         agoraModel.changeStatus(sessionToken, data['status'])
     if "username" in data:
         agoraModel.changeUsername(g.sessionToken, data['username'])
+    if "pfp" in data:
+        agoraModel.changePicture(sessionToken, data['pfp'])
     if "email" in data:
         agoraModel.changeEmail(g.sessionToken, data['email'])
     return redirect("/account")
@@ -180,5 +189,19 @@ def write_comment():
     data = request.form
     agoraModel.comment(sessionToken, data['pid'], data['content'])
     return redirect(f"/post/{data['pid']}")
+
+@app.route('/upload', methods=['POST'])
+def upload_image():
+    sessionToken = request.cookies.get("session")
+    imgData = request.files['file']
+    title = imgData.filename
+    agoraModel.uploadImage(sessionToken, title, imgData)
+    return redirect('/account')
+
+@app.route('/deleteimg/<imgid>', methods=['POST'])
+def delete_image(imgid):
+    sessionToken = request.cookies.get("session")
+    agoraModel.deleteImage(sessionToken, imgid)
+    return redirect('/account')
 
 app.run(host = "0.0.0.0", port = PORT)

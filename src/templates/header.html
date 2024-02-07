@@ -1,9 +1,13 @@
 <nav>
     {% if data['logged_in_user'] == None -%}
-        <a href="/login">log in</a>
+         <a href="/login">log in</a>
     {% else -%}
-        <img class="thumbnail profile-picture" 
-                src="{{ url_for('static', filename='img/default-pfp.png') }}" 
+        <img class="thumbnail profile-picture"
+                {% if data['logged_in_user']['pfp'] == None  %} 
+                    src="{{ url_for('static', filename='img/default-pfp.png') }}" 
+                {% else %}
+                    src="/userimg/{{ data['logged_in_user']['pfp'] }}"
+                {% endif %}
                 alt="the user's profile picture">
         <div class="vbox">
             <a href="/user/{{ data['logged_in_user']['uid'] }}">

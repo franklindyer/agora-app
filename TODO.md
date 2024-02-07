@@ -7,10 +7,10 @@ Backend/model:
 - [ ] Account deletion
 - [x] Public user account information retrieval
 - [x] Private user account information retrieval
-- [ ] User account information modification
+- [x] User account information modification
 - [ ] Delete own account
 - [ ] Publish post
-- [ ] Upload image
+- [x] Upload image
 - [ ] Like and dislike
 - [ ] Friend request
 - [ ] Submit comment

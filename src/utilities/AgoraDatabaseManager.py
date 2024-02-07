@@ -130,6 +130,10 @@ class AgoraDatabaseManager:
         info["comments"] = [] if res is None else [c for c in res]
         return info
 
+    def getNumImages(self, uid):
+        res = self.query("SELECT COUNT(*) as cnt FROM images WHERE owner = ?", (uid,))
+        return res[0]['cnt']
+
     def getImageOwner(self, accessid):
         res = self.query("SELECT owner FROM images WHERE accessid = ?", (accessid,))
         return res[0]["owner"]
