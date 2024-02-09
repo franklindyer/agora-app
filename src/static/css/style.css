@@ -90,21 +90,42 @@ nav {
     margin: 0% 2%;
 }
 
-/* profile */
+/* profile & account */
 
-/* account */
-.editable-profile-option > input[type=text] {
-    border: none;
-    width: 100%;
-    padding: 1% 0%;
+.editable-profile-option * {
+    margin: 0%;
+    padding: 0%;
+    align-items: top;
 }
 
-.editable-profile-option > input[type=text]:focus-visible {
+.editable-profile-option > input {
+    border: none;
+    width: 100%;
+}
+
+.editable-profile-option > input:focus-visible {
     outline: transparent;
 }
 
-.editable-profile-option * {
-    margin 0% 1%;
+.editable-profile-option > input:hover {
+    font-style: italic;
+}
+
+.editable-profile-option > input[type=submit] {
+    display: none;
+}
+
+.username-main, .username-main * {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.option-main, .option-main * {
+    font-size: 18px;
+}
+
+#profile-options {
+    width: 30%;
 }
 
 /* post */

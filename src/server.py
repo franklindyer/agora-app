@@ -85,9 +85,10 @@ def users():
 
 @app.route('/user/<uid>')
 def user(uid):
-    userInfo = agoraModel.getUser(uid)
-    g.data.update(userInfo)
-    return render_template('profile.html', data=g.data)
+    if g.data['logged_in_user'] is None or uid != g.data['logged_in_user']['uid']:
+        userInfo = agoraModel.getUser(uid)
+        g.data.update(userInfo)
+    return render_template('profile.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/post/<pid>')
 def post(pid):
@@ -138,14 +139,15 @@ def logout():
     return render_template('info.html', data=g.data, msg='logout')
 
 @app.route('/account')
-def account():
+def account_get():
     sessionToken = request.cookies.get("session")
-    data = agoraModel.getMyUser(sessionToken)
-    g.data.update(data)
-    return render_template('account.html', data=g.data)
+    if g.data['logged_in_user'] is not None:
+        data = agoraModel.getMyUser(sessionToken)
+        return redirect(f"/user/{data['uid']}")
+    return redirect('/login')
 
 @app.route('/account', methods=['POST'])
-def account_set():
+def account_post():
     sessionToken = request.cookies.get("session")
     data = request.form
     if "status" in data:
