@@ -39,11 +39,6 @@ hr {
     height: var(--thumbnail-size);
 }
 
-.profile-picture {
-	border-style: solid;
-    border-width: thin;
-}
-
 .group {
     margin: 2%;
 }
@@ -66,7 +61,7 @@ nav {
 
 #nav-search-bar {
     margin-left: auto;
-    min-width: 300px;
+    /* min-width: 300px; */
 }
 
 /* login & create account */
@@ -100,7 +95,6 @@ nav {
 
 .editable-profile-option > input {
     border: none;
-    width: 100%;
 }
 
 .editable-profile-option > input:focus-visible {
@@ -115,6 +109,10 @@ nav {
     display: none;
 }
 
+.profile-option-label {
+    display: hidden;
+}
+
 .username-main, .username-main * {
     font-size: 24px;
     font-weight: bold;
@@ -124,16 +122,20 @@ nav {
     font-size: 18px;
 }
 
-#profile-options {
-    width: 30%;
+.profile-picture {
+	border-style: solid;
+    border-width: thin;
+}
+
+#profile-post-stack {
+    width: 70%;
+}
+
+#friend-list {
+    margin-top: 0%;
 }
 
 /* post */
-
-#post-preview {
-    border-style: solid;
-    width: 50%;
-}
 
 .sub-info {
     font-size: 0.90em;
