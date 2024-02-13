@@ -243,7 +243,7 @@ class AgoraSemanticFilter(AgoraFilter):
         return self.next.friendRequest(uid, uid2)
 
     def unfriend(self, sessionToken, uid2):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
         if self.db.userExists(uid2) is None:
              raise AgoraENoSuchUser
         return self.next.unfriend(uid, uid2)
@@ -278,8 +278,24 @@ class AgoraSemanticFilter(AgoraFilter):
         if uid != owner:
             raise AgoraENotAuthorized
         return self.next.deleteComment(cid)
+    
+    def like(self, sessionToken, pid):
+        uid = self.doLogin(sessionToken)
+        if self.db.postExists(pid) is None:
+            raise AgoraENoSuchPost
+        return self.next.like(uid, pid) 
 
-
+    def unlike(self, sessionToken, pid):
+        uid = self.doLogin(sessionToken)
+        if self.db.postExists(pid) is None:
+            raise AgoraENoSuchPost
+        return self.next.unlike(uid, pid) 
+    
+    def dislike(self, sessionToken, pid):
+        uid = self.doLogin(sessionToken)
+        if self.db.postExists(pid) is None:
+            raise AgoraENoSuchPost
+        return self.next.dislike(uid, pid) 
 
     def bugReport(self, sessionToken, content):
         uid = self.doLogin(sessionToken)

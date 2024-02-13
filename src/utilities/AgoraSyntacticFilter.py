@@ -258,7 +258,24 @@ class AgoraSyntacticFilter(AgoraFilter):
         if not self.isValidId(cid):
             raise AgoraEInvalidComment
         return self.next.deleteComment(sessionToken, int(cid))
+    
+    def like(self, sessionToken, pid):
+        self.validateToken(sessionToken, "session")
+        if not self.isValidId(pid):
+            raise AgoraENoSuchPost
+        return self.next.like(sessionToken, int(pid))
 
+    def unlike(self, sessionToken, pid): 
+        self.validateToken(sessionToken, "session")
+        if not self.isValidId(pid):
+            raise AgoraENoSuchPost
+        return self.next.unlike(sessionToken, int(pid))
+
+    def dislike(self, sessionToken, pid):
+        self.validateToken(sessionToken, "session")
+        if not self.isValidId(pid):
+            raise AgoraENoSuchPost
+        return self.next.dislike(sessionToken, int(pid))
 
     def bugReport(self, sessionToken, content):
         self.validateToken(sessionToken, "session")

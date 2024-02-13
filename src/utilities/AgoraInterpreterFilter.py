@@ -133,8 +133,15 @@ class AgoraInterpreterFilter:
 
     def deleteComment(self, cid):
         return self.db.deleteComment(cid)
-
-
+    
+    def like(self, uid, pid):
+        self.db.likePost(uid, pid)
+    
+    def unlike(self, uid, pid):
+        self.db.unlikePost(uid, pid)
+    
+    def dislike(self, uid, pid):
+        self.db.dislikePost(uid, pid)
 
     def bugReport(self, uid, content):
         raise NotImplementedError

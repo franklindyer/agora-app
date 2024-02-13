@@ -254,6 +254,21 @@ def admin_deleteuser(uid):
     agoraModel.adminDelete(g.sessionToken, uid, data["password"])
     return redirect("/")
 
+@app.route('/like/<pid>', methods=['POST'])
+def like_post(pid):
+    agoraModel.like(g.sessionToken, pid)
+    return redirect(f"/post/{pid}")
+
+@app.route('/unlike/<pid>', methods=['POST'])
+def unlike_post(pid):
+    agoraModel.unlike(g.sessionToken, pid)
+    return redirect(f"/post/{pid}")
+
+@app.route('/dislike/<pid>', methods=['POST'])
+def dislike_post(pid):
+    agoraModel.dislike(g.sessionToken, pid)
+    return redirect(f"/post/{pid}")
+
 @app.route('/upload', methods=['POST'])
 def upload_image():
     imgData = request.files['file']
