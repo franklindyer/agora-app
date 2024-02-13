@@ -1,4 +1,5 @@
-import sqlite3
+import os, sqlite3
+from multiprocessing.pool import ThreadPool
 
 def dict_factory(cursor, row):
     d = {}
@@ -9,31 +10,36 @@ def dict_factory(cursor, row):
 class AgoraDatabaseManager:
     def __init__(self, dbname):
         self.dbname = dbname
-        self.conn = sqlite3.connect(dbname)
-        self.conn.row_factory = dict_factory
+        self.readPool = ThreadPool(processes=10)
+        self.writePool = ThreadPool(processes=1)
+        self.connect()
 
-    def cur(self):
-        # Making a new connection each time is only a temporary band-aid, not a long-term fix.
-        # It solves the problem of a single connection being unshareable between threads, and Flask being multithreaded.
-        # The ultimate solution will be to create a "job queue" as part of this class.
-        self.conn = sqlite3.connect(self.dbname)
+    def connect(self):
+        self.conn = sqlite3.connect(self.dbname, check_same_thread=False)
         self.conn.row_factory = dict_factory
-        return self.conn.cursor()
 
     def commit(self):
         self.conn.commit()
 
-    def query(self, query, args=(), one=False):
+    def cur(self):
+        return self.conn.cursor()
+
+    def pool_query(self, query, args=()):
         cur = self.cur().execute(query, args)
         res = [x for x in cur.fetchall()]
         cur.close()
         return (res if len(res) > 0 else None)
 
-    def execute(self, query, args=(), one=False):
+    def pool_execute(self, query, args=()):
         cur = self.cur().execute(query, args)
         cur.close()
         self.commit()
 
+    def query(self, query, args=()):
+        return self.readPool.apply(self.pool_query, (query, args,))
+
+    def execute(self, query, args=()):
+        return self.writePool.apply(self.pool_execute, (query, args,))
 
 
     def usernameExists(self, username):
@@ -123,6 +129,10 @@ class AgoraDatabaseManager:
         res = self.query("SELECT U.uid, C.content, C.timestamp, U.username FROM comments C JOIN users U on C.owner = U.uid WHERE post = ?", (pid,))
         info["comments"] = [] if res is None else [c for c in res]
         return info
+
+    def getNumImages(self, uid):
+        res = self.query("SELECT COUNT(*) as cnt FROM images WHERE owner = ?", (uid,))
+        return res[0]['cnt']
 
     def getImageOwner(self, accessid):
         res = self.query("SELECT owner FROM images WHERE accessid = ?", (accessid,))

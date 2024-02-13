@@ -1,13 +1,21 @@
 <nav>
-    {# TODO: This is a debug workaround to view the home page 
-       until I get the logged-in user token situation sorted #}
-    {% if not data['logged_in_user'] == None -%}
-        <img class="thumbnail profile-picture" 
-                src="{{ url_for('static', filename='img/default-pfp.png') }}" 
-                alt="the user's profile picture">
-        <a id="profile-button" href="/user/{{ data['logged_in_user']['uid'] }}">@{{ data['logged_in_user']['username'] }}</a>
+    {% if data['logged_in_user'] == None -%}
+         <a href="/login">log in</a>
     {% else -%}
-        <a id="login-button" href="/login">log in</a>
+        <img class="thumbnail profile-picture"
+                {% if data['logged_in_user']['pfp'] == None  %} 
+                    src="{{ url_for('static', filename='img/default-pfp.png') }}" 
+                {% else %}
+                    src="/userimg/{{ data['logged_in_user']['pfp'] }}"
+                {% endif %}
+                alt="the user's profile picture">
+        <div class="vbox">
+            <a href="/user/{{ data['logged_in_user']['uid'] }}">
+                @{{ data['logged_in_user']['username'] }}</a>
+            <form action="/logout" method="post">
+                <input type="submit" value="logout" name="logout"></input>
+            </form>
+        </div>
     {% endif %}
     
     <a id="home-button" href="/">agora</a>
