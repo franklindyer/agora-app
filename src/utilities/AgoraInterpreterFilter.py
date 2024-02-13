@@ -126,4 +126,4 @@ class AgoraInterpreterFilter:
         self.db.unsuspendUser(uid)
     
     def adminDelete(self, uid):
-        raise NotImplementedError
+        self.db.deleteUser(uid)

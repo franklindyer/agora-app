@@ -207,4 +207,10 @@ def admin_unsuspend(uid):
     agoraModel.adminUnsuspend(g.sessionToken, uid)
     return redirect(f"/admin/user/{uid}")
 
+@app.route('/admin/deleteuser/<uid>', methods=['POST'])
+def admin_deleteuser(uid):
+    data = request.form
+    agoraModel.adminDelete(g.sessionToken, uid, data["password"])
+    return redirect("/")
+
 app.run(host = "0.0.0.0", port = PORT)
