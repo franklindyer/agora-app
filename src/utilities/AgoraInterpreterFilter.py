@@ -120,8 +120,10 @@ class AgoraInterpreterFilter:
 
 
     def adminSuspend(self, uid):
-        raise NotImplementedError
+        self.db.suspendUser(uid)
+    
     def adminUnsuspend(self, uid):
-        raise NotImplementedError
+        self.db.unsuspendUser(uid)
+    
     def adminDelete(self, uid):
         raise NotImplementedError

@@ -223,6 +223,8 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraENotAuthorized
         if self.db.userExists(uid) is None:
             raise AgoraENoSuchUser
+        if self.db.isUserAdmin(uid):
+            raise AgoraENotAuthorized       # Admins cannot suspend other admins
         return self.next.adminSuspend(uid)
     
 
@@ -232,6 +234,8 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraENotAuthorized
         if self.db.userExists(uid) is None:
             raise AgoraENoSuchUser
+        if self.db.isUserAdmin(uid):
+            raise AgoraENotAuthorized       # Admins cannot suspend other admins
         return self.next.adminUnsuspend(uid)
 
 
@@ -244,4 +248,6 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraENoSuchUser
         if self.db.passwordCorrect(my_user, hpassword) is None:
             raise AgoraEIncorrectCreds
+        if self.db.isUserAdmin(uid):
+            raise AgoraENotAuthorized       # Admins cannot delete other admins
         return self.next.adminDelete(uid)

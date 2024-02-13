@@ -87,12 +87,6 @@ def user(uid):
     g.data.update(userInfo)
     return render_template('profile.html', data=g.data)
 
-@app.route('/admin/user/<uid>')
-def admin_userview(uid):
-    userInfo = agoraModel.adminGetUser(g.sessionToken, uid)
-    g.data.update(userInfo)
-    return render_template('admin_userview.html', data=g.data)
-
 @app.route('/post/<pid>')
 def post(pid):
     postInfo = agoraModel.getPost(pid)
@@ -196,5 +190,21 @@ def write_comment():
     data = request.form
     agoraModel.comment(sessionToken, data['pid'], data['content'])
     return redirect(f"/post/{data['pid']}")
+
+@app.route('/admin/user/<uid>')
+def admin_userview(uid):
+    userInfo = agoraModel.adminGetUser(g.sessionToken, uid)
+    g.data.update(userInfo)
+    return render_template('admin_userview.html', data=g.data)
+
+@app.route('/admin/suspend/<uid>', methods=['POST'])
+def admin_suspend(uid):
+    agoraModel.adminSuspend(g.sessionToken, uid)
+    return redirect(f"/admin/user/{uid}")
+
+@app.route('/admin/unsuspend/<uid>', methods=['POST'])
+def admin_unsuspend(uid):
+    agoraModel.adminUnsuspend(g.sessionToken, uid)
+    return redirect(f"/admin/user/{uid}")
 
 app.run(host = "0.0.0.0", port = PORT)

@@ -248,13 +248,13 @@ class AgoraSyntacticFilter(AgoraFilter):
         self.validateToken(sessionToken, "session")
         if not self.isValidId(uid):
             raise AgoraENoSuchUser
-        return self.next.adminSuspendUser(sessionToken, int(uid))
+        return self.next.adminSuspend(sessionToken, int(uid))
 
     def adminUnsuspend(self, sessionToken, uid):
         self.validateToken(sessionToken, "session")
         if not self.isValidId(uid):
             raise AgoraENoSuchUser
-        return self.next.adminUnsuspendUser(sessionToken, int(uid))
+        return self.next.adminUnsuspend(sessionToken, int(uid))
     
     def adminDelete(self, sessionToken, uid, password):
         self.validateToken(sessionToken, "session")
