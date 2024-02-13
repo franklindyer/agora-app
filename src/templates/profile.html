@@ -1,38 +1,60 @@
+{% from 'editable-profile-option.html' import editable_option with context %}
 {% extends 'base.html' %}
 
 <h1>{% block title %}{{ data['username'] }} {% endblock %}</h1>
 
 {% block content %}
 
-{# profile info area #}
-<div class="group hbox">
-    <img class="profile-picture" 
-         src="{{ url_for('static', filename='img/default-pfp.png') }}" 
-         alt="the user's profile picture">
-    <ul class="naked-list group">
-	    <li><h2 id="profile-username" class="group-header">@{{ data['username'] }}</h2></li>
-	    <li>Status: "{{ data['status'] }}"</li>
-    </ul>
-</div>
+<div class="hbox">
+    <div id="profile-post-stack" class="vbox">
+        {# profile info area #}
+        <div class="group hbox">
+            <img class="profile-picture"
+                 {% if data['pfp'] == None %}
+                 src="{{ url_for('static', filename='img/default-pfp.png') }}" 
+                 {% else %}
+                 src="/userimg/{{ data['pfp'] }}"
+                 {% endif %}
+                 alt="the user's profile picture">
+            <ul id="profile-options" class="naked-list group">
+                {% if (data['logged_in_user'] is not none) and
+                      (data['logged_in_user']['uid'] == data['uid']) -%}
+                    <li class="hbox username-main">
+                        @{{ editable_option(limits, data['logged_in_user'], "username") }}</li>
+                    <li class="option-main status-main">
+                        {{ editable_option(limits, data['logged_in_user'], "status") }}</li>
+                    <li class="option-main requires-confirmation">
+                        {{ editable_option(limits, data['logged_in_user'], "email") }}</li>
+                    <li class="option-main requires-confirmation">
+                        {{ editable_option(limits, data['logged_in_user'], "password") }}</li>
+                {% else -%}
+                    <li class="username-main">@{{ data['username'] }}</li>
+                    <li class="status-main">{{ data['status'] }}</li>
+                {% endif %}
+            </ul>
+        </div>
 
-{# friends list #}
-<div class="group">
-    <h2>Friends: {{ data['friends']|length }}</h2>
-    <ul class="naked-list">
-    {% for (uid, name) in data['friends'] %}
-        <li><a href="/user/{{ uid }}">@{{ name }}</a></li>
-    {% endfor %}
-    </ul>
-</div>
+        {# posts list #}
+        <div class="group">
+            <h2>Posts: {{ data['posts'] | length }}</h2>
+            <ul class="naked-list">
+            {% for post in data['posts'] %}
+                <li><a href="/post/{{ post['pid'] }}">{{ post['title'] }}</a></li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
 
-{# posts list #}
-<div class="group">
-    <h2>Posts: {{ data['posts']|length }}</h2>
-    <ul class="naked-list">
-    {% for post in data['posts'] %}
-        <li><a href="/post/{{ post['pid'] }}">{{ post['title'] }}</a></li>
-    {% endfor %}
-    </ul>
+    {# friends list #}
+    <div id="friend-list" class="group">
+        <h2>Friends: {{ data['friends'] | length }}</h2>
+        <ul class="naked-list">
+        {% for (uid, name) in data['friends'] %}
+            <li><a href="/user/{{ uid }}">@{{ name }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
 </div>
 
 {% endblock %}
+

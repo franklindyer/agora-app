@@ -1,9 +1,11 @@
-{% macro editable_option(option, value) %}
-<form method="post" class="editable-profile-option" autocomplete="off">
-    <label for="{{ option }}">{{ option }}:</label>
-    <input type="text" 
+{% macro editable_option(limits, data, option) %}
+<form method="post" action="account" class="editable-profile-option" autocomplete="off">
+    <label class="profile-option-label" for="{{ option }}"></label>
+    <input type="{{ option }}" 
            name="{{ option }}" 
-           value="{{ value }}">
+           value="{{ data[option] }}"
+           minlength="{{ limits[option][0] }}"
+           maxlength="{{ limits[option][1] }}" >
     <input type="submit" value="update {{ option }}">
 </form>
 {% endmacro %}

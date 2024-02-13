@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, render_template, request, redirect, g
+from flask import Flask, render_template, request, redirect, g, send_file
 import markdown
 
 sys.path.insert(1, './params')
@@ -20,6 +20,7 @@ PORT = sys.argv[1]
 GMAIL_KEY = sys.argv[2]
 HOST = sys.argv[3]
 POSTDIR = './volumes/posts/'
+IMGDIR = './volumes/img'
 
 agoraInterpreter = AgoraInterpreterFilter(None)
 agoraSemantics = AgoraSemanticFilter(agoraInterpreter)
@@ -32,7 +33,7 @@ agoraInterpreter.setDBManager(agoraDB)
 agoraEmail = AgoraEmailer("agoradevel@gmail.com", GMAIL_KEY)
 agoraInterpreter.setEmailer(agoraEmail)
 
-agoraFM = AgoraFileManager(POSTDIR)
+agoraFM = AgoraFileManager(POSTDIR, IMGDIR)
 agoraInterpreter.setFileManager(agoraFM)
 
 agoraInterpreter.setHost(HOST)
@@ -66,6 +67,7 @@ def agoraError(err):
 
 @app.before_request
 def agoraPreproc():
+    agoraDB.connect()
     g.data = {}
     g.sessionToken = request.cookies.get("session")
     try:
@@ -83,9 +85,10 @@ def users():
 
 @app.route('/user/<uid>')
 def user(uid):
-    userInfo = agoraModel.getUser(uid)
-    g.data.update(userInfo)
-    return render_template('profile.html', data=g.data)
+    if g.data['logged_in_user'] is None or uid != g.data['logged_in_user']['uid']:
+        userInfo = agoraModel.getUser(uid)
+        g.data.update(userInfo)
+    return render_template('profile.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/post/<pid>')
 def post(pid):
@@ -95,6 +98,12 @@ def post(pid):
     postInfo["content"] = html_content
     g.data.update(postInfo)
     return render_template('post.html', data=g.data)
+
+@app.route('/userimg/<accessid>')
+def user_image(accessid):
+    imgname = agoraModel.getImage(accessid)
+    filepath = agoraFM.relativizeImagePath(imgname)
+    return send_file(filepath, mimetype='image/gif')
 
 @app.route('/join')
 def join_get():
@@ -141,20 +150,23 @@ def logout():
     return render_template('info.html', data=g.data, msg='logout')
 
 @app.route('/account')
-def account():
+def account_get():
     sessionToken = request.cookies.get("session")
-    data = agoraModel.getMyUser(sessionToken)
-    g.data.update(data)
-    return render_template('account.html', data=g.data)
+    if g.data['logged_in_user'] is not None:
+        data = agoraModel.getMyUser(sessionToken)
+        return redirect(f"/user/{data['uid']}")
+    return redirect('/login')
 
 @app.route('/account', methods=['POST'])
-def account_set():
+def account_post():
     sessionToken = request.cookies.get("session")
     data = request.form
     if "status" in data:
         agoraModel.changeStatus(sessionToken, data['status'])
     if "username" in data:
         agoraModel.changeUsername(g.sessionToken, data['username'])
+    if "pfp" in data:
+        agoraModel.changePicture(sessionToken, data['pfp'])
     if "email" in data:
         agoraModel.changeEmail(g.sessionToken, data['email'])
     return redirect("/account")
@@ -212,5 +224,19 @@ def admin_deleteuser(uid):
     data = request.form
     agoraModel.adminDelete(g.sessionToken, uid, data["password"])
     return redirect("/")
+
+@app.route('/upload', methods=['POST'])
+def upload_image():
+    sessionToken = request.cookies.get("session")
+    imgData = request.files['file']
+    title = imgData.filename
+    agoraModel.uploadImage(sessionToken, title, imgData)
+    return redirect('/account')
+
+@app.route('/deleteimg/<imgid>', methods=['POST'])
+def delete_image(imgid):
+    sessionToken = request.cookies.get("session")
+    agoraModel.deleteImage(sessionToken, imgid)
+    return redirect('/account')
 
 app.run(host = "0.0.0.0", port = PORT)

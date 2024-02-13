@@ -3,14 +3,14 @@ Backend/model:
 
 - [x] Account creation
 - [x] Login and logout
-- [ ] Account recovery
+- [x] Account recovery
 - [ ] Account deletion
 - [x] Public user account information retrieval
 - [x] Private user account information retrieval
-- [ ] User account information modification
+- [x] User account information modification
 - [ ] Delete own account
 - [ ] Publish post
-- [ ] Upload image
+- [x] Upload image
 - [ ] Like and dislike
 - [ ] Friend request
 - [x] Submit comment

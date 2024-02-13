@@ -70,7 +70,7 @@ class AgoraInterpreterFilter:
         self.db.setStatus(uid, newStatus)
 
     def changePicture(self, uid, imageId):
-        raise NotImplementedError
+        self.db.setPicture(uid, imageId)
     
     def changeEmail(self, uid, emailAddress, acceptable):
         emailToken = self.generateToken("email")
@@ -100,11 +100,17 @@ class AgoraInterpreterFilter:
     def deletePost(self, pid):
         self.db.deletePost(pid)
     
-    def uploadImage(self, uid, title, imgData):
-        raise NotImplementedError
-    
+    def uploadImage(self, uid, title, extension, imgData):
+        accessid = self.generateToken('imgid')
+        filename = f"img{accessid}.{extension}"
+        self.db.insertImage(uid, title, filename, accessid)
+        self.fm.saveImage(filename, imgData)
+        return accessid
+
     def deleteImage(self, imageId):
-        raise NotImplementedError
+        filename = self.db.imgExists(imageId)
+        self.db.deleteImage(imageId)
+        self.fm.deleteImage(filename) 
 
 
 
