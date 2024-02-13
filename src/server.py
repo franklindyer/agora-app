@@ -87,6 +87,12 @@ def user(uid):
     g.data.update(userInfo)
     return render_template('profile.html', data=g.data)
 
+@app.route('/admin/user/<uid>')
+def admin_userview(uid):
+    userInfo = agoraModel.adminGetUser(g.sessionToken, uid)
+    g.data.update(userInfo)
+    return render_template('admin_userview.html', data=g.data)
+
 @app.route('/post/<pid>')
 def post(pid):
     postInfo = agoraModel.getPost(pid)
