@@ -13,7 +13,7 @@ Backend/model:
 - [x] Upload image
 - [ ] Like and dislike
 - [ ] Friend request
-- [ ] Submit comment
+- [x] Submit comment
 - [ ] Search users
 - [ ] File bug report
 - [ ] Privileged user account information retrieval (ADMIN)

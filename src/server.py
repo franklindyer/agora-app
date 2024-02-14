@@ -115,10 +115,21 @@ def join_post():
     agoraModel.createAccount(data['email'], data['username'], data['password'])
     return render_template('info.html', data=g.data, msg='confirm-sent-email')
 
-@app.route('/confirm/<token>')
-def confirm(token):
+@app.route('/join/<token>')
+def join_confirm(token):
     agoraModel.confirmCreate(token)
     return redirect('/')
+
+@app.route('/leave', methods=['POST'])
+def leave_post():
+    formdata = request.form
+    agoraModel.deleteAccount(g.sessionToken, formdata['password'])
+    return render_template('info.html', data=g.data, msg='leave-sent-email')
+
+@app.route('/leave/<token>')
+def leave_confirm(token):
+    agoraModel.confirmDelete(token)
+    return render_template('info.html', data=g.data, msg='goodbye')
 
 @app.route('/login')
 def login_get():
@@ -185,6 +196,28 @@ def write_comment():
     data = request.form
     agoraModel.comment(g.sessionToken, data['pid'], data['content'])
     return redirect(f"/post/{data['pid']}")
+
+@app.route('/admin/user/<uid>')
+def admin_userview(uid):
+    userInfo = agoraModel.adminGetUser(g.sessionToken, uid)
+    g.data.update(userInfo)
+    return render_template('admin_userview.html', data=g.data)
+
+@app.route('/admin/suspend/<uid>', methods=['POST'])
+def admin_suspend(uid):
+    agoraModel.adminSuspend(g.sessionToken, uid)
+    return redirect(f"/admin/user/{uid}")
+
+@app.route('/admin/unsuspend/<uid>', methods=['POST'])
+def admin_unsuspend(uid):
+    agoraModel.adminUnsuspend(g.sessionToken, uid)
+    return redirect(f"/admin/user/{uid}")
+
+@app.route('/admin/deleteuser/<uid>', methods=['POST'])
+def admin_deleteuser(uid):
+    data = request.form
+    agoraModel.adminDelete(g.sessionToken, uid, data["password"])
+    return redirect("/")
 
 @app.route('/upload', methods=['POST'])
 def upload_image():

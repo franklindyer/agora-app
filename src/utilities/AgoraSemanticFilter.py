@@ -54,7 +54,7 @@ class AgoraSemanticFilter(AgoraFilter):
         uid = self.db.tokenExists(sessionToken, "session")
         if uid is None:
             raise AgoraEInvalidToken
-        dat = self.db.getPublicUser(uid)
+        dat = self.db.getPrivateUser(uid)
         username = dat['username']
         email = dat['email']
         if not self.db.passwordCorrect(username, hpassword):
@@ -227,6 +227,8 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraENotAuthorized
         if self.db.userExists(uid) is None:
             raise AgoraENoSuchUser
+        if self.db.isUserAdmin(uid):
+            raise AgoraENotAuthorized       # Admins cannot suspend other admins
         return self.next.adminSuspend(uid)
     
 
@@ -236,6 +238,8 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraENotAuthorized
         if self.db.userExists(uid) is None:
             raise AgoraENoSuchUser
+        if self.db.isUserAdmin(uid):
+            raise AgoraENotAuthorized       # Admins cannot suspend other admins
         return self.next.adminUnsuspend(uid)
 
 
@@ -248,4 +252,6 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraENoSuchUser
         if self.db.passwordCorrect(my_user, hpassword) is None:
             raise AgoraEIncorrectCreds
+        if self.db.isUserAdmin(uid):
+            raise AgoraENotAuthorized       # Admins cannot delete other admins
         return self.next.adminDelete(uid)
