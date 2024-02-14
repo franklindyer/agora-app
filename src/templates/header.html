@@ -20,7 +20,11 @@
     
     <a id="home-button" href="/">agora</a>
 	
-    <input type="text" id="nav-search-bar" placeholder="Search..."/>
+    <div id="nav-search-bar">
+        <form method="post" action="/search">
+            <input type="text" id="nav-search-bar" placeholder="Search posts..." name="post"/>
+        </form>
+    </div>
 </nav>
 
 <hr>
