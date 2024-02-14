@@ -39,6 +39,10 @@ hr {
     height: var(--thumbnail-size);
 }
 
+.error-image {
+    max-width: 85%;
+}
+
 .group {
     margin: 2%;
 }

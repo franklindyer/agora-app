@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-<h1>{% block title %}tab-name-here{% endblock %}</h1>
+<h1>{% block title %}{{ data['error'] }}{% endblock %}</h1>
 
 {% block content %}
 
@@ -8,6 +8,8 @@
     <p>God dammit! Something went wrong!</p>
 
     <p>The error is called {{ data['error'] }}. That mean anything to you?</p>
+
+    <img class="error-image" src="{{ url_for('static', filename='img/404-0.jpeg') }}" alt="404">
 
 </div>
 {% endblock %}
