@@ -155,6 +155,19 @@ nav {
     border-style: solid;
     border-color: lightgray;
     border-width: thin;
-    padding: 2%;
+    padding: 1%;
+    height: 50vh;
+    overflow: auto;
+}
+
+.post-body > textarea {
+    resize: none;
+    padding: 0%;
+    margin: 0%;
+    border: none;
+}
+
+.post-body > textarea:focus-visible {
+    outline: transparent;
 }
 

@@ -14,7 +14,12 @@
     </div>
 
     <div class="post-body">
-        {{ data['content'] | safe }}
+        {% if (data['logged_in_user'] is not none) and
+              (data['logged_in_user']['uid'] == data['uid']) -%}
+            <textarea id="post-body" wrap="hard">{{ data['content'] | safe }}</textarea>
+        {% else -%}
+            {{ data['content'] | safe }}
+        {% endif %}
     </div>
 
     <p class="sub-info">Votes: {{ data['votes'] }}</p>
