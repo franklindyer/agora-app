@@ -231,4 +231,19 @@ def delete_image(imgid):
     agoraModel.deleteImage(g.sessionToken, imgid)
     return redirect('/account')
 
+@app.route('/search', methods=['POST'])
+def search():
+    data = request.form
+    results = []
+    querytype = ""
+    if "user" in data:
+        querytype = "user"
+        results = agoraModel.searchUsers(data["user"])
+    if "post" in data:
+        querytype = "post"
+        results = agoraModel.searchPosts(data["post"])
+    g.data["querytype"] = querytype
+    g.data["results"] = results
+    return render_template("results.html", data=g.data)
+
 app.run(host = "0.0.0.0", port = PORT)
