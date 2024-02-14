@@ -134,28 +134,25 @@ def login_post():
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    sessionToken = request.cookies.get("session")
-    agoraModel.logout(sessionToken)
+    agoraModel.logout(g.sessionToken)
     return render_template('info.html', data=g.data, msg='logout')
 
 @app.route('/account')
 def account_get():
-    sessionToken = request.cookies.get("session")
     if g.data['logged_in_user'] is not None:
-        data = agoraModel.getMyUser(sessionToken)
+        data = agoraModel.getMyUser(g.sessionToken)
         return redirect(f"/user/{data['uid']}")
     return redirect('/login')
 
 @app.route('/account', methods=['POST'])
 def account_post():
-    sessionToken = request.cookies.get("session")
     data = request.form
     if "status" in data:
-        agoraModel.changeStatus(sessionToken, data['status'])
+        agoraModel.changeStatus(g.sessionToken, data['status'])
     if "username" in data:
         agoraModel.changeUsername(g.sessionToken, data['username'])
     if "pfp" in data:
-        agoraModel.changePicture(sessionToken, data['pfp'])
+        agoraModel.changePicture(g.sessionToken, data['pfp'])
     if "email" in data:
         agoraModel.changeEmail(g.sessionToken, data['email'])
     return redirect("/account")
@@ -174,36 +171,31 @@ def confirm_email(token):
 
 @app.route('/write', methods=['POST'])
 def write_post():
-    sessionToken = request.cookies.get("session")
     data = request.form
-    agoraModel.writePost(sessionToken, data["title"], data["content"])
+    agoraModel.writePost(g.sessionToken, data["title"], data["content"])
     return redirect("/account")
 
 @app.route('/deletepost/<pid>', methods=['POST'])
 def delete_post(pid):
-    sessionToken = request.cookies.get("session")
-    agoraModel.deletePost(sessionToken, pid)
+    agoraModel.deletePost(g.sessionToken, pid)
     return redirect("/account")
 
 @app.route('/comment', methods=['POST'])
 def write_comment():
-    sessionToken = request.cookies.get("session")
     data = request.form
-    agoraModel.comment(sessionToken, data['pid'], data['content'])
+    agoraModel.comment(g.sessionToken, data['pid'], data['content'])
     return redirect(f"/post/{data['pid']}")
 
 @app.route('/upload', methods=['POST'])
 def upload_image():
-    sessionToken = request.cookies.get("session")
     imgData = request.files['file']
     title = imgData.filename
-    agoraModel.uploadImage(sessionToken, title, imgData)
+    agoraModel.uploadImage(g.sessionToken, title, imgData)
     return redirect('/account')
 
 @app.route('/deleteimg/<imgid>', methods=['POST'])
 def delete_image(imgid):
-    sessionToken = request.cookies.get("session")
-    agoraModel.deleteImage(sessionToken, imgid)
+    agoraModel.deleteImage(g.sessionToken, imgid)
     return redirect('/account')
 
 app.run(host = "0.0.0.0", port = PORT)
