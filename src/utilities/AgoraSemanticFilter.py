@@ -146,7 +146,17 @@ class AgoraSemanticFilter(AgoraFilter):
     def writePost(self, sessionToken, title, content):
         uid = self.do_login(sessionToken)
         return self.next.writePost(uid, title, content)
-    
+
+    def editPost(self, sessionToken, pid, title, content):
+        uid = self.do_login(sessionToken)
+        if self.db.postExists(pid) is None:
+            raise AgoraENoSuchPost
+        pinfo = self.db.getPostInfo(pid)
+        if pinfo['owner'] != uid:
+            raise AgoraENotAuthorized
+        return self.next.editPost(pid, title, content)
+           
+ 
     def deletePost(self, sessionToken, pid):
         uid = self.do_login(sessionToken)
         if self.db.postExists(pid) is None:

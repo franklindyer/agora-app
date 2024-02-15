@@ -191,7 +191,13 @@ class AgoraSyntacticFilter(AgoraFilter):
         self.validatePostTitle(title)
         self.validatePost(content)
         return self.next.writePost(sessionToken, title, content)
-    
+
+    def editPost(self, sessionToken, pid, title, content):
+        self.validateToken(sessionToken, "session")
+        self.validatePostTitle(title)
+        self.validatePost(content)
+        return self.next.editPost(sessionToken, pid, title, content)   
+ 
     def deletePost(self, sessionToken, pid):
         self.validateToken(sessionToken, "session")
         if not self.isValidId(pid):

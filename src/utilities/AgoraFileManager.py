@@ -18,6 +18,11 @@ class AgoraFileManager:
         with open(path, 'w+') as f:
             f.write(content)
 
+    def editPost(self, filename, content):
+        path = os.path.join(self.postdir, filename)
+        with open(path, 'w') as f:
+            f.write(content)
+
     def saveImage(self, filename, file):
         path = os.path.join(self.imgdir, filename)
         file.save(path)

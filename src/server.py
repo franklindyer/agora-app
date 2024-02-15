@@ -187,6 +187,12 @@ def write_post():
     agoraModel.writePost(g.sessionToken, data["title"], data["content"])
     return redirect("/account")
 
+@app.route('/edit/<pid>', methods=['POST'])
+def edit_post(pid):
+    data = request.form
+    agoraModel.editPost(g.sessionToken, pid, data["title"], data["content"])
+    return redirect(f"/post/{pid}")
+
 @app.route('/deletepost/<pid>', methods=['POST'])
 def delete_post(pid):
     agoraModel.deletePost(g.sessionToken, pid)
