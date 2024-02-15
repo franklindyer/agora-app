@@ -93,7 +93,7 @@ def user(uid):
 @app.route('/post/<pid>')
 def post(pid):
     postInfo = agoraModel.getPost(pid)
-    content = open(os.path.join(POSTDIR, postInfo['filename'])).read()
+    content = agoraFM.getPost(postInfo['filename'])
     html_content = markdown.markdown(content)
     postInfo["content"] = html_content
     g.data.update(postInfo)
