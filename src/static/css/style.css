@@ -3,6 +3,7 @@
 :root {
 /* variables for use through all templates */
     --thumbnail-size: 50px;
+    --browse-button-size: 7.5em;
 }
 
 * {
@@ -18,6 +19,10 @@ hr {
     width: auto;
     display: flex;
     flex-direction: row;
+}
+
+.hbox.padded, .vbox.padded {
+    column-gap: 1em;
 }
 
 .vbox {
@@ -53,19 +58,12 @@ nav {
     display: flex;
     padding: 0.5% 2%;
     align-items: center;
-    column-gap: 1%;
+    justify-content: space-between;
     min-height: var(--thumbnail-size);
 }
 
-#home-button {
-/* TODO: surely, there is a better way to do this - but I cannot find it */
-    position: absolute;
-    left: 48%;
-}
-
-#nav-search-bar {
-    margin-left: auto;
-    /* min-width: 300px; */
+#header-login-options {
+    min-width: calc(2 * var(--browse-button-size));
 }
 
 /* login & create account */
@@ -85,7 +83,7 @@ nav {
 #login-options {
     width: 25%;
     text-align: center;
-    justify-content: space-around;
+    justify-content: space-between;
     margin: 0% 2%;
 }
 
