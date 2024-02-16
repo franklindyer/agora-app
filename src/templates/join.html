@@ -36,7 +36,13 @@
                 <label for="email">email:</label>
                 <input type="email" name="email" required />
             </div>
-            <button class="g-recaptcha" data-sitekey="{{ data['recaptcha_sitekey'] }}" data-callback="onSubmit" data-action="submit" type="submit">Submit</button>
+            <button class="g-recaptcha" 
+                    data-sitekey="{{ data['recaptcha_sitekey'] }}" 
+                    data-callback="onSubmit" 
+                    data-action="submit" 
+                    type="submit">
+                Submit
+            </button>
         </form>
     </div>
 {% endblock %}
