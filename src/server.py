@@ -72,7 +72,7 @@ def agoraPreproc():
     g.sessionToken = request.cookies.get("session")
     try:
         g.data["logged_in_user"] = agoraModel.getMyUser(g.sessionToken, concise=True)
-    except AgoraEInvalidToken as err:
+    except AgoraException as err:
         g.data["logged_in_user"] = None
 
 @app.route('/')

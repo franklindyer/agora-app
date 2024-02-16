@@ -13,6 +13,9 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraEInvalidToken
         if self.db.isUserSuspended(uid):
             raise AgoraENotAuthorized
+        if self.db.getTokenAgeSeconds(sessionToken) > SESSION_MAX_DURATION_SECONDS:
+            self.db.expireToken(sessionToken)   # Here I am breaking my unspoken rule that AgoraSemanticFilter not write to the DB
+            raise AgoraENotLoggedIn
         return uid
 
 
