@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+<h1>{% block title %}browse {{ data['querytype'] }}s{% endblock %}</h1>
+
+{% block content %}
+    {# posts list #}
+    <div class="group vbox padded">
+        <form method="post" action="/search">
+            <label for="post">Search {{ data['querytype'] }}s:</label>
+            <input type="text" name="{{ data['querytype'] }}">
+            <input type="submit" value="search">
+        </form>
+        <hr>
+        {% include 'results.html' %}
+    </div>
+{% endblock %}

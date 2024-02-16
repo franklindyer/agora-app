@@ -251,6 +251,16 @@ def search():
         get_search('post', data['post'])
     return render_template('search.html', data=g.data)
 
+@app.route('/browse/users')
+def browse_users():
+    get_search('user', "")
+    return render_template('browse.html', data=g.data)
+
+@app.route('/browse/posts')
+def browse_posts():
+    get_search('post', "")
+    return render_template('browse.html', data=g.data)
+
 def get_search(querytype, query):
     results = []
     if querytype == 'user':
