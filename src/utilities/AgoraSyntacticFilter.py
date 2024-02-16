@@ -80,11 +80,11 @@ class AgoraSyntacticFilter(AgoraFilter):
         return strid.isalnum()
 
 
-    def createAccount(self, emailAddress, username, password):
+    def createAccount(self, emailAddress, username, password, captcha):
         self.validateEmail(emailAddress)
         self.validateUsername(username)
         hpassword = self.validatePassword(password)
-        return self.next.createAccount(emailAddress, username, hpassword)
+        return self.next.createAccount(emailAddress, username, hpassword, captcha)
 
     def confirmCreate(self, creationToken):
         self.validateToken(creationToken, "creation")

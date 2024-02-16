@@ -1,10 +1,14 @@
 from AgoraFilter import *
 from agora_errors import *
 from limits import *
+import requests
 
 class AgoraSemanticFilter(AgoraFilter):
     def setDBManager(self, db):
         self.db = db
+
+    def setReCaptchaKey(self, key):
+        self.reCaptchaServerKey = key
 
 
     def doLogin(self, sessionToken):
@@ -24,9 +28,16 @@ class AgoraSemanticFilter(AgoraFilter):
         else:
             self.db.setUserLastAction(uid)      # Here I am breaking that unspoken rule again!
 
+    def verifyCaptcha(self, userresp):
+        reCaptchaUrl = "https://www.google.com/recaptcha/api/siteverify"
+        resp = requests.post(reCaptchaUrl, data={"secret": self.reCaptchaServerKey, "response": userresp})
+        if resp.json()["score"] < RECAPTCHA_THRESHHOLD:
+            raise AgoraEAreYouHuman
 
 
-    def createAccount(self, emailAddress, username, hpassword):
+
+    def createAccount(self, emailAddress, username, hpassword, captcha):
+        self.verifyCaptcha(captcha)
         uid = self.db.emailExists(emailAddress)     # We don't raise an error when uid is None, in order to avoid disclosing emails
         old_uid =  self.db.usernameExists(username)
         if (not old_uid is None) and self.db.isUserConfirmed(old_uid):
