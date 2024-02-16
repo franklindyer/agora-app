@@ -7,7 +7,7 @@ class AgoraSemanticFilter(AgoraFilter):
         self.db = db
 
 
-    def do_login(self, sessionToken):
+    def doLogin(self, sessionToken):
         uid = self.db.tokenExists(sessionToken, "session")
         if uid is None:
             raise AgoraEInvalidToken
@@ -17,6 +17,12 @@ class AgoraSemanticFilter(AgoraFilter):
             self.db.expireToken(sessionToken)   # Here I am breaking my unspoken rule that AgoraSemanticFilter not write to the DB
             raise AgoraENotLoggedIn
         return uid
+
+    def applyTimeLimit(self, uid):
+        if self.db.getUserLastAction(uid) < USER_ACTION_TIMEOUT_SECONDS:
+            raise AgoraETooSoon
+        else:
+            self.db.setUserLastAction(uid)      # Here I am breaking that unspoken rule again!
 
 
 
@@ -114,21 +120,24 @@ class AgoraSemanticFilter(AgoraFilter):
 
 
     def getMyUser(self, sessionToken, concise=False):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
         return self.db.getPrivateUser(uid, concise=concise)
 
 
 
     def changeStatus(self, sessionToken, newStatus):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
         return self.next.changeStatus(uid, newStatus)
 
     def changePicture(self, sessionToken, imageId):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
         return self.next.changePicture(uid, imageId)
     
     def changeEmail(self, sessionToken, emailAddress):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
         otherOwner = self.db.emailExists(emailAddress)  # We don't raise an error when uid is None, in order to avoid disclosing emails
         return self.next.changeEmail(uid, emailAddress, otherOwner is None)
    
@@ -139,7 +148,8 @@ class AgoraSemanticFilter(AgoraFilter):
         return self.next.confirmEmail(uid, emailToken)
 
     def changeUsername(self, sessionToken, username):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
         if not self.db.usernameExists(username) is None:
             raise AgoraEInvalidUsername
         return self.next.changeUsername(uid, username)
@@ -147,11 +157,13 @@ class AgoraSemanticFilter(AgoraFilter):
 
 
     def writePost(self, sessionToken, title, content):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
         return self.next.writePost(uid, title, content)
     
     def deletePost(self, sessionToken, pid):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
         if self.db.postExists(pid) is None:
             raise AgoraENoSuchPost
         pinfo = self.db.getPostInfo(pid)
@@ -160,14 +172,16 @@ class AgoraSemanticFilter(AgoraFilter):
         return self.next.deletePost(pid)
     
     def uploadImage(self, sessionToken, title, extension, imgData):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
         numImages = self.db.getNumImages(uid)
         if numImages > USER_MAX_IMAGES:
             raise AgoraEBadImage
         return self.next.uploadImage(uid, title, extension, imgData)
     
     def deleteImage(self, sessionToken, imageId):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
         if self.db.imgExists(imageId) is None:
             raise AgoraENoSuchImage
         imgowner = self.db.getImageOwner(imageId)
@@ -176,25 +190,27 @@ class AgoraSemanticFilter(AgoraFilter):
         return self.next.deleteImage(imageId)
     
     def listImages(self, sessionToken):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
         info = self.db.getPrivateUser(uid)
         return info["images"]
 
 
 
     def friendRequest(self, sessionToken, uid2):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
         if self.db.userExists(uid2) is None:
             raise AgoraENoSuchUser
         return self.next.friendRequest(uid, uid2)
     
     def viewFriendReqs(self, sessionToken):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
         info = self.db.getPrivateUser(uid)
         return info["foryou"]
     
     def acceptFriendReq(self, sessionToken, uid2):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
         if self.db.userExists(uid2) is None:
             raise AgoraENoSuchUser
         return self.next.friendRequest(uid, uid2)
@@ -202,7 +218,8 @@ class AgoraSemanticFilter(AgoraFilter):
 
 
     def comment(self, sessionToken, pid, content):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
         if self.db.postExists(pid) is None:
             raise AgoraENoSuchPost
         return self.next.comment(uid, pid, content)
@@ -210,13 +227,14 @@ class AgoraSemanticFilter(AgoraFilter):
 
 
     def bugReport(self, sessionToken, content):
-        uid = self.do_login(sessionToken)
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
         return self.bugReport(uid, content)
 
 
 
     def adminGetUser(self, sessionToken, uid):
-        my_uid = self.do_login(sessionToken)
+        my_uid = self.doLogin(sessionToken)
         if not self.db.isUserAdmin(my_uid):
             raise AgoraENotAuthorized
         if self.db.userExists(uid) is None:
@@ -225,7 +243,7 @@ class AgoraSemanticFilter(AgoraFilter):
     
 
     def adminSuspend(self, sessionToken, uid):
-        my_uid = self.do_login(sessionToken)
+        my_uid = self.doLogin(sessionToken)
         if not self.db.isUserAdmin(my_uid):
             raise AgoraENotAuthorized
         if self.db.userExists(uid) is None:
@@ -236,7 +254,7 @@ class AgoraSemanticFilter(AgoraFilter):
     
 
     def adminUnsuspend(self, sessionToken, uid):
-        my_uid = self.do_login(sessionToken)
+        my_uid = self.doLogin(sessionToken)
         if not self.db.isUserAdmin(my_uid):
             raise AgoraENotAuthorized
         if self.db.userExists(uid) is None:
@@ -247,7 +265,7 @@ class AgoraSemanticFilter(AgoraFilter):
 
 
     def adminDelete(self, sessionToken, uid, hpassword):
-        my_uid = self.do_login(sessionToken)
+        my_uid = self.doLogin(sessionToken)
         my_user = self.db.getPublicUser(uid)["username"]
         if not self.db.isUserAdmin(my_uid):
             raise AgoraENotAuthorized

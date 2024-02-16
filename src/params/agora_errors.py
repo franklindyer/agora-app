@@ -26,6 +26,8 @@ class AgoraEInvalidComment(AgoraException):
     pass
 class AgoraEInvalidQuery(AgoraException):
     pass
+class AgoraETooSoon(AgoraException):
+    pass
 
 # Authentication errors
 class AgoraEIncorrectCreds(AgoraException):
