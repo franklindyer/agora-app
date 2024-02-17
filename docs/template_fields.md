@@ -21,7 +21,8 @@ To the post view:
     "pid":          ID of the post (int),
     "title":        title of the post (string),
     "timestamp":    timestamp of the post (string),
-    "content":      content of the post (HTML string)
+    "content":      content of the post (HTML string),
+    "raw_content":  raw content of the post (markdown string),
     "votes":        net up/downvotes of the post (int),
     "owner":        ID of the post author,
     "comments":     list of comments, which are dictionaries with the following structure:

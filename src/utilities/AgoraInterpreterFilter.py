@@ -97,6 +97,11 @@ class AgoraInterpreterFilter:
         self.db.insertPost(uid, title, filename)
         self.fm.writePost(filename, content)
 
+    def editPost(self, pid, title, content):
+        filename = self.db.getPostInfo(pid)["filename"]
+        self.db.updatePost(pid, title)
+        self.fm.editPost(filename, content)
+
     def deletePost(self, pid):
         self.db.deletePost(pid)
     

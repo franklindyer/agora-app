@@ -97,9 +97,10 @@ def user(uid):
 @app.route('/post/<pid>')
 def post(pid):
     postInfo = agoraModel.getPost(pid)
-    content = open(os.path.join(POSTDIR, postInfo['filename'])).read()
-    html_content = markdown.markdown(content)
+    md_content = agoraFM.getPost(postInfo['filename'])
+    html_content = markdown.markdown(md_content)
     postInfo["content"] = html_content
+    postInfo["raw_content"] = md_content
     g.data.update(postInfo)
     return render_template('post.html', data=g.data)
 
@@ -189,6 +190,12 @@ def write_post():
     data = request.form
     agoraModel.writePost(g.sessionToken, data["title"], data["content"])
     return redirect("/account")
+
+@app.route('/edit/<pid>', methods=['POST'])
+def edit_post(pid):
+    data = request.form
+    agoraModel.editPost(g.sessionToken, pid, data["title"], data["content"])
+    return redirect(f"/post/{pid}")
 
 @app.route('/deletepost/<pid>', methods=['POST'])
 def delete_post(pid):

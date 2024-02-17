@@ -206,6 +206,9 @@ class AgoraDatabaseManager:
     def insertPost(self, uid, title, location):
         self.execute("INSERT INTO posts (owner, title, filename) VALUES (?, ?, ?)", (uid, title, location,))
 
+    def updatePost(self, pid, title):
+        self.execute("UPDATE posts SET title=? WHERE pid=?", (title, pid,))
+
     def insertImage(self, uid, title, location, accessid):
         self.execute("INSERT INTO images (owner, title, filename, accessid) VALUES (?, ?, ?, ?)", (uid, title, location, accessid,))
 
