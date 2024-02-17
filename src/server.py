@@ -191,6 +191,16 @@ def write_post():
     agoraModel.writePost(g.sessionToken, data["title"], data["content"])
     return redirect("/account")
 
+@app.route('/edit/<pid>')
+def edit_post_view(pid):
+    postInfo = agoraModel.getPost(pid)
+    md_content = agoraFM.getPost(postInfo['filename'])
+    html_content = markdown.markdown(md_content)
+    postInfo["content"] = html_content
+    postInfo["raw_content"] = md_content
+    g.data.update(postInfo)
+    return render_template('write-post.html', data=g.data)
+
 @app.route('/edit/<pid>', methods=['POST'])
 def edit_post(pid):
     data = request.form
