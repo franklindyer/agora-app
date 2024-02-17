@@ -19,6 +19,8 @@ from AgoraFileManager import *
 PORT = sys.argv[1]
 GMAIL_KEY = sys.argv[2]
 HOST = sys.argv[3]
+RECAPTCHA_SITEKEY = sys.argv[4]
+RECAPTCHA_SERVERKEY = sys.argv[5]
 POSTDIR = './volumes/posts/'
 IMGDIR = './volumes/img'
 
@@ -36,6 +38,7 @@ agoraInterpreter.setEmailer(agoraEmail)
 agoraFM = AgoraFileManager(POSTDIR, IMGDIR)
 agoraInterpreter.setFileManager(agoraFM)
 
+agoraSemantics.setReCaptchaKey(RECAPTCHA_SERVERKEY)
 agoraInterpreter.setHost(HOST)
 
 # Entry point for Agora Model
@@ -69,10 +72,11 @@ def agoraError(err):
 def agoraPreproc():
     agoraDB.connect()
     g.data = {}
+    g.data["recaptcha_sitekey"] = RECAPTCHA_SITEKEY
     g.sessionToken = request.cookies.get("session")
     try:
         g.data["logged_in_user"] = agoraModel.getMyUser(g.sessionToken, concise=True)
-    except AgoraEInvalidToken as err:
+    except AgoraException as err:
         g.data["logged_in_user"] = None
 
 @app.route('/')
@@ -112,7 +116,7 @@ def join_get():
 @app.route('/join', methods=['POST'])
 def join_post():
     data = request.form
-    agoraModel.createAccount(data['email'], data['username'], data['password'])
+    agoraModel.createAccount(data['email'], data['username'], data['password'], data['g-recaptcha-response'])
     return render_template('info.html', data=g.data, msg='confirm-sent-email')
 
 @app.route('/join/<token>')

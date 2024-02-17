@@ -10,6 +10,8 @@ class AgoraEInvalidPassword(AgoraException):
     pass
 class AgoraEInvalidToken(AgoraException):
     pass
+class AgoraEAreYouHuman(AgoraException):
+    pass
 
 # Errors pertaining to user-uploaded content
 class AgoraEBadImage(AgoraException):
@@ -25,6 +27,8 @@ class AgoraEInvalidStatus(AgoraException):
 class AgoraEInvalidComment(AgoraException):
     pass
 class AgoraEInvalidQuery(AgoraException):
+    pass
+class AgoraETooSoon(AgoraException):
     pass
 
 # Authentication errors

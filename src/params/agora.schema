@@ -8,7 +8,8 @@ CREATE TABLE users (
     hrecovery   TEXT NOT NULL,
     status      TEXT,
     admin       INTEGER DEFAULT 0,
-    suspended   INTEGER DEFAULT 0
+    suspended   INTEGER DEFAULT 0,
+    lastaction  TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE tokens (

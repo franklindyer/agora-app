@@ -90,6 +90,16 @@ class AgoraDatabaseManager:
         info["friends"] = [] if res is None else [(tup['user1'], tup['username1']) if tup['user1'] != uid else (tup['user2'], tup['username2']) for tup in res] 
         return info
 
+    def getUserLastAction(self, uid):        
+        res = self.query("SELECT JULIANDAY('now')-JULIANDAY(lastaction) as delta FROM users WHERE uid=?", (uid,))
+        if res is None:
+            return None
+        else:
+            return 24*3600*res[0]['delta']
+
+    def setUserLastAction(self, uid):
+        self.execute("UPDATE users SET lastaction=CURRENT_TIMESTAMP WHERE uid=?", (uid,))
+
     def isUserSuspended(self, uid):
         res = self.query("SELECT suspended FROM users WHERE uid = ?", (uid,))
         return (res[0]['suspended'] == 1)
@@ -169,6 +179,13 @@ class AgoraDatabaseManager:
 
     def expireToken(self, token):
         self.execute("DELETE FROM tokens WHERE value = ?", (token,))
+
+    def getTokenAgeSeconds(self, token):
+        res = self.query("SELECT JULIANDAY('now')-JULIANDAY(issued) as delta FROM tokens WHERE value=?", (token,))
+        if res is None:
+            return None
+        else:
+            return 24*3600*res[0]["delta"]
 
 
 

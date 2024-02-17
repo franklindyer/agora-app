@@ -4,7 +4,7 @@ USER root
 
 RUN apt-get -y update
 RUN apt-get install -y sqlite3 libsqlite3-dev
-RUN python3 -m pip install flask markdown
+RUN python3 -m pip install flask markdown requests
 
 RUN mkdir /app
 ENV AP /app
@@ -22,5 +22,5 @@ COPY ./src/params/ $AP/params/
 
 WORKDIR $AP
 
-CMD ["sh", "-c", "python3 server.py ${PORT} \"${GMAIL_KEY}\" ${HOST}"]
+CMD ["sh", "-c", "python3 server.py ${PORT} \"${GMAIL_KEY}\" ${HOST} ${RECAPTCHA_SITEKEY} ${RECAPTCHA_SERVERKEY}"]
 
