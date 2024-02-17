@@ -1,25 +1,20 @@
-{% extends 'base.html' %}
-
-<h1>{% block title %}tab-name-here{% endblock %}</h1>
-
-{% block content %}
-<div class="group">
-
-    <h1>Search results:</h1>
-    
+    {% if data['results'] is not none %}
     <!-- TODO: replace this with a fancier image list, or even put this in another template  -->
-    <ul>
-    {% if data["querytype"] == "user" %}
-    {% for res in data['results'] %}
-        <li><a href="/user/{{ res['uid'] }}">@{{ res['username'] }}</a></li>
-    {% endfor %}
-    {% elif data["querytype"] == "post" %}
-    {% for res in data['results'] %}
-        <li><a href="/post/{{ res['pid'] }}">@{{ res['title'] }}</a></li>
-    {% endfor %}
+        <ul class="naked-list">
+        {% if data["querytype"] == "user" %}
+            {% for res in data['results'] %}
+                <li><a href="/user/{{ res['uid'] }}">@{{ res['username'] }}</a></li>
+            {% endfor %}
+        {% elif data["querytype"] == "post" %}
+            {% for res in data['results'] %}
+                <li>
+                    <a href="/post/{{ res['pid'] }}">{{ res['title'] }}</a> by 
+                    <a href="/user/{{ res['owner'] }}">@{{ res['username'] }}</a>
+                </li>
+            {% endfor %}
+        {% endif %}
+        </ul>
+    {% else %}
+        <p>Nothing found.</p>
     {% endif %}
-    </ul>
-
-</div>
-{% endblock %}
 

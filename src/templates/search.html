@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+<h1>{% block title %}search results{% endblock %}</h1>
+
+{% block content %}
+<div class="group">
+
+    <h1>Search results:</h1>
+    
+    {% include 'results.html' %}
+
+</div>
+{% endblock %}
+

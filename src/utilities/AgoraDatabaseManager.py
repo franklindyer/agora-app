@@ -153,7 +153,7 @@ class AgoraDatabaseManager:
         return (None if res is None else [r for r in res])
 
     def searchPost(self, substr):
-        res = self.query("SELECT pid, title FROM posts WHERE title LIKE '%' || ? || '%' ORDER BY timestamp DESC", (substr,))
+        res = self.query("SELECT P.pid, P.title, P.owner, U.username FROM posts P JOIN users U ON P.owner = U.uid WHERE P.title LIKE '%' || ? || '%' ORDER BY timestamp DESC", (substr,))
         return (None if res is None else [r for r in res])
 
 

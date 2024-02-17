@@ -245,16 +245,29 @@ def delete_image(imgid):
 @app.route('/search', methods=['POST'])
 def search():
     data = request.form
+    if 'user' in data:
+        get_search('user', data['user'])
+    if 'post' in data:
+        get_search('post', data['post'])
+    return render_template('search.html', data=g.data)
+
+@app.route('/browse/users')
+def browse_users():
+    get_search('user', "")
+    return render_template('browse.html', data=g.data)
+
+@app.route('/browse/posts')
+def browse_posts():
+    get_search('post', "")
+    return render_template('browse.html', data=g.data)
+
+def get_search(querytype, query):
     results = []
-    querytype = ""
-    if "user" in data:
-        querytype = "user"
-        results = agoraModel.searchUsers(data["user"])
-    if "post" in data:
-        querytype = "post"
-        results = agoraModel.searchPosts(data["post"])
-    g.data["querytype"] = querytype
-    g.data["results"] = results
-    return render_template("results.html", data=g.data)
+    if querytype == 'user':
+        results = agoraModel.searchUsers(query)
+    if querytype == 'post':
+        results = agoraModel.searchPosts(query)
+    g.data['results'] = results
+    g.data['querytype'] = querytype
 
 app.run(host = "0.0.0.0", port = PORT)

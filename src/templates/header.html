@@ -1,29 +1,35 @@
 <nav>
-    {% if data['logged_in_user'] is none -%}
-         <a href="/login">log in</a>
-    {% else -%}
-        <img class="thumbnail profile-picture"
-                {% if data['logged_in_user']['pfp'] is none  %} 
-                    src="{{ url_for('static', filename='img/default-pfp.png') }}" 
-                {% else %}
-                    src="/userimg/{{ data['logged_in_user']['pfp'] }}"
-                {% endif %}
-                alt="the user's profile picture">
-        <div class="vbox">
-            <a href="/user/{{ data['logged_in_user']['uid'] }}">
-                @{{ data['logged_in_user']['username'] }}</a>
-            <form action="/logout" method="post">
-                <input type="submit" value="logout" name="logout"></input>
-            </form>
-        </div>
-    {% endif %}
-    
-    <a id="home-button" href="/">agora</a>
-	
-    <div id="nav-search-bar">
-        <form method="post" action="/search">
-            <input type="text" id="nav-search-bar" placeholder="Search posts..." name="post"/>
+    <div id="header-login-options" class="hbox padded">
+        {% if data['logged_in_user'] is none -%}
+             <a href="/login">log in</a>
+        {% else -%}
+            <img class="thumbnail profile-picture"
+                    {% if data['logged_in_user']['pfp'] == None  %} 
+                        src="{{ url_for('static', filename='img/default-pfp.png') }}" 
+                    {% else %}
+                        src="/userimg/{{ data['logged_in_user']['pfp'] }}"
+                    {% endif %}
+                    alt="the user's profile picture">
+            <div class="vbox">
+                <a href="/user/{{ data['logged_in_user']['uid'] }}">
+                    @{{ data['logged_in_user']['username'] }}</a>
+                <form action="/logout" method="post">
+                    <input type="submit" value="logout" name="logout"></input>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+    <a href="/">agora</a>
+
+    <div class="hbox padded">
+        <form action="/browse/posts" method="get">
+            <button name="post" value="" type="submit">browse posts</button>
         </form>
+        <form action="/browse/users" method="get">
+            <button name="user" value="" type="submit">browse users</button>
+        </form>
+	</div>
+
     </div>
 </nav>
 
