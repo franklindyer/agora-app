@@ -1,11 +1,32 @@
 {% extends 'base.html' %}
 
-<h1>{% block title %}write post{% endblock %}</h1>
+<h1>{% block title %}{{ data['title'] }}{% endblock %}</h1>
 
 {% block content %}
-    <div class="group">
+<div class="group">
 
-    
+    <div class="vbox padded">
+        <div class="post-box post-title">
+            <textarea form="editable-post-form" 
+                      name="title">{{ data['title'] }}</textarea>
+        </div>
 
+        <div class="post-box">
+            <textarea form="editable-post-form" 
+                      name="content">{{ data['raw_content'] }}</textarea>
+        </div>
+        
+        <form id="editable-post-form" 
+            method="post" 
+            {% if data['new_post'] %}
+                action="/write"
+            {% else %}
+                action="/edit/{{ data['pid'] }}"
+            {% endif %}>
+            <input type="submit" value="post">
+        </form>
     </div>
+    
+</div>
 {% endblock %}
+
