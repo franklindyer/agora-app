@@ -14,6 +14,13 @@ hr {
     border-style: dashed;
 }
 
+pre {
+/* TODO: this is a workaround for a terrible markdown.markdown behavior that turns all lines 
+   that start with an indent into pre blocks. This may not be the behavior we want when we 
+   figure out a better long-term solution for the markdown.markdown issue. */
+    white-space: pre-wrap;
+}
+
 .hbox {
 /* a box for displaying things spaced horizontally */
     width: auto;
@@ -158,16 +165,19 @@ nav {
     padding: 1%;
     height: 50vh;
     overflow: auto;
+    overflow-wrap: break-word;
 }
 
-.post-body > textarea {
+#editable-post-body {
     resize: none;
     padding: 0%;
     margin: 0%;
     border: none;
+    width: 100%;
+    height: 47vh;
 }
 
-.post-body > textarea:focus-visible {
+#editable-post-body:focus-visible {
     outline: transparent;
 }
 
