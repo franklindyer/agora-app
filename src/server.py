@@ -191,7 +191,7 @@ def confirm_email(token):
 @app.route('/write')
 def new_post():
     g.data['new_post'] = True
-    return render_template('write-post.html', data=g.data)
+    return render_template('write-post.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/write', methods=['POST'])
 def write_post():
@@ -202,7 +202,7 @@ def write_post():
 @app.route('/edit/<pid>')
 def edit_post_view(pid):
     get_post_content(pid)
-    return render_template('write-post.html', data=g.data)
+    return render_template('write-post.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/edit/<pid>', methods=['POST'])
 def edit_post(pid):
