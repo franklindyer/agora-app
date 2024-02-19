@@ -205,6 +205,7 @@ class AgoraDatabaseManager:
 
     def insertPost(self, uid, title, location):
         self.execute("INSERT INTO posts (owner, title, filename) VALUES (?, ?, ?)", (uid, title, location,))
+        return self.query("SELECT pid FROM posts WHERE filename=?", (location,))[0]["pid"]
 
     def updatePost(self, pid, title):
         self.execute("UPDATE posts SET title=? WHERE pid=?", (title, pid,))
