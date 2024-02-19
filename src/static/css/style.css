@@ -14,6 +14,13 @@ hr {
     border-style: dashed;
 }
 
+pre {
+/* TODO: this is a workaround for a terrible markdown.markdown behavior that turns all lines 
+   that start with an indent into pre blocks. This may not be the behavior we want when we 
+   figure out a better long-term solution for the markdown.markdown issue. */
+    white-space: pre-wrap;
+}
+
 .hbox {
 /* a box for displaying things spaced horizontally */
     width: auto;
@@ -21,15 +28,16 @@ hr {
     flex-direction: row;
 }
 
-.hbox.padded, .vbox.padded {
-    column-gap: 1em;
-}
-
 .vbox {
 /* a box for displaying things spaced vertically */
     width: auto;
     display: flex;
     flex-direction: column;
+}
+
+.hbox.padded, .vbox.padded {
+    column-gap: 1em;
+    row-gap: 1em;
 }
 
 .naked-list {
@@ -151,10 +159,32 @@ nav {
     font-style: oblique 5deg;
 }
 
-.post-body {
+.post-box {
     border-style: solid;
     border-color: lightgray;
     border-width: thin;
-    padding: 2%;
+    padding: 1%;
+    height: 100%;
+    overflow: auto;
+    overflow-wrap: break-word;
+}
+
+div.post-box > textarea {
+    resize: none;
+    padding: 0%;
+    margin: 0%;
+    border: none;
+    width: 100%;
+    /* TODO: this is going to be dynamically sized with js (later) */
+    height: 47vh;
+}
+
+div.post-box > textarea:focus-visible {
+    outline: transparent;
+}
+
+.post-box.post-title {
+    height: 1em;
+    overflow: hidden;
 }
 

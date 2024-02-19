@@ -96,14 +96,17 @@ def user(uid):
 
 @app.route('/post/<pid>')
 def post(pid):
+    get_post_content(pid)
+    return render_template('post.html', data=g.data)
+
+def get_post_content(pid):
     postInfo = agoraModel.getPost(pid)
     md_content = agoraFM.getPost(postInfo['filename'])
     html_content = markdown.markdown(md_content)
     postInfo["content"] = html_content
     postInfo["raw_content"] = md_content
     g.data.update(postInfo)
-    return render_template('post.html', data=g.data)
-
+    
 @app.route('/userimg/<accessid>')
 def user_image(accessid):
     imgname = agoraModel.getImage(accessid)
@@ -185,11 +188,21 @@ def confirm_email(token):
     agoraModel.confirmEmail(token)
     return redirect("/account")
 
+@app.route('/write')
+def new_post():
+    g.data['new_post'] = True
+    return render_template('write-post.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
+
 @app.route('/write', methods=['POST'])
 def write_post():
     data = request.form
-    agoraModel.writePost(g.sessionToken, data["title"], data["content"])
-    return redirect("/account")
+    pid = agoraModel.writePost(g.sessionToken, data["title"], data["content"])
+    return redirect(f'/post/{pid}')
+
+@app.route('/edit/<pid>')
+def edit_post_view(pid):
+    get_post_content(pid)
+    return render_template('write-post.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/edit/<pid>', methods=['POST'])
 def edit_post(pid):

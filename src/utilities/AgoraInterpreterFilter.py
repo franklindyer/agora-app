@@ -94,8 +94,9 @@ class AgoraInterpreterFilter:
 
     def writePost(self, uid, title, content):
         filename = f"post{self.generateToken('postid')}.md"
-        self.db.insertPost(uid, title, filename)
+        pid = self.db.insertPost(uid, title, filename)
         self.fm.writePost(filename, content)
+        return pid
 
     def editPost(self, pid, title, content):
         filename = self.db.getPostInfo(pid)["filename"]

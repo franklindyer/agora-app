@@ -36,6 +36,7 @@
 
         {# posts list #}
         <div class="group">
+            <form method="get" action="/write"><input type="submit" value="new post"></form>
             <h2>Posts: {{ data['posts'] | length }}</h2>
             <ul class="naked-list">
             {% for post in data['posts'] %}

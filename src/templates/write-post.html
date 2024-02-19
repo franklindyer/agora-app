@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+<h1>{% block title %}{{ data['title'] }}{% endblock %}</h1>
+
+{% block content %}
+<div class="group">
+
+    <div class="vbox padded">
+        <div class="post-box post-title">
+            <textarea form="editable-post-form" 
+                      name="title"
+                      minlength="{{ limits['post-title'][0] }}"
+                      maxlength="{{ limits['post-title'][1] }}"
+                      required
+                      >{{ data['title'] }}</textarea>
+        </div>
+
+        <div class="post-box">
+            <textarea form="editable-post-form" 
+                      name="content"
+                      minlength="{{ limits['post-body'][0] }}"
+                      maxlength="{{ limits['post-body'][1] }}"
+                      >{{ data['raw_content'] }}</textarea>
+        </div>
+        
+        <form id="editable-post-form" 
+            method="post" 
+            {% if data['new_post'] %}
+                action="/write"
+            {% else %}
+                action="/edit/{{ data['pid'] }}"
+            {% endif %}>
+            <input type="submit" value="post">
+        </form>
+    </div>
+    
+</div>
+{% endblock %}
+

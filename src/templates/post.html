@@ -3,30 +3,41 @@
 <h1>{% block title %}{{ data['title'] }}{% endblock %}</h1>
 
 {% block content %}
-
 <div class="group">
 
     <h1>{{ data['title'] }}</h1>
 
-    <div class="sub-info">
-        <a class="author" href="/user/{{ data['owner'] }}">@{{ data['username'] }}</a>
-        <p class="timestamp">{{ data['timestamp'] }}</p>
+    <div class="vbox padded">
+        <div class="sub-info">
+            <a class="author" href="/user/{{ data['owner'] }}">@{{ data['username'] }}</a>
+            <p class="timestamp">{{ data['timestamp'] }}</p>
+            
+            {# If the logged in user is the author, an edit button will appear #}
+            {% if (data['logged_in_user'] is not none) and
+                  (data['logged_in_user']['uid'] == data['owner']) -%}
+                <form method="get" action="/edit/{{ data['pid'] }}">
+                    <input type="submit" value="edit post">
+                </form>
+            {% endif %}
+        </div>
+
+        <div class="post-box">
+            {{ data['content'] | safe }}
+        </div>
+        
+        <p class="sub-info">Votes: {{ data['votes'] }}</p>
+
+        <h2>Comments:</h2>
+        <ul class="naked-list">
+            {% for c in data['comments'] %}
+                <li>
+                    <a href="/user/{{ c['uid'] }}"><b>@{{ c['username'] }}</b></a>: 
+                        &nbsp; {{ c['content'] }}
+                </li>
+            {% endfor %}
+        </ul>
     </div>
-
-    <div class="post-body">
-        {{ data['content'] | safe }}
-    </div>
-
-    <p class="sub-info">Votes: {{ data['votes'] }}</p>
-
-    <h2>Comments:</h2>
-    <ul class="naked-list">
-    {% for c in data['comments'] %}
-    <li><a href="/user/{{ c['uid'] }}"><b>@{{ c['username'] }}</b></a>: &nbsp; {{ c['content'] }}</li>
-    {% endfor %}
-    </ul>
 
 </div>
-
 {% endblock %}
 
