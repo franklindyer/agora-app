@@ -1,24 +1,23 @@
 import sys
-import smtplib
-from email.message import EmailMessage
+# import smtplib
+import requests
+from requests.auth import HTTPBasicAuth 
+# from email.message import EmailMessage
 
 class AgoraEmailer:
-    def __init__(self, username, password):
-        self.username = username
+    def __init__(self, password, host):
         self.password = password
-
-    def auth(self):
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.ehlo()
-        server.starttls()
-        server.login(self.username, self.password)
-        return server
+        self.host = host
 
     def sendEmail(self, receiver, subject, message):
-        message = f"From: {self.username}\nTo: {receiver}\nSubject: {subject}\n\n{message}"
-        server = self.auth()
-        server.sendmail(self.username, receiver, message)
-        server.close()
+        auth = HTTPBasicAuth('api', self.password)
+        form = {
+            "from": f"Agora Gods <postmaster@{self.host}>",
+            "to": receiver,
+            "subject": subject,
+            "text": message
+        }
+        res = requests.post(f"https://api.mailgun.net/v3/{self.host}/messages", auth=auth, data=form)
 
     def confirmAccountEmail(self, receiver, url):
         subject = "Confirm your Agora account"

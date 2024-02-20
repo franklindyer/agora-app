@@ -22,5 +22,5 @@ COPY ./src/params/ $AP/params/
 
 WORKDIR $AP
 
-CMD ["sh", "-c", "python3 server.py ${PORT} \"${GMAIL_KEY}\" ${HOST} ${RECAPTCHA_SITEKEY} ${RECAPTCHA_SERVERKEY}"]
+CMD ["sh", "-c", "python3 server.py ${PORT} \"${MAILGUN_KEY}\" ${HOST} ${RECAPTCHA_SITEKEY} ${RECAPTCHA_SERVERKEY}"]
 

@@ -17,7 +17,7 @@ from AgoraEmailer import *
 from AgoraFileManager import *
 
 PORT = sys.argv[1]
-GMAIL_KEY = sys.argv[2]
+MAILGUN_KEY = sys.argv[2]
 HOST = sys.argv[3]
 RECAPTCHA_SITEKEY = sys.argv[4]
 RECAPTCHA_SERVERKEY = sys.argv[5]
@@ -32,7 +32,7 @@ agoraDB = AgoraDatabaseManager("./volumes/agora.db")
 agoraSemantics.setDBManager(agoraDB)
 agoraInterpreter.setDBManager(agoraDB)
 
-agoraEmail = AgoraEmailer("agoradevel@gmail.com", GMAIL_KEY)
+agoraEmail = AgoraEmailer(MAILGUN_KEY, HOST)
 agoraInterpreter.setEmailer(agoraEmail)
 
 agoraFM = AgoraFileManager(POSTDIR, IMGDIR)
