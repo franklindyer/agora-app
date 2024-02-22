@@ -24,6 +24,7 @@ RECAPTCHA_SITEKEY = sys.argv[4]
 RECAPTCHA_SERVERKEY = sys.argv[5]
 POSTDIR = './volumes/posts/'
 IMGDIR = './volumes/img'
+LOGDIR = './volumes/logs'
 
 agoraInterpreter = AgoraInterpreterFilter(None)
 agoraSemantics = AgoraSemanticFilter(agoraInterpreter)
@@ -36,7 +37,8 @@ agoraInterpreter.setDBManager(agoraDB)
 agoraEmail = AgoraEmailer(MAILGUN_KEY, HOST)
 agoraInterpreter.setEmailer(agoraEmail)
 
-agoraFM = AgoraFileManager(POSTDIR, IMGDIR)
+agoraFM = AgoraFileManager(POSTDIR, IMGDIR, LOGDIR)
+agoraSemantics.setFileManager(agoraFM)
 agoraInterpreter.setFileManager(agoraFM)
 
 agoraSemantics.setReCaptchaKey(RECAPTCHA_SERVERKEY)
