@@ -34,3 +34,15 @@ class AgoraFileManager:
 
     def relativizeImagePath(self, filename):
         return os.path.join(self.imgdir, filename)
+
+    def poolLog(self, msg):
+        path = os.path.join(self.logdir, f"{datetime.today().strftime('%Y-%m-%d')}.log")
+        with open(path, 'a+') as f:
+            f.write(f"{datetime.now().strftime('%I:%M%p')} | {msg}\n")
+
+    def log(self, msg):
+        return self.logPool.apply(self.poolLog, (msg,))
+
+    def logif(self, cond, msg):
+        if cond:
+            self.log(msg)

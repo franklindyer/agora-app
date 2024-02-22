@@ -2,6 +2,7 @@ from AgoraFilter import *
 from agora_errors import *
 from limits import *
 import requests
+from logopts import *
 
 class AgoraSemanticFilter(AgoraFilter):
     def setDBManager(self, db):
@@ -53,6 +54,7 @@ class AgoraSemanticFilter(AgoraFilter):
         uid = self.db.tokenExists(creationToken, "creation")
         if uid is None:
             raise AgoraEInvalidToken
+        self.fm.logif(LOG_CREATIONS, f"User {uid} was created.")
         return self.next.confirmCreate(uid, creationToken)
 
 
@@ -65,6 +67,7 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraENotAuthorized
         if not self.db.isUserConfirmed(uid):
             raise AgoraENotAuthorized
+        self.fm.logif(LOG_LOGINS, f"User {uid} logged in.")
         return self.next.login(uid)
 
     def logout(self, sessionToken):
@@ -89,6 +92,7 @@ class AgoraSemanticFilter(AgoraFilter):
         uid = self.db.tokenExists(deletionToken, "deletion")
         if uid is None:
             raise AgoraEInvalidToken
+        self.fm.logif(LOG_DELETIONS, f"User formerly having UID {uid} deleted their account")
         return self.next.confirmDelete(uid)
 
 
@@ -100,12 +104,14 @@ class AgoraSemanticFilter(AgoraFilter):
         uid = self.db.getRecovery(hrecovery)
         if uid is None:
             raise AgoraEInvalidToken
+        self.fm.logif(LOG_RECOVERY, f"User {uid} recovered their account with a backup code")
         return self.next.backupRecover(uid, emailAddress)
 
     def confirmRecover(self, recoveryToken, hpassword):
         uid = self.db.tokenExists(recoveryToken, "recovery")
         if uid is None:
             raise AgoraEInvalidToken
+        self.fm.logif(LOG_RECOVERY, f"User {uid} recovered their account via email")
         return self.next.confirmRecover(uid, hpassword)
 
 
@@ -160,6 +166,8 @@ class AgoraSemanticFilter(AgoraFilter):
         uid = self.db.tokenExists(emailToken, "email")
         if uid is None:
             raise AgoraEInvalidToken
+        newEmail = self.db.tokenData(emailToken)
+        self.fm.logif(LOG_EMAIL_CHANGE, f"User {uid} changed their email to {newEmail.encode('unicode_escape')}")
         return self.next.confirmEmail(uid, emailToken)
 
     def changeUsername(self, sessionToken, username):
@@ -167,6 +175,8 @@ class AgoraSemanticFilter(AgoraFilter):
         self.applyTimeLimit(uid)
         if not self.db.usernameExists(username) is None:
             raise AgoraEInvalidUsername
+        oldUsername = self.db.getPublicUser(uid)["username"]
+        self.fm.logif(LOG_USERNAME_CHANGE, f"User {uid} changed their username from {oldUsername.encode('unicode_escape')} to {username.encode('string_escape')}")
         return self.next.changeUsername(uid, username)
 
 
@@ -174,6 +184,7 @@ class AgoraSemanticFilter(AgoraFilter):
     def writePost(self, sessionToken, title, content):
         uid = self.doLogin(sessionToken)
         self.applyTimeLimit(uid)
+        self.fm.logif(LOG_CREATE_POST, f"User {uid} wrote a new post")
         return self.next.writePost(uid, title, content)
 
     def editPost(self, sessionToken, pid, title, content):
@@ -194,6 +205,7 @@ class AgoraSemanticFilter(AgoraFilter):
         pinfo = self.db.getPostInfo(pid)
         if pinfo['owner'] != uid:
             raise AgoraENotAuthorized
+        self.fm.logif(LOG_DELETE_POST, f"User {uid} deleted the post formerly with PID {pid}")
         return self.next.deletePost(pid)
     
     def uploadImage(self, sessionToken, title, extension, imgData):
@@ -202,6 +214,7 @@ class AgoraSemanticFilter(AgoraFilter):
         numImages = self.db.getNumImages(uid)
         if numImages > USER_MAX_IMAGES:
             raise AgoraEBadImage
+        self.fm.logif(LOG_CREATE_IMAGE, f"User {uid} uploaded an image")
         return self.next.uploadImage(uid, title, extension, imgData)
     
     def deleteImage(self, sessionToken, imageId):
@@ -212,6 +225,7 @@ class AgoraSemanticFilter(AgoraFilter):
         imgowner = self.db.getImageOwner(imageId)
         if imgowner != uid:
             raise AgoraENotAuthorized
+        self.fm.logif(LOG_DELETE_IMAGE, f"User {uid} deleted the image {imageId}")
         return self.next.deleteImage(imageId)
     
     def listImages(self, sessionToken):
@@ -275,6 +289,7 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraENoSuchUser
         if self.db.isUserAdmin(uid):
             raise AgoraENotAuthorized       # Admins cannot suspend other admins
+        self.fm.logif(LOG_SUSPEND, f"Administrator {my_uid} suspended user {uid}")
         return self.next.adminSuspend(uid)
     
 
@@ -286,6 +301,7 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraENoSuchUser
         if self.db.isUserAdmin(uid):
             raise AgoraENotAuthorized       # Admins cannot suspend other admins
+        self.fm.logif(LOG_UNSUSPEND, f"Administrator {my_uid} suspended user {uid}")
         return self.next.adminUnsuspend(uid)
 
 
@@ -300,4 +316,5 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraEIncorrectCreds
         if self.db.isUserAdmin(uid):
             raise AgoraENotAuthorized       # Admins cannot delete other admins
+        self.fm.logif(LOG_ADMIN_DELETION, f"Administrator {my_uid} deleted user {uid}")
         return self.next.adminDelete(uid)

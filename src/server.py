@@ -8,6 +8,7 @@ sys.path.insert(1, './utilities')
 
 from limits import *
 from agora_errors import *
+from logopts import *
 from AgoraSyntacticFilter import *
 from AgoraSemanticFilter import *
 from AgoraInterpreterFilter import *
