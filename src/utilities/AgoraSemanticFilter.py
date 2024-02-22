@@ -9,6 +9,10 @@ class AgoraSemanticFilter(AgoraFilter):
 
     def setReCaptchaKey(self, key):
         self.reCaptchaServerKey = key
+    
+    def setFileManager(self, fm):
+        self.fm = fm
+
 
 
     def doLogin(self, sessionToken):
