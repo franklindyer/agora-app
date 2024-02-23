@@ -24,9 +24,27 @@
         <div class="post-box">
             {{ data['content'] | safe }}
         </div>
-        
-        <p class="sub-info">Votes: {{ data['votes'] }}</p>
 
+        <p class="sub-info">Reputation: {{ data['votes'] }}</p>
+        <fieldset>
+            <form method="post" action="/vote/{{ data['pid'] }}">
+                <legend>How do you feel about this post?</legend>
+                <div>
+                    <input type="radio" name="vote" id="like-butt" value="like">
+                    <label for="like-butt">Like</label>
+                </div>
+                <div>
+                    <input type="radio" name="vote" id="dislike-butt" value="dislike">
+                    <label for="dislike-butt">Dislike</label>
+                </div>
+                <div>
+                    <input type="radio" name="vote" id="unlike-butt" value="unlike">
+                    <label for="unlike-butt">Neutral</label>
+                </div>
+                <input type="submit" value="submit">
+            </form>
+        </fieldset>
+        
         {% include "comment-section.html" %}
     </div>
 
