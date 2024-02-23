@@ -92,9 +92,12 @@ def users():
 
 @app.route('/user/<uid>')
 def user(uid):
+    userInfo = {}
     if g.data['logged_in_user'] is None or uid != g.data['logged_in_user']['uid']:
         userInfo = agoraModel.getUser(uid)
-        g.data.update(userInfo)
+    else:
+        userInfo = agoraModel.getMyUser(g.sessionToken)
+    g.data.update(userInfo)
     return render_template('profile.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/post/<pid>')
@@ -251,6 +254,21 @@ def admin_deleteuser(uid):
     agoraModel.adminDelete(g.sessionToken, uid, data["password"])
     return redirect("/")
 
+@app.route('/like/<pid>', methods=['POST'])
+def like_post(pid):
+    agoraModel.like(g.sessionToken, pid)
+    return redirect(f"/post/{pid}")
+
+@app.route('/unlike/<pid>', methods=['POST'])
+def unlike_post(pid):
+    agoraModel.unlike(g.sessionToken, pid)
+    return redirect(f"/post/{pid}")
+
+@app.route('/dislike/<pid>', methods=['POST'])
+def dislike_post(pid):
+    agoraModel.dislike(g.sessionToken, pid)
+    return redirect(f"/post/{pid}")
+
 @app.route('/upload', methods=['POST'])
 def upload_image():
     imgData = request.files['file']
@@ -290,5 +308,15 @@ def get_search(querytype, query):
         results = agoraModel.searchPosts(query)
     g.data['results'] = results
     g.data['querytype'] = querytype
+
+@app.route('/friend/<uid>', methods=['POST'])
+def friend(uid):
+    agoraModel.friendRequest(g.sessionToken, uid)
+    return redirect(f"/user/{uid}")
+
+@app.route('/unfriend/<uid>', methods=['POST'])
+def unfriend(uid):
+    agoraModel.unfriend(g.sessionToken, uid)
+    return redirect(f"/user/{uid}")
 
 app.run(host = "0.0.0.0", port = PORT)

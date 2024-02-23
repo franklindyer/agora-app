@@ -138,7 +138,7 @@ class AgoraDatabaseManager:
     def getPostInfo(self, pid):
         res = self.query("SELECT P.pid, P.title, P.timestamp, P.owner, P.filename, U.username FROM posts P JOIN users U ON P.owner = U.uid WHERE P.pid = ?", (pid,))
         info = res[0]
-        res = self.query("SELECT SUM(2*likes-1) as votes FROM votes WHERE postid = ?", (pid,))
+        res = self.query("SELECT SUM(likes) as votes FROM votes WHERE postid = ?", (pid,))
         info["votes"] = 0 if res[0]['votes'] is None else res[0]['votes']
         res = self.query("SELECT U.uid, C.cid, C.content, C.timestamp, U.username FROM comments C JOIN users U on C.owner = U.uid WHERE post = ?", (pid,))
         info["comments"] = [] if res is None else [c for c in res]
@@ -213,6 +213,17 @@ class AgoraDatabaseManager:
 
     def updatePost(self, pid, title):
         self.execute("UPDATE posts SET title=? WHERE pid=?", (title, pid,))
+
+    def unlikePost(self, uid, pid):
+        self.execute("DELETE FROM votes WHERE postid=? AND owner=?", (pid, uid,))
+
+    def likePost(self, uid, pid):
+        self.unlikePost(uid, pid)
+        self.execute("INSERT INTO votes (owner, postid, likes) VALUES (?, ?, ?)", (uid, pid, 1))
+
+    def dislikePost(self, uid, pid):
+        self.unlikePost(uid, pid)
+        self.execute("INSERT INTO votes (owner, postid, likes) VALUES (?, ?, ?)", (uid, pid, -1))
 
     def insertImage(self, uid, title, location, accessid):
         self.execute("INSERT INTO images (owner, title, filename, accessid) VALUES (?, ?, ?, ?)", (uid, title, location, accessid,))
