@@ -19,6 +19,7 @@ Intended project structure:
    ║  ╚═ volumes (GITIGNORE)
    ║     ╠═ db
    ║     ╠═ img
+   ║     ╠═ logs
    ║     ╚═ posts
    ╠═ docs
    ╠═ README.md
