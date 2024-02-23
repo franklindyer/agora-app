@@ -100,7 +100,7 @@ def user(uid):
 @app.route('/post/<pid>')
 def post(pid):
     get_post_content(pid)
-    return render_template('post.html', data=g.data)
+    return render_template('post.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 def get_post_content(pid):
     postInfo = agoraModel.getPost(pid)
@@ -218,11 +218,11 @@ def delete_post(pid):
     agoraModel.deletePost(g.sessionToken, pid)
     return redirect("/account")
 
-@app.route('/comment', methods=['POST'])
-def write_comment():
+@app.route('/comment/<pid>', methods=['POST'])
+def write_comment(pid):
     data = request.form
-    agoraModel.comment(g.sessionToken, data['pid'], data['content'])
-    return redirect(f"/post/{data['pid']}")
+    agoraModel.comment(g.sessionToken, pid, data['content'])
+    return redirect(f"/post/{pid}")
 
 @app.route('/deletecomment/<cid>', methods=['POST'])
 def delete_comment(cid):
