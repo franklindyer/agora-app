@@ -4,7 +4,7 @@
              <a href="/login">log in</a>
         {% else -%}
             <img class="thumbnail profile-picture"
-                    {% if data['logged_in_user']['pfp'] == None  %} 
+                    {% if data['logged_in_user']['pfp'] is none  %} 
                         src="{{ url_for('static', filename='img/default-pfp.png') }}" 
                     {% else %}
                         src="/userimg/{{ data['logged_in_user']['pfp'] }}"
@@ -19,7 +19,10 @@
             </div>
         {% endif %}
     </div>
-    <a href="/">agora</a>
+    
+    <a href="/"><img class="thumbnail" 
+        src="{{ url_for('static', filename='img/agora-logo.png') }}" 
+        alt="the agora logo"></a>
 
     <div class="hbox padded">
         <form action="/browse/posts" method="get">
