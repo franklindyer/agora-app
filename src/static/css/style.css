@@ -35,9 +35,29 @@ pre {
     flex-direction: column;
 }
 
-.hbox.padded, .vbox.padded {
+.padded {
     column-gap: 1em;
     row-gap: 1em;
+}
+
+.vbox.centered {
+/* TODO: mostly untested */
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.hbox.centered {
+    align-items: center;
+}
+
+.text-box {
+/* TODO: This might be generalized more (without padding, etc.) */
+    border-style: solid;
+    border-color: lightgray;
+    border-width: thin;
+    padding: 0% 1%;
+    margin: 1% 0%;
 }
 
 .naked-list {
