@@ -263,6 +263,16 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraENoSuchPost
         return self.next.comment(uid, pid, content)
 
+    def deleteComment(self, sessionToken, cid):
+        uid = self.doLogin(sessionToken)
+        self.applyTimeLimit(uid)
+        owner = self.db.commentExists(cid)
+        if owner is None:
+            raise AgoraENoSuchComment
+        if uid != owner:
+            raise AgoraENotAuthorized
+        return self.next.deleteComment(cid)
+
 
 
     def bugReport(self, sessionToken, content):

@@ -28,6 +28,7 @@ To the post view:
     "comments":     list of comments, which are dictionaries with the following structure:
     {
         "uid":          ID of the posting user (int),
+        "cid":          ID of the comment, needed to delete it,
         "username":     username of the posting user (string),
         "content":      content of the comment (string),
         "timestamp":    timestamp of the comment (string)

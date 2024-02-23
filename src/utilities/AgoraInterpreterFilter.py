@@ -126,6 +126,11 @@ class AgoraInterpreterFilter:
     def comment(self, uid, pid, content):
         self.db.insertComment(uid, pid, content)
 
+    def deleteComment(self, cid):
+        return self.db.deleteComment(cid)
+
+
+
     def bugReport(self, uid, content):
         raise NotImplementedError
 

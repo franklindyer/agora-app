@@ -224,6 +224,11 @@ def write_comment():
     agoraModel.comment(g.sessionToken, data['pid'], data['content'])
     return redirect(f"/post/{data['pid']}")
 
+@app.route('/deletecomment/<cid>', methods=['POST'])
+def delete_comment(cid):
+    pid = agoraModel.deleteComment(g.sessionToken, cid)
+    return redirect(f"/post/{pid}")
+
 @app.route('/admin/user/<uid>')
 def admin_userview(uid):
     userInfo = agoraModel.adminGetUser(g.sessionToken, uid)

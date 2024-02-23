@@ -46,6 +46,8 @@ class AgoraENoSuchPost(AgoraException):
     pass
 class AgoraENoSuchImage(AgoraException):
     pass
+class AgoraENoSuchComment(AgoraException):
+    pass
 
 # Access control errors
 class AgoraENotLoggedIn(AgoraException):

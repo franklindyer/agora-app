@@ -247,6 +247,11 @@ class AgoraSyntacticFilter(AgoraFilter):
         self.validateComment(content)
         return self.next.comment(sessionToken, int(pid), content)
 
+    def deleteComment(self, sessionToken, cid):
+        self.validateToken(sessionToken, "session")
+        if not self.isValidId(cid):
+            raise AgoraEInvalidComment
+        return self.next.deleteComment(sessionToken, int(cid))
 
 
     def bugReport(self, sessionToken, content):

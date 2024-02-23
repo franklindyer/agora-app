@@ -68,6 +68,10 @@ class AgoraDatabaseManager:
         res = self.query("SELECT pid FROM posts WHERE pid = ?", (pid,))
         return (None if res is None else pid)
 
+    def commentExists(self, cid):
+        res = self.query("SELECT cid, owner FROM comments WHERE cid = ?", (cid,))
+        return (None if res is None else res[0]['owner'])
+
     def imgExists(self, imgId):
         res = self.query("SELECT filename FROM images WHERE accessid = ?", (imgId,))
         return (None if res is None else res[0]['filename'])
@@ -136,7 +140,7 @@ class AgoraDatabaseManager:
         info = res[0]
         res = self.query("SELECT SUM(2*likes-1) as votes FROM votes WHERE postid = ?", (pid,))
         info["votes"] = 0 if res[0]['votes'] is None else res[0]['votes']
-        res = self.query("SELECT U.uid, C.content, C.timestamp, U.username FROM comments C JOIN users U on C.owner = U.uid WHERE post = ?", (pid,))
+        res = self.query("SELECT U.uid, C.cid, C.content, C.timestamp, U.username FROM comments C JOIN users U on C.owner = U.uid WHERE post = ?", (pid,))
         info["comments"] = [] if res is None else [c for c in res]
         return info
 
@@ -215,6 +219,11 @@ class AgoraDatabaseManager:
 
     def insertComment(self, uid, pid, comment):
         self.execute("INSERT INTO comments (owner, post, content) VALUES (?, ?, ?)", (uid, pid, comment,))
+
+    def deleteComment(self, cid):
+        pid = self.query("SELECT post FROM comments WHERE cid=?", (cid,))[0]["post"]
+        self.execute("DELETE FROM comments WHERE cid=?", (cid,))
+        return pid
 
 
 
