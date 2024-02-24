@@ -8,6 +8,10 @@ class AgoraEmailer:
     def __init__(self, password, host):
         self.password = password
         self.host = host
+        self.devs = []
+
+    def setDeveloperEmails(self, emails):
+        self.devs = emails.split(',')
 
     def sendEmail(self, receiver, subject, message):
         auth = HTTPBasicAuth('api', self.password)
@@ -43,3 +47,9 @@ class AgoraEmailer:
         subject = "Confirm deletion of your Agora account"
         message = f"Visit the following page to confirm the deletion of your Agora account:\n{url}"
         self.sendEmail(receiver, subject, message)
+
+    def bugReport(self, rid, user, content):
+        subject = "Bug report #{rid}"
+        message = f"Bug report submitted by user {user}:\n\n{content}"
+        for em in self.devs:
+            self.sendEmail(em, subject, message)
