@@ -9,8 +9,9 @@
     <div id="profile-post-stack" class="vbox">
         {# profile info area #}
         <div class="group hbox">
-            <img class="profile-picture"
-                 {% if data['pfp'] == None %}
+            <img class="small-img profile-picture"
+            {# TODO: this should be changed so that the def pfp is assigned at acct creation #}
+                 {% if data['pfp'] is none %}
                  src="{{ url_for('static', filename='img/default-pfp.png') }}" 
                  {% else %}
                  src="/userimg/{{ data['pfp'] }}"

@@ -52,6 +52,11 @@ pre {
     height: var(--thumbnail-size);
 }
 
+.small-img {
+    width: 250px;
+    height: 250px;
+}
+
 .error-image {
     max-width: 85%;
 }
