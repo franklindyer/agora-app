@@ -1,0 +1,39 @@
+{% set comments = data['comments'] %}
+
+<div class="vbox padded">
+    <h2>Comments ({{ comments | length }}):</h2>
+   
+    {# write comment box #}
+    <div class="hbox">
+        <form method="post" action="/comment/{{ data['pid'] }}">
+            <textarea
+                name="content"
+                minlength="{{ limits['comment'][0] }}"
+                maxlength="{{ limits['comment'][1] }}"></textarea>
+            <input type="submit" value="post">
+        </form>
+    </div>
+
+    <ul class="naked-list">
+    {% for c in comments %}
+        
+        {# single comment #}
+        <li><div class="vbox text-box">
+
+            {# comment header #}
+            <div class="hbox padded centered">
+                <a href="/user/{{ c['uid'] }}">@{{ c['username'] }}</a>
+                <p>{{ c['timestamp'] }}</p>
+                {# If the logged in user is the author, a delete button will appear #}
+                {% if (data['logged_in_user'] is not none) and
+                    (data['logged_in_user']['uid'] == c['uid']) -%}
+                    <form method="post" action="/deletecomment/{{ c['cid'] }}">
+                        <input type="submit" value="X">
+                    </form>
+                {% endif %}
+            </div>
+            <p>{{ c['content'] }}</p>
+        </div></li>
+    {% endfor %}
+    </ul>
+</div>
