@@ -49,7 +49,7 @@ class AgoraEmailer:
         self.sendEmail(receiver, subject, message)
 
     def bugReport(self, rid, user, content):
-        subject = "Bug report #{rid}"
+        subject = f"Bug report #{rid}"
         message = f"Bug report submitted by user {user}:\n\n{content}"
         for em in self.devs:
             self.sendEmail(em, subject, message)
