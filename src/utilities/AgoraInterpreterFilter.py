@@ -57,11 +57,16 @@ class AgoraInterpreterFilter:
 
 
 
-    def recoverAccount(self, emailAddress, acceptable):
-        raise NotImplementedError
-    
-    def confirmRecover(self, uid, hpassword):
-        raise NotImplementedError
+    def recoverAccount(self, uid, emailAddress, acceptable):
+        if not acceptable:
+            return
+        recoveryToken = self.generateToken("recovery")
+        self.db.createToken(uid, recoveryToken, "recovery")
+        self.eml.recoverAccountEmail(emailAddress, f"{self.host}/changepass/{recoveryToken}")
+ 
+    def confirmRecover(self, uid, recoveryToken, hpassword):
+        self.db.expireToken(recoveryToken)
+        self.db.setPassword(uid, hpassword)
 
     def backupRecover(self, uid, hbackup, emailAddress, acceptable=True):
         self.changeEmail(uid, emailAddress, acceptable)
@@ -87,7 +92,7 @@ class AgoraInterpreterFilter:
         recovery = self.generateToken("recovery")
         hrecovery = hashlib.sha256(recovery.encode()).hexdigest()
         self.eml.newRecoveryToken(newEmail, recovery)
-        self.db.setRecovery(uid, hrecovery)
+        self.db.setBackup(uid, hrecovery)
 
     def changeUsername(self, uid, username):
         self.db.setUsername(uid, username)

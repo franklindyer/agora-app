@@ -30,7 +30,7 @@ class AgoraEmailer:
 
     def recoverAccountEmail(self, receiver, url):
         subject = "Recover your Agora account"
-        message = f"Recover your Agora account by visiting the following page:\n{url}"
+        message = f"Reset your Agora password by visiting the following page:\n{url}"
         self.sendEmail(receiver, subject, message)
 
     def newRecoveryToken(self, receiver, recovery):

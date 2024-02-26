@@ -191,6 +191,21 @@ def backup_post(code):
         agoraModel.backupRecover(code, data['email'])
     return render_template('info.html', data=g.data, msg='backup-sent-email')
 
+@app.route('/changepass', methods=['POST'])
+def change_password_request():
+    data = request.form
+    if "email" in data:
+        agoraModel.recoverAccount(data["email"])
+    return render_template('info.html', data=g.data, msg='recovery-sent-email')
+
+@app.route('/changepass/<token>', methods=['POST'])
+def change_password(token):
+    data = request.form
+    if "password" in data:
+        agoraModel.confirmRecover(token, data["password"])
+        return render_template('info.html', data=g.data, msg='confirm-password-reset')
+    return redirect('/login')
+
 @app.route('/confirmemail/<token>')
 def confirm_email(token):
     agoraModel.confirmEmail(token)

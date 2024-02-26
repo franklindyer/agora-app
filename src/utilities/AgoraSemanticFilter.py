@@ -98,7 +98,7 @@ class AgoraSemanticFilter(AgoraFilter):
 
     def recoverAccount(self, emailAddress):
         uid = self.db.emailExists(emailAddress)     # We don't raise an error when uid is None, in order to avoid disclosing emails
-        return self.next.recoverAccount(emailAddress, not (uid is None))
+        return self.next.recoverAccount(uid, emailAddress, not (uid is None))
 
     def backupRecover(self, hbackup, emailAddress):
         uid = self.db.getRecovery(hbackup)
