@@ -26,7 +26,7 @@ class AgoraInterpreterFilter:
         if not old_uid is None:
             self.db.deleteUser(old_uid)     # Delete any unconfirmed accounts with this address
         if acceptable:
-            recovery = self.generateToken("recovery")
+            recovery = self.generateToken("backup")
             hrecovery = hashlib.sha256(recovery.encode()).hexdigest()
             uid = self.db.createUser(emailAddress, username, hpassword, hrecovery)
             confirm = self.generateToken("creation")
@@ -63,8 +63,8 @@ class AgoraInterpreterFilter:
     def confirmRecover(self, uid, hpassword):
         raise NotImplementedError
 
-    def backupRecover(self, uid, emailAddress):
-        self.changeEmail(uid, emailAddress, True)
+    def backupRecover(self, uid, hbackup, emailAddress, acceptable=True):
+        self.changeEmail(uid, emailAddress, acceptable)
 
 
 

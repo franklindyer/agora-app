@@ -100,19 +100,23 @@ class AgoraSemanticFilter(AgoraFilter):
         uid = self.db.emailExists(emailAddress)     # We don't raise an error when uid is None, in order to avoid disclosing emails
         return self.next.recoverAccount(emailAddress, not (uid is None))
 
-    def backupRecover(self, hrecovery, emailAddress):
-        uid = self.db.getRecovery(hrecovery)
+    def backupRecover(self, hbackup, emailAddress):
+        uid = self.db.getRecovery(hbackup)
         if uid is None:
             raise AgoraEInvalidToken
+        acceptable = True
+        otherOwner = self.db.emailExists(emailAddress)
+        if otherOwner is not None:
+            acceptable = False
         self.fm.logif(LOG_RECOVERY, f"User {uid} recovered their account with a backup code")
-        return self.next.backupRecover(uid, emailAddress)
+        return self.next.backupRecover(uid, hbackup, emailAddress, acceptable=acceptable)
 
     def confirmRecover(self, recoveryToken, hpassword):
         uid = self.db.tokenExists(recoveryToken, "recovery")
         if uid is None:
             raise AgoraEInvalidToken
         self.fm.logif(LOG_RECOVERY, f"User {uid} recovered their account via email")
-        return self.next.confirmRecover(uid, hpassword)
+        return self.next.confirmRecover(uid, recoveryToken, hpassword)
 
 
 
