@@ -48,6 +48,7 @@ sudo docker run -p 8080:8080 \
                 -e MAILGUN_KEY="<YOUR MAILGUN KEY>" \
                 -e RECAPTCHA_SITEKEY="<YOUR RECAPTCHA SITEKEY>" \
                 -e RECAPTCHA_SERVERKEY="<YOUR RECAPTCHA SERVERKEY>" \
+                -e DEV_EMAILS="<LIST OF DEVELOPER EMAILS>"
                 <YOUR_NAME>/agora-app:latest
 ```
 Notes:
