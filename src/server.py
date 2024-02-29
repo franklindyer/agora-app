@@ -22,6 +22,7 @@ MAILGUN_KEY = sys.argv[2]
 HOST = sys.argv[3]
 RECAPTCHA_SITEKEY = sys.argv[4]
 RECAPTCHA_SERVERKEY = sys.argv[5]
+DEV_EMAILS = sys.argv[6]
 POSTDIR = './volumes/posts/'
 IMGDIR = './volumes/img'
 LOGDIR = './volumes/logs'
@@ -35,6 +36,7 @@ agoraSemantics.setDBManager(agoraDB)
 agoraInterpreter.setDBManager(agoraDB)
 
 agoraEmail = AgoraEmailer(MAILGUN_KEY, HOST)
+agoraEmail.setDeveloperEmails(DEV_EMAILS)
 agoraInterpreter.setEmailer(agoraEmail)
 
 agoraFM = AgoraFileManager(POSTDIR, IMGDIR, LOGDIR)
@@ -318,5 +320,12 @@ def friend(uid):
 def unfriend(uid):
     agoraModel.unfriend(g.sessionToken, uid)
     return redirect(f"/user/{uid}")
+
+@app.route('/report', methods=['POST'])
+def bug_report():
+    data = request.form
+    if "content" in data:
+        agoraModel.bugReport(g.sessionToken, data["content"])
+    return redirect("/")
 
 app.run(host = "0.0.0.0", port = PORT)

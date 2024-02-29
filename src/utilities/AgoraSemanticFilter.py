@@ -300,7 +300,7 @@ class AgoraSemanticFilter(AgoraFilter):
     def bugReport(self, sessionToken, content):
         uid = self.doLogin(sessionToken)
         self.applyTimeLimit(uid)
-        return self.bugReport(uid, content)
+        return self.next.bugReport(uid, content)
 
 
 

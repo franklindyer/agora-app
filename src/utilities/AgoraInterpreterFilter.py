@@ -144,7 +144,9 @@ class AgoraInterpreterFilter:
         self.db.dislikePost(uid, pid)
 
     def bugReport(self, uid, content):
-        raise NotImplementedError
+        rid = self.db.createBugReport(uid)
+        self.eml.bugReport(rid, uid, content)
+        return rid
 
 
 

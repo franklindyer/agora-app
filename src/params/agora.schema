@@ -47,8 +47,7 @@ CREATE TABLE images (
 CREATE TABLE reports (
     rid         INTEGER PRIMARY KEY,
     owner       INTEGER,
-    timestamp   TEXT DEFAULT CURRENT_TIMESTAMP,
-    filename    TEXT NOT NULL
+    timestamp   TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE friendships (

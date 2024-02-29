@@ -270,6 +270,12 @@ class AgoraDatabaseManager:
 
 
 
+    def createBugReport(self, uid):
+        self.execute("INSERT INTO reports (owner) VALUES (?)", (uid,))
+        return self.query("SELECT rid FROM reports WHERE owner=? ORDER BY timestamp DESC", (uid,))[0]["rid"]
+
+
+
     def suspendUser(self, uid):
         self.execute("UPDATE users SET suspended = 1 WHERE uid = ?", (uid,))
 
