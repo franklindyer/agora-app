@@ -22,7 +22,9 @@ class AgoraDatabaseManager:
         self.conn.commit()
 
     def cur(self):
-        return self.conn.cursor()
+        cur = self.conn.cursor()
+        cur.row_factory = dict_factory
+        return cur
 
     def pool_query(self, query, args=()):
         cur = self.cur().execute(query, args)

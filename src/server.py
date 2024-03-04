@@ -275,8 +275,8 @@ def dislike_post(pid):
 def upload_image():
     imgData = request.files['file']
     title = imgData.filename
-    agoraModel.uploadImage(g.sessionToken, title, imgData)
-    return redirect('/account')
+    return agoraModel.uploadImage(g.sessionToken, title, imgData)
+##    return redirect('/account')
 
 @app.route('/deleteimg/<imgid>', methods=['POST'])
 def delete_image(imgid):
