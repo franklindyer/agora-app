@@ -1,60 +1,68 @@
-{% from 'editable-profile-option.html' import editable_option with context %}
+{% from 'editable-profile-option.html' import editable_option %}
+{% import 'manage-files.html' as files %}
+
 {% extends 'base.html' %}
 
 <h1>{% block title %}{{ data['username'] }} {% endblock %}</h1>
 
 {% block content %}
 
-<div class="hbox">
-    <div id="profile-post-stack" class="vbox">
-        {# profile info area #}
-        <div class="group hbox">
-            <img class="small-img profile-picture"
-            {# TODO: this should be changed so that the def pfp is assigned at acct creation #}
-                 {% if data['pfp'] is none %}
-                 src="{{ url_for('static', filename='img/default-pfp.png') }}" 
-                 {% else %}
-                 src="/userimg/{{ data['pfp'] }}"
-                 {% endif %}
-                 alt="the user's profile picture">
-            <ul id="profile-options" class="naked-list group">
-                {% if (data['logged_in_user'] is not none) and
-                      (data['logged_in_user']['uid'] == data['uid']) -%}
-                    <li class="hbox username-main">
-                        @{{ editable_option(limits, data['logged_in_user'], "username") }}</li>
-                    <li class="option-main status-main">
-                        {{ editable_option(limits, data['logged_in_user'], "status") }}</li>
-                    <li class="option-main requires-confirmation">
-                        {{ editable_option(limits, data['logged_in_user'], "email") }}</li>
-                    <li class="option-main requires-confirmation">
-                        {{ editable_option(limits, data['logged_in_user'], "password") }}</li>
-                {% else -%}
-                    <li class="username-main">@{{ data['username'] }}</li>
-                    <li class="status-main">{{ data['status'] }}</li>
-                {% endif %}
-            </ul>
+{# whether the profile is the logged in user's own profile #}
+{% set self = (data['logged_in_user'] is not none) and 
+              (data['logged_in_user']['uid'] == data['uid']) %}
+
+<div class="group">
+    <div class="hbox padded">
+        <div id="profile-post-stack" class="vbox padded">
+            {# profile info area #}
+            <div class="hbox padded">
+                <img class="small-img profile-picture"
+                     {% if data['pfp'] is none %}
+                         src="{{ url_for('static', filename='img/default-pfp.png') }}" 
+                     {% else %}
+                         src="/userimg/{{ data['pfp'] }}"
+                     {% endif %}
+                     alt="the user's profile picture">
+                <ul class="naked-list">
+                    {% if self %}
+                        <li class="hbox username-main">
+                            @{{ editable_option(limits, data, "username") }}</li>
+                        <li class="option-main status-main">
+                            {{ editable_option(limits, data, "status") }}</li>
+                        <li class="option-main requires-confirmation">
+                            {{ editable_option(limits, data, "email") }}</li>
+                        <li class="option-main requires-confirmation">
+                            {{ editable_option(limits, data, "password") }}</li>
+                    {% else %}
+                        <li class="username-main">@{{ data['username'] }}</li>
+                        <li class="status-main">{{ data['status'] }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            {# posts list #}
+            <div class="vbox padded">
+                <h2>Posts: {{ data['posts'] | length }}</h2>
+                {{ files.public_post_list(data['posts']) }}
+            </div>
+
+            {% if self %}
+            <div class="hbox padded v-centered">
+                <h3>Manage posts and images:</h3>
+                {{ files.manage_files_button() }}
+            </div>
+            {% endif %}
         </div>
 
-        {# posts list #}
-        <div class="group">
-            <form method="get" action="/write"><input type="submit" value="new post"></form>
-            <h2>Posts: {{ data['posts'] | length }}</h2>
+        {# friends list #}
+        <div class="vbox padded">
+            <h2>Friends: {{ data['friends'] | length }}</h2>
             <ul class="naked-list">
-            {% for post in data['posts'] %}
-                <li><a href="/post/{{ post['pid'] }}">{{ post['title'] }}</a></li>
+            {% for (uid, name) in data['friends'] %}
+                <li><a href="/user/{{ uid }}">@{{ name }}</a></li>
             {% endfor %}
             </ul>
         </div>
-    </div>
-
-    {# friends list #}
-    <div id="friend-list" class="group">
-        <h2>Friends: {{ data['friends'] | length }}</h2>
-        <ul class="naked-list">
-        {% for (uid, name) in data['friends'] %}
-            <li><a href="/user/{{ uid }}">@{{ name }}</a></li>
-        {% endfor %}
-        </ul>
     </div>
 </div>
 
