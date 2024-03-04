@@ -14,6 +14,16 @@ hr {
     border-style: dashed;
 }
 
+h2 {
+    padding: 0%;
+    margin: 0%;
+}
+
+h3 {
+    padding: 0%;
+    margin: 0%;
+}
+
 pre {
 /* TODO: this is a workaround for a terrible markdown.markdown behavior that turns all lines 
    that start with an indent into pre blocks. This may not be the behavior we want when we 
@@ -26,6 +36,11 @@ pre {
     width: auto;
     display: flex;
     flex-direction: row;
+
+    /*
+    border-style: solid;
+    border-color: orange;
+    */
 }
 
 .vbox {
@@ -33,6 +48,11 @@ pre {
     width: auto;
     display: flex;
     flex-direction: column;
+
+    /*
+    border-style: solid;
+    border-color: blue;
+    */
 }
 
 .padded {
@@ -40,14 +60,25 @@ pre {
     row-gap: 1em;
 }
 
-.vbox.centered {
-/* TODO: mostly untested */
+.centered {
     text-align: center;
     align-items: center;
     justify-content: center;
 }
 
-.hbox.centered {
+.hbox.h-centered {
+    justify-content: center;
+}
+
+.hbox.v-centered {
+    align-items: center;
+}
+
+.vbox.v-centered {
+    justify-content: center;
+}
+
+.vbox.h-centered {
     align-items: center;
 }
 
@@ -83,6 +114,11 @@ pre {
 
 .group {
     margin: 2%;
+
+    /*
+    border-style: solid;
+    border-color: green;
+    */
 }
 
 /* header */
