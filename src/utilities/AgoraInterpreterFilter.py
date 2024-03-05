@@ -31,7 +31,7 @@ class AgoraInterpreterFilter:
             uid = self.db.createUser(emailAddress, username, hpassword, hrecovery)
             confirm = self.generateToken("creation")
             confirmUrl = f'{self.host}/join/{confirm}'
-            self.eml.confirmAccountEmail(emailAddress, confirmUrl)
+            self.eml.confirmAccountEmail(emailAddress, confirmUrl, recovery)
             self.db.createToken(uid, confirm, "creation")
     
     def confirmCreate(self, uid, creationToken):
