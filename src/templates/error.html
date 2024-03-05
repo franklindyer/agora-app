@@ -9,6 +9,22 @@
 
     <p>The error is called {{ data['error'] }}. That mean anything to you?</p>
 
+    {% if data['error'] == "AgoraEInvalidEmail" %}
+        Invalid email address. Please write your full email address and make sure that it is spelled correctly.
+    {% elif data['error'] == "AgoraEInvalidUsername" %}
+        Invalid username. Please ensure that your username is between {{ limits['username'][0] }} and {{ limits['username'][1] }} characters long.
+    {% elif data['error'] == "AgoraEInvalidPassword" %}
+        Invalid password. Please ensure that your password is between {{ limits['password'][0] }} and {{ limits['password'][1] }} characters long.
+    {% elif data['error'] == "AgoraEInvalidToken" %}
+        Oops! It looks like you aren't logged in. <a href='/login'>Login now.</a>
+    {% elif data['error'] == "AgoraEAreYouHuman" %}
+        You failed a captcha. Are you even human, bro???
+    {% elif data['error'] == "AgoraEBadImage" %}
+        The image you tried to upload was invalid. Try uploading a smaller image.
+    {% elif data['error'] == "AgoraEInvalidTitle" %}
+        The title of your image is invalid. Please make sure that it is between {{ limits['image-title'][0] }} and {{ limits['image-title'][1] }} characters and includes an extension.
+    {% endif %}
+
     <img class="error-image" src="{{ url_for('static', filename='img/404-0.jpeg') }}" alt="404">
 
 </div>

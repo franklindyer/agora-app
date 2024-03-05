@@ -62,7 +62,7 @@ def agoraerror(pageserver):
         except AgoraException as err:
             g.data['logged_in_user'] = None
             g.data.update(handleAgoraError(err))
-            return render_template('error.html', data=g.data)
+            return render_template('error.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 app = Flask(__name__)
 app.debug = True
@@ -71,7 +71,7 @@ app.debug = True
 @app.errorhandler(AgoraException)
 def agoraError(err):
     g.data.update(handleAgoraError(err))
-    return render_template('error.html', data=g.data)
+    return render_template('error.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.before_request
 def agoraPreproc():
