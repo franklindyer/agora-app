@@ -184,22 +184,35 @@ def account_post():
         agoraModel.changeEmail(g.sessionToken, data['email'])
     return redirect("/account")
 
-@app.route('/backup/<code>', methods=['POST'])
-def backup_post(code):
+@app.route('/backup')
+def backup_get():
+    return render_template('recover-account.html', data=g.data)
+
+@app.route('/backup', methods=['POST'])
+def backup_post():
     data = request.form
-    if "email" in data:
-        agoraModel.backupRecover(code, data['email'])
+    if 'email' in data and 'code' in data:
+        agoraModel.backupRecover(data['code'], data['email'])
     return render_template('info.html', data=g.data, msg='backup-sent-email')
 
+@app.route('/changepass')
+def change_password_request_get():
+    return render_template('reset-password.html', data=g.data)
+
 @app.route('/changepass', methods=['POST'])
-def change_password_request():
+def change_password_request_post():
     data = request.form
     if "email" in data:
         agoraModel.recoverAccount(data["email"])
     return render_template('info.html', data=g.data, msg='recovery-sent-email')
 
+@app.route('/changepass/<token>')
+def change_password_get(token):
+    g.data['token'] = token
+    return render_template('new-password.html', data=g.data)
+
 @app.route('/changepass/<token>', methods=['POST'])
-def change_password(token):
+def change_password_post(token):
     data = request.form
     if "password" in data:
         agoraModel.confirmRecover(token, data["password"])
