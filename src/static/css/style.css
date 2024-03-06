@@ -78,7 +78,10 @@ pre {
 }
 
 .error-image {
+    margin: auto;
+    height: 300px;
     max-width: 85%;
+    margin-top: 50px;
 }
 
 .group {

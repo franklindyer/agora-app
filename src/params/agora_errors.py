@@ -34,8 +34,6 @@ class AgoraETooSoon(AgoraException):
 # Authentication errors
 class AgoraEIncorrectCreds(AgoraException):
     pass
-class AgoraENonexistentEmail(AgoraException):
-    pass
 class AgoraEIncorrectCode(AgoraException):
     pass
 
