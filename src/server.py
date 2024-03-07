@@ -350,11 +350,15 @@ def unfriend(uid):
     agoraModel.unfriend(g.sessionToken, uid)
     return redirect(f"/user/{uid}")
 
+@app.route('/report')
+def bug_report_get():
+    return render_template('report.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
+
 @app.route('/report', methods=['POST'])
-def bug_report():
+def bug_report_post():
     data = request.form
     if "content" in data:
         agoraModel.bugReport(g.sessionToken, data["content"])
-    return redirect("/")
+    return render_template('info.html', data=g.data, msg='confirm-report-submitted')
 
 app.run(host = "0.0.0.0", port = PORT)
