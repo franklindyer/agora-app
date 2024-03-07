@@ -121,7 +121,18 @@ pre {
     */
 }
 
-/* header */
+.wrapper {
+    display: flex;
+    min-height: 98vh;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+/* header and footer */
 
 nav {
     display: flex;
