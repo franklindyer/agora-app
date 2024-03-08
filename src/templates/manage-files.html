@@ -1,5 +1,10 @@
 {% macro manage_files_button() %}
-    <form method="get" action="/files"><input type="submit" value="manage"></form>
+    <div class="hbox padded v-centered">
+        <form method="get" action="/files">
+            <label for="manage-files">Manage posts and images:</label>
+            <input type="submit" id="manage-files" value="manage">
+        </form>
+    </div>
 {% endmacro %}
 
 
