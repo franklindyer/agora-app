@@ -1,0 +1,23 @@
+{% macro update_existing_form(limits, data, option, target) %}
+<form method="post" action="{{ target }}" autocomplete="off">
+    <label for="{{ option }}">New {{ option }}:</label>
+    <input type="{{ option }}"
+           name="{{ option }}" 
+           value="{{ data[option] }}"
+           minlength="{{ limits[option][0] }}"
+           maxlength="{{ limits[option][1] }}" >
+    <input type="submit" value="update">
+</form>
+{% endmacro %}
+
+{% macro profile_option(limits, data, option) %}
+<form method="post" action="/account" class="editable-profile-option" autocomplete="off">
+    <label class="profile-option-label" for="{{ option }}"></label>
+    <input type="{{ option }}" 
+           name="{{ option }}" 
+           value="{{ data[option] }}"
+           minlength="{{ limits[option][0] }}"
+           maxlength="{{ limits[option][1] }}" >
+    <input type="submit" value="update {{ option }}">
+</form>
+{% endmacro %}

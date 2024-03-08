@@ -1,4 +1,4 @@
-{% from 'editable-profile-option.html' import editable_option %}
+{% import 'form.html' as forms %}
 {% import 'manage-files.html' as files %}
 
 {% extends 'base.html' %}
@@ -23,45 +23,37 @@
                          src="/userimg/{{ data['pfp'] }}"
                      {% endif %}
                      alt="the user's profile picture">
-                <ul class="naked-list">
+                <div class="vbox padded">
+                    <div class="username-main">@{{ data['username'] }}</div>
                     {% if self %}
-                        <li class="hbox username-main">
-                            @{{ editable_option(limits, data, "username") }}</li>
-                        <li class="option-main status-main">
-                            {{ editable_option(limits, data, "status") }}</li>
-                        <li class="option-main requires-confirmation">
-                            {{ editable_option(limits, data, "email") }}</li>
-                        <li class="option-main requires-confirmation">
-                            {{ editable_option(limits, data, "password") }}</li>
+                        <div class="option-main status-main">
+                            {{ forms.profile_option(limits, data, "status") }}</div>
+                        <form method="get" action="/settings">
+                            <input type="submit" value="settings">
+                        </form>
                     {% else %}
-                        <li class="username-main">@{{ data['username'] }}</li>
-                        <li class="status-main">{{ data['status'] }}</li>
+                        <div class="status-main">{{ data['status'] }}</div>
                     {% endif %}
-                </ul>
+                </div>
             </div>
 
             {# posts list #}
-            <div class="vbox padded">
-                <h2>Posts: {{ data['posts'] | length }}</h2>
-                {{ files.public_post_list(data['posts']) }}
-            </div>
+            <h2>Posts: {{ data['posts'] | length }}</h2>
+            {{ files.public_post_list(data['posts']) }}
 
             {% if self %}
-            <div class="hbox padded v-centered">
-                <h3>Manage posts and images:</h3>
                 {{ files.manage_files_button() }}
-            </div>
             {% endif %}
         </div>
 
         {# friends list #}
         <div class="vbox padded">
             <h2>Friends: {{ data['friends'] | length }}</h2>
-            <ul class="naked-list">
+            <div class="vbox padded">
             {% for (uid, name) in data['friends'] %}
-                <li><a href="/user/{{ uid }}">@{{ name }}</a></li>
+                <a href="/user/{{ uid }}">@{{ name }}</a>
             {% endfor %}
-            </ul>
+            </div>
         </div>
     </div>
 </div>
