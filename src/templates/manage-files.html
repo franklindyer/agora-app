@@ -17,21 +17,28 @@
     <form method="post" action="/account">
         <div class="vbox padded">
             <ul class="naked-list">
-            {% for image in images %}
-                {% set iid = image['accessid'] %}
+                {% for image in images %}
+                    {% set iid = image['accessid'] %}
+                    <li>
+                        <div class="hbox padded">
+                            <button name="delete" 
+                                value="{{ iid }}" 
+                                type="submit" 
+                                form="delete-form">X</button>
+                            
+                            <input type="radio" name="pfp" value="{{ iid }}">
+                        
+                            <a href="/userimg/{{ iid }}">{{ image['title'] }}</a>
+                        </div>
+                    </li>
+                {% endfor %}
+                {# option to use default profile picture #}
                 <li>
                     <div class="hbox padded">
-                        <button name="delete" 
-                            value="{{ iid }}" 
-                            type="submit" 
-                            form="delete-form">X</button>
-                        
-                        <input type="radio" name="pfp" value="{{ iid }}">
-                    
-                        <a href="/userimg/{{ iid }}">{{ image['title'] }}</a>
+                        <input type="radio" name="pfp" value="0000000000" id="default-pfp">
+                        <label for="default-pfp">default picture</label> 
                     </div>
                 </li>
-            {% endfor %}
             </ul>
             <div>
                 <input type="submit" value="set profile picture">
