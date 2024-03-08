@@ -95,7 +95,7 @@ def users():
 @app.route('/user/<uid>')
 def user(uid):
     userInfo = {}
-    if g.data['logged_in_user'] is None or uid != g.data['logged_in_user']['uid']:
+    if g.data['logged_in_user'] is None or uid != str(g.data['logged_in_user']['uid']):
         userInfo = agoraModel.getUser(uid)
     else:
         userInfo = agoraModel.getMyUser(g.sessionToken)
@@ -221,7 +221,7 @@ def edit_post(pid):
 @app.route('/deletepost/<pid>', methods=['POST'])
 def delete_post(pid):
     agoraModel.deletePost(g.sessionToken, pid)
-    return redirect("/account")
+    return redirect("/files")
 
 @app.route('/comment/<pid>', methods=['POST'])
 def write_comment(pid):
@@ -272,16 +272,30 @@ def dislike_post(pid):
     return redirect(f"/post/{pid}")
 
 @app.route('/upload', methods=['POST'])
-def upload_image():
+def upload_image_post():
     imgData = request.files['file']
-    title = imgData.filename
-    agoraModel.uploadImage(g.sessionToken, title, imgData)
-    return redirect('/account')
+    data = request.form
+    title = data['title']
+    imgID = agoraModel.uploadImage(g.sessionToken, title, imgData)
+    return redirect(f'/userimg/{imgID}')
+
+@app.route('/upload')
+def upload_image_get():
+    return render_template('upload.html', data=g.data)
+
+@app.route('/files')
+def files():
+    if g.data['logged_in_user'] is None:
+        return redirect('/')
+    userInfo = agoraModel.getMyUser(g.sessionToken)
+    g.data.update(userInfo)
+    return render_template('files.html', data=g.data)
+    
 
 @app.route('/deleteimg/<imgid>', methods=['POST'])
 def delete_image(imgid):
     agoraModel.deleteImage(g.sessionToken, imgid)
-    return redirect('/account')
+    return redirect('/files')
 
 @app.route('/search', methods=['POST'])
 def search():

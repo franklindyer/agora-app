@@ -22,7 +22,9 @@ class AgoraDatabaseManager:
         self.conn.commit()
 
     def cur(self):
-        return self.conn.cursor()
+        cur = self.conn.cursor()
+        cur.row_factory = dict_factory
+        return cur
 
     def pool_query(self, query, args=()):
         cur = self.cur().execute(query, args)
@@ -85,13 +87,25 @@ class AgoraDatabaseManager:
         return (None if res is None else res[0]['data'])
 
 
+    
+    def getFriends(self, uid): 
+        res = self.query("SELECT F.user1, F.user2, U1.username as username1, U2.username as username2 FROM friendships F join users U1 on U1.uid = F.user1 join users U2 on U2.uid = F.user2 WHERE (user1 = ? OR user2 = ?) AND accepted = 1", (uid, uid,)) 
+        return [] if res is None else [(tup['user1'], tup['username1']) if tup['user1'] != uid else (tup['user2'], tup['username2']) for tup in res] 
+    
+    def getFriendReqsFromMe(self, uid): 
+        res = self.query("SELECT F.user1, F.user2, U1.username as username1, U2.username as username2 FROM friendships F join users U1 on U1.uid = F.user1 join users U2 on U2.uid = F.user2 WHERE user1 = ? AND accepted = 0", (uid,)) 
+        return [] if res is None else [(tup['user2'], tup['username2']) for tup in res] 
+
+    def getFriendReqsForMe(self, uid): 
+        res = self.query("SELECT F.user1, F.user2, U1.username as username1, U2.username as username2 FROM friendships F join users U1 on U1.uid = F.user1 join users U2 on U2.uid = F.user2 WHERE user2 = ? AND accepted = 0", (uid,)) 
+        return [] if res is None else [(tup['user1'], tup['username1']) for tup in res] 
+
     def getPublicUser(self, uid):
         res = self.query("SELECT uid, username, pfp, status, suspended FROM users WHERE uid = ?", (uid,))
         info = res[0]
         res = self.query("SELECT pid, title FROM posts WHERE owner = ?", (uid,))
         info["posts"] = [] if res is None else [post for post in res]
-        res = self.query("SELECT F.user1, F.user2, U1.username as username1, U2.username as username2 FROM friendships F join users U1 on U1.uid = F.user1 join users U2 on U2.uid = F.user2 WHERE (user1 = ? OR user2 = ?) AND accepted = 1", (uid, uid,))
-        info["friends"] = [] if res is None else [(tup['user1'], tup['username1']) if tup['user1'] != uid else (tup['user2'], tup['username2']) for tup in res] 
+        info["friends"] = self.getFriends(uid)
         return info
 
     def getUserLastAction(self, uid):        
@@ -124,12 +138,9 @@ class AgoraDatabaseManager:
         res = self.query("SELECT pid, title FROM posts WHERE owner = ?", (uid,))
         info["posts"] = [] if res is None else [post for post in res]
         
-        res = self.query("SELECT user1, user2 FROM friendships WHERE (user1 = ? OR user2 = ?) AND accepted = 1", (uid, uid,))
-        info["friends"] = [] if res is None else [tup['user1'] if tup['user1'] != uid else tup['user2'] for tup in res]
-        res = self.query("SELECT user2 FROM friendships WHERE user1 = ? AND accepted = 0", (uid,))
-        info["fromyou"] = [] if res is None else [r['user2'] for r in res]
-        res = self.query("SELECT user1 FROM friendships WHERE user2 = ? AND accepted = 0", (uid,))
-        info["foryou"] = [] if res is None else [r['user1'] for r in res]
+        info["friends"] = self.getFriends(uid)
+        info["fromyou"] = self.getFriendReqsFromMe(uid)
+        info["foryou"] = self.getFriendReqsForMe(uid)
 
         res = self.query("SELECT accessid, title FROM images WHERE owner = ?", (uid,))
         info["images"] = [] if res is None else [img for img in res]
