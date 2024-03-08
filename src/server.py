@@ -184,6 +184,18 @@ def account_post():
         agoraModel.changeEmail(g.sessionToken, data['email'])
     return redirect("/account")
 
+@app.route('/settings')
+def settings_get():
+    if g.data['logged_in_user'] is not None:
+        userInfo = agoraModel.getMyUser(g.sessionToken)
+        g.data.update(userInfo)
+        return render_template('settings.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
+    return redirect('/login')
+
+@app.route('/settings', methods=['POST'])
+def settings_post():
+    return redirect('/account')
+
 @app.route('/backup')
 def backup_get():
     return render_template('recover-account.html', data=g.data)
