@@ -307,9 +307,11 @@ def files():
     return render_template('files.html', data=g.data)
     
 
-@app.route('/deleteimg/<imgid>', methods=['POST'])
-def delete_image(imgid):
-    agoraModel.deleteImage(g.sessionToken, imgid)
+@app.route('/deleteimg', methods=['POST'])
+def delete_image():
+    data = request.form
+    if 'delete' in data:
+        agoraModel.deleteImage(g.sessionToken, data['delete'])
     return redirect('/files')
 
 @app.route('/search', methods=['POST'])
