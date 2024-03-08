@@ -180,7 +180,7 @@ class AgoraSemanticFilter(AgoraFilter):
         if not self.db.usernameExists(username) is None:
             raise AgoraEInvalidUsername
         oldUsername = self.db.getPublicUser(uid)["username"]
-        self.fm.logif(LOG_USERNAME_CHANGE, f"User {uid} changed their username from {oldUsername.encode('unicode_escape')} to {username.encode('string_escape')}")
+        self.fm.logif(LOG_USERNAME_CHANGE, f"User {uid} changed their username from {oldUsername.encode('unicode_escape')} to {username.encode('unicode_escape')}")
         return self.next.changeUsername(uid, username)
 
 
