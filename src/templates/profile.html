@@ -14,8 +14,11 @@
 <div class="group">
     <div class="hbox padded">
         <div id="profile-post-stack" class="vbox padded">
+            
             {# profile info area #}
             <div class="hbox padded">
+                
+                {# profile picture #}
                 <img class="small-img profile-picture"
                      {% if data['pfp'] is none %}
                          src="{{ url_for('static', filename='img/default-pfp.png') }}" 
@@ -23,8 +26,12 @@
                          src="/userimg/{{ data['pfp'] }}"
                      {% endif %}
                      alt="the user's profile picture">
+                
                 <div class="vbox padded">
+                    {# username #}
                     <div class="username-main">@{{ data['username'] }}</div>
+                    
+                    {# status #}
                     {% if self %}
                         <div class="option-main status-main">
                             {{ forms.profile_option(limits, data, "status") }}</div>
