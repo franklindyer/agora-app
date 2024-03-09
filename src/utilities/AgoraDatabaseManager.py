@@ -89,7 +89,15 @@ class AgoraDatabaseManager:
         return (None if res is None else res[0]['data'])
 
 
-    
+   
+    def getPfp(self, uid):
+        res1 = self.query("SELECT pfp FROM users WHERE uid = ?", (uid,))
+        res2 = self.query("SELECT accessid FROM images WHERE imgid = ?", (res1[0]['pfp'],))
+        # TODO: Debugging
+        if res2 is None:
+            return
+        return res2[0]['accessid']
+
     def getFriends(self, uid): 
         res = self.query("SELECT F.user1, F.user2, U1.username as username1, U2.username as username2 FROM friendships F join users U1 on U1.uid = F.user1 join users U2 on U2.uid = F.user2 WHERE (user1 = ? OR user2 = ?) AND accepted = 1", (uid, uid,)) 
         return [] if res is None else [(tup['user1'], tup['username1']) if tup['user1'] != uid else (tup['user2'], tup['username2']) for tup in res] 
@@ -103,8 +111,9 @@ class AgoraDatabaseManager:
         return [] if res is None else [(tup['user1'], tup['username1']) for tup in res] 
 
     def getPublicUser(self, uid):
-        res = self.query("SELECT uid, username, pfp, status, suspended FROM users WHERE uid = ?", (uid,))
+        res = self.query("SELECT uid, username, status, suspended FROM users WHERE uid = ?", (uid,))
         info = res[0]
+        info["pfp"] = self.getPfp(uid)
         res = self.query("SELECT pid, title FROM posts WHERE owner = ?", (uid,))
         info["posts"] = [] if res is None else [post for post in res]
         info["friends"] = self.getFriends(uid)
@@ -135,6 +144,7 @@ class AgoraDatabaseManager:
     def getPrivateUser(self, uid, concise=False):
         res = self.query("SELECT uid, username, email, pfp, status, suspended, admin FROM users WHERE uid = ?", (uid,))
         info = res[0]
+        info["pfp"] = self.getPfp(uid)
         if concise:
             return info
         res = self.query("SELECT pid, title FROM posts WHERE owner = ?", (uid,))
@@ -207,7 +217,8 @@ class AgoraDatabaseManager:
         self.execute("UPDATE users SET status = ? WHERE uid = ?", (status, uid,))
 
     def setPicture(self, uid, imgid):
-        self.execute("UPDATE users SET pfp = ? WHERE uid = ?", (imgid, uid,))
+        res = self.query("SELECT imgid FROM images WHERE accessid = ?", (imgid,))
+        self.execute("UPDATE users SET pfp = ? WHERE uid = ?", (res[0]['imgid'], uid,))
 
     def setEmail(self, uid, email):
         self.execute("UPDATE users SET email = ? WHERE uid = ?", (email, uid,))
