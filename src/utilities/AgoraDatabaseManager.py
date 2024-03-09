@@ -93,6 +93,9 @@ class AgoraDatabaseManager:
     def getPfp(self, uid):
         res1 = self.query("SELECT pfp FROM users WHERE uid = ?", (uid,))
         res2 = self.query("SELECT accessid FROM images WHERE imgid = ?", (res1[0]['pfp'],))
+        # TODO: Debugging
+        if res2 is None:
+            return
         return res2[0]['accessid']
 
     def getFriends(self, uid): 
