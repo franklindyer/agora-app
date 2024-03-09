@@ -14,18 +14,31 @@
 
 
 {% macro image_list(images) %}
-    <ul class="naked-list">
-    {% for image in images %}
-        <li>
-            <div class="hbox padded">
-                <form method="post" action="/deleteimg/{{ image['accessid'] }}">
-                    <input type="submit" value="X">
-                </form>
-            <a href="/userimg/{{ image['accessid'] }}">{{ image['title'] }}</a>
+    <form method="post" action="/account">
+        <div class="vbox padded">
+            <ul class="naked-list">
+            {% for image in images %}
+                {% set iid = image['accessid'] %}
+                <li>
+                    <div class="hbox padded">
+                        <button name="delete" 
+                            value="{{ iid }}" 
+                            type="submit" 
+                            form="delete-form">X</button>
+                        
+                        <input type="radio" name="pfp" value="{{ iid }}">
+                    
+                        <a href="/userimg/{{ iid }}">{{ image['title'] }}</a>
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+            <div>
+                <input type="submit" value="set profile picture">
             </div>
-        </li>
-    {% endfor %}
-    </ul>
+        </div>
+    </form>
+    <form method="post" action="/deleteimg" id="delete-form"></form>
 {% endmacro %}
 
 
@@ -40,12 +53,13 @@
 {% macro private_post_list(data) %}
     <ul class="naked-list">
     {% for post in data['posts'] %}
+        {% set pid = post['pid'] %}
         <li>
             <div class="hbox padded">
-                <form method="post" action="/deletepost/{{ post['pid'] }}">
+                <form method="post" action="/deletepost/{{ pid }}">
                     <input type="submit" value="X">
                 </form>
-                <a href="/post/{{ post['pid'] }}">{{ post['title'] }}</a>
+                <a href="/post/{{ pid }}">{{ post['title'] }}</a>
             </div>
         </li>
     {% endfor %}
