@@ -56,6 +56,8 @@ class AgoraDatabaseManager:
         res = self.query("SELECT uid FROM users WHERE username = ? AND hpassword = ?", (username, hpassword,))
         return (None if res is None else res[0]['uid'])
 
+
+
     def getRecovery(self, hrecovery):
         res = self.query("SELECT uid FROM users WHERE hrecovery = ?", (hrecovery,))
         return (None if res is None else res[0]['uid'])
@@ -181,9 +183,6 @@ class AgoraDatabaseManager:
     def verifyUser(self, uid):
         self.execute("UPDATE users SET confirmed = 1 WHERE uid = ?", (uid,))
 
-    def setRecovery(self, uid, hrecovery):
-        self.execute("UPDATE users SET hrecovery = ? WHERE uid = ?", (hrecovery, uid,))
-
 
 
     def createToken(self, uid, token, ttype, data=None):
@@ -216,6 +215,11 @@ class AgoraDatabaseManager:
     def setUsername(self, uid, username):
         self.execute("UPDATE users SET username = ? WHERE uid = ?", (username, uid,))
 
+    def setPassword(self, uid, hpassword):
+        self.execute("UPDATE users SET hpassword = ? WHERE uid = ?", (hpassword, uid,))
+
+    def setBackup(self, uid, hbackup):
+        self.execute("UPDATE users SET hrecovery = ? where uid = ?", (hbackup, uid,))
 
 
     def insertPost(self, uid, title, location):
