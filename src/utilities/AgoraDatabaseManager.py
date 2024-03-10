@@ -111,13 +111,12 @@ class AgoraDatabaseManager:
         return [] if res is None else [tup['user1'] for tup in res] 
 
     def getPublicUserThumbnail(self, uid):
-        res = self.query("SELECT U.uid, U.username, U.status, I.accessid as pfp FROM users U JOIN images I ON U.pfp = I.imgid WHERE U.uid = ?", (uid,))
+        res = self.query("SELECT uid, username, status, pfp FROM users WHERE uid = ?", (uid,))
         return None if res is None else res[0]
 
     def getPublicUser(self, uid):
-        res = self.query("SELECT uid, username, status, suspended FROM users WHERE uid = ?", (uid,))
+        res = self.query("SELECT uid, username, status, suspended, pfp FROM users WHERE uid = ?", (uid,))
         info = res[0]
-        info["pfp"] = self.getPfp(uid)
         res = self.query("SELECT pid, title FROM posts WHERE owner = ?", (uid,))
         info["posts"] = [] if res is None else [post for post in res]
         info["friends"] = {uid : info for uid, info in zip(self.getFriends(uid), map(self.getPublicUserThumbnail, self.getFriends(uid))) if uid is not None}
@@ -148,7 +147,6 @@ class AgoraDatabaseManager:
     def getPrivateUser(self, uid, concise=False):
         res = self.query("SELECT uid, username, email, pfp, status, suspended, admin FROM users WHERE uid = ?", (uid,))
         info = res[0]
-        info["pfp"] = self.getPfp(uid)
         if concise:
             return info
         res = self.query("SELECT pid, title FROM posts WHERE owner = ?", (uid,))
@@ -180,7 +178,7 @@ class AgoraDatabaseManager:
         return res[0]["owner"]
 
     def searchUser(self, substr):
-        res = self.query("SELECT uid, username FROM users WHERE username LIKE '%' || ? || '%'", (substr,))
+        res = self.query("SELECT uid, username, pfp FROM users WHERE username LIKE '%' || ? || '%'", (substr,))
         return (None if res is None else [r for r in res])
 
     def searchPost(self, substr):
@@ -189,8 +187,8 @@ class AgoraDatabaseManager:
 
 
 
-    def createUser(self, email, username, hpassword, hrecovery):
-        self.execute("INSERT INTO users (email, username, hpassword, hrecovery) VALUES (?, ?, ?, ?)", (email, username, hpassword, hrecovery,))
+    def createUser(self, email, username, hpassword, hrecovery, pfp):
+        self.execute("INSERT INTO users (email, username, hpassword, hrecovery, pfp) VALUES (?, ?, ?, ?, ?)", (email, username, hpassword, hrecovery, pfp,))
         res = self.query("SELECT uid FROM users WHERE email = ?", (email,))
         return res[0]['uid']
 
@@ -220,9 +218,8 @@ class AgoraDatabaseManager:
     def setStatus(self, uid, status):
         self.execute("UPDATE users SET status = ? WHERE uid = ?", (status, uid,))
 
-    def setPicture(self, uid, imgid):
-        res = self.query("SELECT imgid FROM images WHERE accessid = ?", (imgid,))
-        self.execute("UPDATE users SET pfp = ? WHERE uid = ?", (res[0]['imgid'], uid,))
+    def setPicture(self, uid, accessid):
+        self.execute("UPDATE users SET pfp = ? WHERE uid = ?", (accessid, uid,))
 
     def setEmail(self, uid, email):
         self.execute("UPDATE users SET email = ? WHERE uid = ?", (email, uid,))
