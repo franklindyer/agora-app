@@ -99,16 +99,20 @@ class AgoraDatabaseManager:
         return res2[0]['accessid']
 
     def getFriends(self, uid): 
-        res = self.query("SELECT F.user1, F.user2, U1.username as username1, U2.username as username2 FROM friendships F join users U1 on U1.uid = F.user1 join users U2 on U2.uid = F.user2 WHERE (user1 = ? OR user2 = ?) AND accepted = 1", (uid, uid,)) 
-        return [] if res is None else [(tup['user1'], tup['username1']) if tup['user1'] != uid else (tup['user2'], tup['username2']) for tup in res] 
+        res = self.query("SELECT user1, user2 FROM friendships WHERE (user1 = ? OR user2 = ?) AND accepted = 1", (uid, uid,)) 
+        return [] if res is None else [tup['user1'] if tup['user1'] != uid else tup['user2'] for tup in res] 
     
     def getFriendReqsFromMe(self, uid): 
-        res = self.query("SELECT F.user1, F.user2, U1.username as username1, U2.username as username2 FROM friendships F join users U1 on U1.uid = F.user1 join users U2 on U2.uid = F.user2 WHERE user1 = ? AND accepted = 0", (uid,)) 
-        return [] if res is None else [(tup['user2'], tup['username2']) for tup in res] 
+        res = self.query("SELECT user1, user2 FROM friendships WHERE user1 = ? AND accepted = 0", (uid,)) 
+        return [] if res is None else [tup['user2'] for tup in res] 
 
     def getFriendReqsForMe(self, uid): 
-        res = self.query("SELECT F.user1, F.user2, U1.username as username1, U2.username as username2 FROM friendships F join users U1 on U1.uid = F.user1 join users U2 on U2.uid = F.user2 WHERE user2 = ? AND accepted = 0", (uid,)) 
-        return [] if res is None else [(tup['user1'], tup['username1']) for tup in res] 
+        res = self.query("SELECT user1, user2 FROM friendships WHERE user2 = ? AND accepted = 0", (uid,)) 
+        return [] if res is None else [tup['user1'] for tup in res] 
+
+    def getPublicUserThumbnail(self, uid):
+        res = self.query("SELECT U.uid, U.username, U.status, I.accessid as pfp FROM users U JOIN images I ON U.pfp = I.imgid WHERE U.uid = ?", (uid,))
+        return None if res is None else res[0]
 
     def getPublicUser(self, uid):
         res = self.query("SELECT uid, username, status, suspended FROM users WHERE uid = ?", (uid,))
@@ -116,7 +120,7 @@ class AgoraDatabaseManager:
         info["pfp"] = self.getPfp(uid)
         res = self.query("SELECT pid, title FROM posts WHERE owner = ?", (uid,))
         info["posts"] = [] if res is None else [post for post in res]
-        info["friends"] = self.getFriends(uid)
+        info["friends"] = {uid : info for uid, info in zip(self.getFriends(uid), map(self.getPublicUserThumbnail, self.getFriends(uid))) if uid is not None}
         return info
 
     def getUserLastAction(self, uid):        
@@ -150,9 +154,9 @@ class AgoraDatabaseManager:
         res = self.query("SELECT pid, title FROM posts WHERE owner = ?", (uid,))
         info["posts"] = [] if res is None else [post for post in res]
         
-        info["friends"] = self.getFriends(uid)
-        info["fromyou"] = self.getFriendReqsFromMe(uid)
-        info["foryou"] = self.getFriendReqsForMe(uid)
+        info["friends"] = {uid : info for uid, info in zip(self.getFriends(uid), map(self.getPublicUserThumbnail, self.getFriends(uid))) if uid is not None}
+        info["fromyou"] = {uid : info for uid, info in zip(self.getFriendReqsFromMe(uid), map(self.getPublicUserThumbnail, self.getFriendReqsFromMe(uid))) if uid is not None}
+        info["foryou"] = {uid : info for uid, info in zip(self.getFriendReqsForMe(uid), map(self.getPublicUserThumbnail, self.getFriendReqsForMe(uid))) if uid is not None}
 
         res = self.query("SELECT accessid, title FROM images WHERE owner = ?", (uid,))
         info["images"] = [] if res is None else [img for img in res]
@@ -266,7 +270,7 @@ class AgoraDatabaseManager:
 
     def insertFriendReq(self, uid1, uid2):
         self.execute("UPDATE friendships SET accepted = 1 WHERE user1 = ? AND user2 = ?", (uid2, uid1,))
-        res = self.query("SELECT accepted FROM friendships WHERE user1 = ? AND user2 = ?", (uid1, uid2,))
+        res = self.query("SELECT accepted FROM friendships WHERE user1 = ? AND user2 = ?", (uid2, uid1,))
         if res is None:
             self.execute("INSERT INTO friendships (user1, user2) VALUES (?, ?)", (uid1, uid2,))
 
