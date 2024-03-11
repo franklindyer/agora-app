@@ -4,7 +4,6 @@
 
 {% block content %}
     <div class="group center-option-box vbox">
-        <script src="https://www.google.com/recaptcha/api.js"></script>
         <script>
             function onSubmit(token) {
                 document.getElementById("create-account-form").submit();
@@ -26,11 +25,6 @@
                        minlength="{{ limits['password'][0] }}" 
                        maxlength="{{ limits['password'][1] }}" 
                        required />
-            </div>
-            <div class="vbox">
-            {# TODO: this functionality needs to be added #}
-                <label for="confirm-password">confirm password:</label>
-                <input type="password" name="confirm-password" required />
             </div>
             <div class="vbox">
                 <label for="email">email:</label>

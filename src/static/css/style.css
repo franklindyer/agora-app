@@ -14,11 +14,27 @@ hr {
     border-style: dashed;
 }
 
+h2 {
+    padding: 0%;
+    margin: 0%;
+}
+
+h3 {
+    padding: 0%;
+    margin: 0%;
+}
+
 pre {
 /* TODO: this is a workaround for a terrible markdown.markdown behavior that turns all lines 
    that start with an indent into pre blocks. This may not be the behavior we want when we 
    figure out a better long-term solution for the markdown.markdown issue. */
     white-space: pre-wrap;
+}
+
+fieldset, textarea {
+    border-style: solid;
+    border-color: lightgray;
+    border-width: thin;
 }
 
 .hbox {
@@ -40,14 +56,25 @@ pre {
     row-gap: 1em;
 }
 
-.vbox.centered {
-/* TODO: mostly untested */
+.centered {
     text-align: center;
     align-items: center;
     justify-content: center;
 }
 
-.hbox.centered {
+.hbox.h-centered {
+    justify-content: center;
+}
+
+.hbox.v-centered {
+    align-items: center;
+}
+
+.vbox.v-centered {
+    justify-content: center;
+}
+
+.vbox.h-centered {
     align-items: center;
 }
 
@@ -88,7 +115,18 @@ pre {
     margin: 2%;
 }
 
-/* header */
+.wrapper {
+    display: flex;
+    min-height: 98vh;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+/* header and footer */
 
 nav {
     display: flex;

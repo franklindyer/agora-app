@@ -1,0 +1,38 @@
+{% macro update_existing_form(limits, data, option, target) %}
+<form method="post" action="{{ target }}" autocomplete="off">
+    <label for="{{ option }}">New {{ option }}:</label>
+    <input type="{{ option }}"
+           name="{{ option }}" 
+           value="{{ data[option] }}"
+           minlength="{{ limits[option][0] }}"
+           maxlength="{{ limits[option][1] }}" >
+    <input type="submit" value="update">
+</form>
+{% endmacro %}
+
+{% macro profile_option(limits, data, option) %}
+<form method="post" action="/account" class="editable-profile-option" autocomplete="off">
+    <label class="profile-option-label" for="{{ option }}"></label>
+    <input type="{{ option }}" 
+           name="{{ option }}" 
+           value="{{ data[option] }}"
+           minlength="{{ limits[option][0] }}"
+           maxlength="{{ limits[option][1] }}" >
+    <input type="submit" value="update {{ option }}">
+</form>
+{% endmacro %}
+
+{% macro simple_post(target, text, label_l, label_r, redirect) %}
+<form method="post" action="{{ target }}">
+    {% if label_l is not none %}
+        <label for="{{ label_l }}-button">{{ label_l }}</label>
+    {% endif %}
+    <button id="{{ label }}-button">{{ text }}</button>
+    {% if label_r is not none %}
+        <label for="{{ label_r }}-button">{{ label_r }}</label>
+    {% endif %}
+    {% if redirect is not none %}
+        <input type="hidden" name="redirect" value="{{ redirect }}">
+    {% endif %}
+</form>
+{% endmacro %}

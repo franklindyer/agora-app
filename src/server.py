@@ -1,6 +1,7 @@
 import os
 import sys
 from flask import Flask, render_template, request, redirect, g, send_file
+from html_sanitizer import Sanitizer
 import markdown
 
 sys.path.insert(1, './params')
@@ -55,21 +56,14 @@ def handleAgoraError(err):
         "error": type(err).__name__
     }
 
-def agoraerror(pageserver):
-    def wrapper(*args):
-        try:
-            pageserver(*args)
-        except AgoraException as err:
-            g.data['logged_in_user'] = None
-            g.data.update(handleAgoraError(err))
-            return render_template('error.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
-
 app = Flask(__name__)
 app.debug = True
-
+sanitizer = Sanitizer()     # We're using the library's default configuration
 
 @app.errorhandler(AgoraException)
 def agoraError(err):
+    if isinstance(err, AgoraEInvalidToken) or isinstance(err, AgoraENotLoggedIn):
+        return redirect('/login')
     g.data.update(handleAgoraError(err))
     return render_template('error.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
@@ -95,11 +89,19 @@ def users():
 @app.route('/user/<uid>')
 def user(uid):
     userInfo = {}
-    if g.data['logged_in_user'] is None or uid != g.data['logged_in_user']['uid']:
-        userInfo = agoraModel.getUser(uid)
-    else:
-        userInfo = agoraModel.getMyUser(g.sessionToken)
+    myInfo = None
+        
+    userInfo = agoraModel.getUser(uid)
+
+    if g.data['logged_in_user'] is not None:
+        myInfo = agoraModel.getMyUser(g.sessionToken) 
+        
+        if uid == str(g.data['logged_in_user']['uid']):
+            userInfo = myInfo
+
     g.data.update(userInfo)
+    g.data['logged_in_user'] = myInfo
+
     return render_template('profile.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/post/<pid>')
@@ -110,7 +112,7 @@ def post(pid):
 def get_post_content(pid):
     postInfo = agoraModel.getPost(pid)
     md_content = agoraFM.getPost(postInfo['filename'])
-    html_content = markdown.markdown(md_content)
+    html_content = sanitizer.sanitize(markdown.markdown(md_content))
     postInfo["content"] = html_content
     postInfo["raw_content"] = md_content
     g.data.update(postInfo)
@@ -154,7 +156,7 @@ def login_get():
 @app.route('/login', methods=['POST'])
 def login_post():
     data = request.form
-    sessionToken = agoraModel.login(data['username'], data['password'])
+    sessionToken = agoraModel.login(data['username'], data['password'], data['g-recaptcha-response'])
     resp = redirect("/account")
     resp.set_cookie("session", sessionToken)
     return resp
@@ -184,12 +186,52 @@ def account_post():
         agoraModel.changeEmail(g.sessionToken, data['email'])
     return redirect("/account")
 
-@app.route('/backup/<code>', methods=['POST'])
-def backup_post(code):
+@app.route('/settings')
+def settings_get():
+    if g.data['logged_in_user'] is not None:
+        userInfo = agoraModel.getMyUser(g.sessionToken)
+        g.data.update(userInfo)
+        return render_template('settings.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
+    return redirect('/login')
+
+@app.route('/settings', methods=['POST'])
+def settings_post():
+    return redirect('/account')
+
+@app.route('/backup')
+def backup_get():
+    return render_template('recover-account.html', data=g.data)
+
+@app.route('/backup', methods=['POST'])
+def backup_post():
+    data = request.form
+    if 'email' in data and 'code' in data:
+        agoraModel.backupRecover(data['code'], data['email'])
+    return render_template('info.html', data=g.data, msg='backup-sent-email')
+
+@app.route('/changepass')
+def change_password_request_get():
+    return render_template('reset-password.html', data=g.data)
+
+@app.route('/changepass', methods=['POST'])
+def change_password_request_post():
     data = request.form
     if "email" in data:
-        agoraModel.backupRecover(code, data['email'])
-    return render_template('info.html', data=g.data, msg='backup-sent-email')
+        agoraModel.recoverAccount(data["email"])
+    return render_template('info.html', data=g.data, msg='recovery-sent-email')
+
+@app.route('/changepass/<token>')
+def change_password_get(token):
+    g.data['token'] = token
+    return render_template('new-password.html', data=g.data)
+
+@app.route('/changepass/<token>', methods=['POST'])
+def change_password_post(token):
+    data = request.form
+    if "password" in data:
+        agoraModel.confirmRecover(token, data["password"])
+        return render_template('info.html', data=g.data, msg='confirm-password-reset')
+    return redirect('/login')
 
 @app.route('/confirmemail/<token>')
 def confirm_email(token):
@@ -204,7 +246,7 @@ def new_post():
 @app.route('/write', methods=['POST'])
 def write_post():
     data = request.form
-    pid = agoraModel.writePost(g.sessionToken, data["title"], data["content"])
+    pid = agoraModel.writePost(g.sessionToken, data["title"], data["content"], data["g-recaptcha-response"])
     return redirect(f'/post/{pid}')
 
 @app.route('/edit/<pid>')
@@ -221,12 +263,12 @@ def edit_post(pid):
 @app.route('/deletepost/<pid>', methods=['POST'])
 def delete_post(pid):
     agoraModel.deletePost(g.sessionToken, pid)
-    return redirect("/account")
+    return redirect("/files")
 
 @app.route('/comment/<pid>', methods=['POST'])
 def write_comment(pid):
     data = request.form
-    agoraModel.comment(g.sessionToken, pid, data['content'])
+    agoraModel.comment(g.sessionToken, pid, data['content'], data['g-recaptcha-response'])
     return redirect(f"/post/{pid}")
 
 @app.route('/deletecomment/<cid>', methods=['POST'])
@@ -256,32 +298,47 @@ def admin_deleteuser(uid):
     agoraModel.adminDelete(g.sessionToken, uid, data["password"])
     return redirect("/")
 
-@app.route('/like/<pid>', methods=['POST'])
-def like_post(pid):
-    agoraModel.like(g.sessionToken, pid)
-    return redirect(f"/post/{pid}")
-
-@app.route('/unlike/<pid>', methods=['POST'])
-def unlike_post(pid):
-    agoraModel.unlike(g.sessionToken, pid)
-    return redirect(f"/post/{pid}")
-
-@app.route('/dislike/<pid>', methods=['POST'])
-def dislike_post(pid):
-    agoraModel.dislike(g.sessionToken, pid)
-    return redirect(f"/post/{pid}")
+@app.route('/vote/<pid>', methods=['POST'])
+def vote(pid):
+    data = request.form
+    if 'vote' in data:
+        match data['vote']:
+            case 'like': 
+                agoraModel.like(g.sessionToken, pid)
+            case 'dislike': 
+                agoraModel.dislike(g.sessionToken, pid) 
+            case 'unlike': 
+                agoraModel.unlike(g.sessionToken, pid)
+            case _: 
+                print('help!')
+    return redirect(f'/post/{pid}')
 
 @app.route('/upload', methods=['POST'])
-def upload_image():
+def upload_image_post():
     imgData = request.files['file']
-    title = imgData.filename
-    return agoraModel.uploadImage(g.sessionToken, title, imgData)
-##    return redirect('/account')
+    data = request.form
+    title = data['title']
+    imgID = agoraModel.uploadImage(g.sessionToken, title, imgData)
+    return redirect('/files')
 
-@app.route('/deleteimg/<imgid>', methods=['POST'])
-def delete_image(imgid):
-    agoraModel.deleteImage(g.sessionToken, imgid)
-    return redirect('/account')
+@app.route('/upload')
+def upload_image_get():
+    return render_template('upload.html', data=g.data)
+
+@app.route('/files')
+def files():
+    if g.data['logged_in_user'] is None:
+        return redirect('/login')
+    userInfo = agoraModel.getMyUser(g.sessionToken)
+    g.data.update(userInfo)
+    return render_template('files.html', data=g.data)
+
+@app.route('/deleteimg', methods=['POST'])
+def delete_image():
+    data = request.form
+    if 'delete' in data:
+        agoraModel.deleteImage(g.sessionToken, data['delete'])
+    return redirect('/files')
 
 @app.route('/search', methods=['POST'])
 def search():
@@ -314,18 +371,28 @@ def get_search(querytype, query):
 @app.route('/friend/<uid>', methods=['POST'])
 def friend(uid):
     agoraModel.friendRequest(g.sessionToken, uid)
-    return redirect(f"/user/{uid}")
+    data = request.form
+    if 'redirect' in data:
+        return redirect(data['redirect'])
+    return redirect('/account')
 
 @app.route('/unfriend/<uid>', methods=['POST'])
 def unfriend(uid):
     agoraModel.unfriend(g.sessionToken, uid)
-    return redirect(f"/user/{uid}")
+    data = request.form
+    if 'redirect' in data:
+        return redirect(data['redirect'])
+    return redirect('/account')
+
+@app.route('/report')
+def bug_report_get():
+    return render_template('report.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/report', methods=['POST'])
-def bug_report():
+def bug_report_post():
     data = request.form
     if "content" in data:
         agoraModel.bugReport(g.sessionToken, data["content"])
-    return redirect("/")
+    return render_template('info.html', data=g.data, msg='confirm-report-submitted')
 
 app.run(host = "0.0.0.0", port = PORT)

@@ -1,16 +1,24 @@
 <!doctype html>
 <html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <title>{% block title %} {% endblock %} - Agora</title>
-  </head>
-  <body>
-    {% include 'header.html' %}
-    <div class="content">
-        {% block content %} {% endblock %}
-    </div>
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <title>{% block title %} {% endblock %} - Agora</title>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="header">{% include 'header.html' %}</div>
+            <div class="content">{% block content %} {% endblock %}</div>
+            <div class="footer">{% include 'footer.html' %}</div>
+        </div>
+    </body>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script type="text/x-mathjax-config">
+           MathJax.Hub.Config({
+              tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+           });
+        </script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 </html>
 

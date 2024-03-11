@@ -14,7 +14,7 @@
                 <a href="/user/{{ data['logged_in_user']['uid'] }}">
                     @{{ data['logged_in_user']['username'] }}</a>
                 <form action="/logout" method="post">
-                    <input type="submit" value="logout" name="logout"></input>
+                    <input type="submit" value="logout" name="logout">
                 </form>
             </div>
         {% endif %}
@@ -33,7 +33,6 @@
         </form>
 	</div>
 
-    </div>
 </nav>
 
 <hr>

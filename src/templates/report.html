@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+<h1>{% block title %}report a bug{% endblock %}</h1>
+
+{% block content %}
+
+<div class="group">
+    <div class="vbox padded">
+        <h1>Submit a bug report<h1>
+        <h2>Please describe the bug you found in as much detail as possible:<h3>
+        <div class="post-box">
+            <textarea 
+                form="bug-report-form" 
+                name="content"
+                minlength="{{ limits['bug-report'][0] }}"
+                maxlength="{{ limits['bug-report'][1] }}"
+                required ></textarea>
+        </div>
+        
+        <form id="bug-report-form" method="post">
+            <input type="submit" value="submit">
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+

@@ -92,10 +92,10 @@ class AgoraSyntacticFilter(AgoraFilter):
 
 
 
-    def login(self, username, password):
+    def login(self, username, password, captcha):
         self.validateUsername(username)
         hpassword = self.validatePassword(password)
-        return self.next.login(username, hpassword)
+        return self.next.login(username, hpassword, captcha)
 
     def logout(self, sessionToken):
         self.validateToken(sessionToken, "session")
@@ -186,11 +186,11 @@ class AgoraSyntacticFilter(AgoraFilter):
         self.validateUsername(username)
         return self.next.changeUsername(sessionToken, username)
 
-    def writePost(self, sessionToken, title, content):
+    def writePost(self, sessionToken, title, content, captcha):
         self.validateToken(sessionToken, "session")
         self.validatePostTitle(title)
         self.validatePost(content)
-        return self.next.writePost(sessionToken, title, content)
+        return self.next.writePost(sessionToken, title, content, captcha)
 
     def editPost(self, sessionToken, pid, title, content):
         self.validateToken(sessionToken, "session")
@@ -246,12 +246,12 @@ class AgoraSyntacticFilter(AgoraFilter):
 
 
 
-    def comment(self, sessionToken, pid, content):
+    def comment(self, sessionToken, pid, content, captcha):
         self.validateToken(sessionToken, "session")
         if not self.isValidId(pid):
             raise AgoraENoSuchPost
         self.validateComment(content)
-        return self.next.comment(sessionToken, int(pid), content)
+        return self.next.comment(sessionToken, int(pid), content, captcha)
 
     def deleteComment(self, sessionToken, cid):
         self.validateToken(sessionToken, "session")

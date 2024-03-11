@@ -1,11 +1,17 @@
+{% import 'manage-files.html' as files %}
+
 {% extends 'base.html' %}
 
 <h1>{% block title %}{{ data['title'] }}{% endblock %}</h1>
 
 {% block content %}
-<div class="group">
 
+<div class="group">
     <div class="vbox padded">
+        <div class="hbox padded">
+            <h3>Manage posts and images:</h3>
+            {{ files.manage_files_button() }}
+        </div>
         <div class="post-box post-title">
             <textarea form="editable-post-form" 
                       name="title"
@@ -23,17 +29,27 @@
                       >{{ data['raw_content'] }}</textarea>
         </div>
         
-        <form id="editable-post-form" 
-            method="post" 
+        <form id="editable-post-form" method="post" 
             {% if data['new_post'] %}
                 action="/write"
             {% else %}
                 action="/edit/{{ data['pid'] }}"
             {% endif %}>
-            <input type="submit" value="post">
+            <script>
+                function onSubmit(token) {
+                    document.getElementById("editable-post-form").submit();
+                }
+            </script>
+            <button class="g-recaptcha" 
+                    data-sitekey="{{ data['recaptcha_sitekey'] }}" 
+                    data-callback="onSubmit" 
+                    data-action="submit" 
+                    type="submit">
+            Submit
+            </button>
         </form>
     </div>
-    
 </div>
+
 {% endblock %}
 

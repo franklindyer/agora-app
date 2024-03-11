@@ -59,7 +59,8 @@ class AgoraSemanticFilter(AgoraFilter):
 
 
 
-    def login(self, username, hpassword):
+    def login(self, username, hpassword, captcha):
+        self.verifyCaptcha(captcha)
         uid = self.db.passwordCorrect(username, hpassword)
         if uid is None:
             raise AgoraEIncorrectCreds
@@ -98,21 +99,25 @@ class AgoraSemanticFilter(AgoraFilter):
 
     def recoverAccount(self, emailAddress):
         uid = self.db.emailExists(emailAddress)     # We don't raise an error when uid is None, in order to avoid disclosing emails
-        return self.next.recoverAccount(emailAddress, not (uid is None))
+        return self.next.recoverAccount(uid, emailAddress, not (uid is None))
 
-    def backupRecover(self, hrecovery, emailAddress):
-        uid = self.db.getRecovery(hrecovery)
+    def backupRecover(self, hbackup, emailAddress):
+        uid = self.db.getRecovery(hbackup)
         if uid is None:
             raise AgoraEInvalidToken
+        acceptable = True
+        otherOwner = self.db.emailExists(emailAddress)
+        if otherOwner is not None:
+            acceptable = False
         self.fm.logif(LOG_RECOVERY, f"User {uid} recovered their account with a backup code")
-        return self.next.backupRecover(uid, emailAddress)
+        return self.next.backupRecover(uid, hbackup, emailAddress, acceptable=acceptable)
 
     def confirmRecover(self, recoveryToken, hpassword):
         uid = self.db.tokenExists(recoveryToken, "recovery")
         if uid is None:
             raise AgoraEInvalidToken
         self.fm.logif(LOG_RECOVERY, f"User {uid} recovered their account via email")
-        return self.next.confirmRecover(uid, hpassword)
+        return self.next.confirmRecover(uid, recoveryToken, hpassword)
 
 
 
@@ -176,12 +181,13 @@ class AgoraSemanticFilter(AgoraFilter):
         if not self.db.usernameExists(username) is None:
             raise AgoraEInvalidUsername
         oldUsername = self.db.getPublicUser(uid)["username"]
-        self.fm.logif(LOG_USERNAME_CHANGE, f"User {uid} changed their username from {oldUsername.encode('unicode_escape')} to {username.encode('string_escape')}")
+        self.fm.logif(LOG_USERNAME_CHANGE, f"User {uid} changed their username from {oldUsername.encode('unicode_escape')} to {username.encode('unicode_escape')}")
         return self.next.changeUsername(uid, username)
 
 
 
-    def writePost(self, sessionToken, title, content):
+    def writePost(self, sessionToken, title, content, captcha):
+        self.verifyCaptcha(captcha)
         uid = self.doLogin(sessionToken)
         self.applyTimeLimit(uid)
         self.fm.logif(LOG_CREATE_POST, f"User {uid} wrote a new post")
@@ -262,7 +268,8 @@ class AgoraSemanticFilter(AgoraFilter):
 
 
 
-    def comment(self, sessionToken, pid, content):
+    def comment(self, sessionToken, pid, content, captcha):
+        self.verifyCaptcha(captcha)
         uid = self.doLogin(sessionToken)
         self.applyTimeLimit(uid)
         if self.db.postExists(pid) is None:

@@ -1,0 +1,24 @@
+{% from 'form.html' import update_existing_form %}
+{% import 'manage-files.html' as files %}
+
+{% extends 'base.html' %}
+
+<h1>{% block title %}settings{% endblock %}</h1>
+
+{% block content %}
+
+<div class="group">
+    <h1>Settings for {{ data['username'] }}:</h1>
+    <div class="vbox padded">
+        {{ update_existing_form(limits, data, 'username', '/account') }}
+        {{ update_existing_form(limits, data, 'email', '/account') }}
+        <form method="post" action="/changepass">
+            <label for="reset-password">Request a password reset email: </label>
+            <input type="hidden" name="email" value="{{ data['email'] }}">
+            <input type="submit" value="request">
+        </form>
+        {{ files.manage_files_button() }}
+    </div>
+</div>
+
+{% endblock %}

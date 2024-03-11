@@ -26,9 +26,9 @@ class AgoraInterpreterFilter:
         if not old_uid is None:
             self.db.deleteUser(old_uid)     # Delete any unconfirmed accounts with this address
         if acceptable:
-            recovery = self.generateToken("recovery")
+            recovery = self.generateToken("backup")
             hrecovery = hashlib.sha256(recovery.encode()).hexdigest()
-            uid = self.db.createUser(emailAddress, username, hpassword, hrecovery)
+            uid = self.db.createUser(emailAddress, username, hpassword, hrecovery, "0"*IMG_RANDOM_ID_LENGTH)
             confirm = self.generateToken("creation")
             confirmUrl = f'{self.host}/join/{confirm}'
             self.eml.confirmAccountEmail(emailAddress, confirmUrl, recovery)
@@ -57,14 +57,19 @@ class AgoraInterpreterFilter:
 
 
 
-    def recoverAccount(self, emailAddress, acceptable):
-        raise NotImplementedError
-    
-    def confirmRecover(self, uid, hpassword):
-        raise NotImplementedError
+    def recoverAccount(self, uid, emailAddress, acceptable):
+        if not acceptable:
+            return
+        recoveryToken = self.generateToken("recovery")
+        self.db.createToken(uid, recoveryToken, "recovery")
+        self.eml.recoverAccountEmail(emailAddress, f"{self.host}/changepass/{recoveryToken}")
+ 
+    def confirmRecover(self, uid, recoveryToken, hpassword):
+        self.db.expireToken(recoveryToken)
+        self.db.setPassword(uid, hpassword)
 
-    def backupRecover(self, uid, emailAddress):
-        self.changeEmail(uid, emailAddress, True)
+    def backupRecover(self, uid, hbackup, emailAddress, acceptable=True):
+        self.changeEmail(uid, emailAddress, acceptable)
 
 
 
@@ -87,7 +92,7 @@ class AgoraInterpreterFilter:
         recovery = self.generateToken("recovery")
         hrecovery = hashlib.sha256(recovery.encode()).hexdigest()
         self.eml.newRecoveryToken(newEmail, recovery)
-        self.db.setRecovery(uid, hrecovery)
+        self.db.setBackup(uid, hrecovery)
 
     def changeUsername(self, uid, username):
         self.db.setUsername(uid, username)
@@ -106,7 +111,9 @@ class AgoraInterpreterFilter:
         self.fm.editPost(filename, content)
 
     def deletePost(self, pid):
+        filename = self.db.getPostInfo(pid)["filename"]
         self.db.deletePost(pid)
+        self.fm.deletePost(filename)
     
     def uploadImage(self, uid, title, extension, imgData):
         accessid = self.generateToken('imgid')

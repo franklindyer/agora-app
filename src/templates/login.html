@@ -4,21 +4,32 @@
 
 {% block content %}
     <div class="group center-option-box vbox">
-        <form method="post" class="group">
+        <form method="post" id="login-form" class="group">
             <div>
                 <label for="username">username:</label>
-                <input type="text" name="username" required />
+                <input type="text" name="username" required>
             </div>
             <div>
                 <label for="password">password:</label>
-                <input type="password" name="password" required />
+                <input type="password" name="password" required>
             </div>
-            <input type="submit" value="log in"/>
+            <script>
+                function onSubmit(token) {
+                    document.getElementById("login-form").submit();
+                }
+            </script>
+            <button class="g-recaptcha" 
+                    data-sitekey="{{ data['recaptcha_sitekey'] }}" 
+                    data-callback="onSubmit" 
+                    data-action="submit" 
+                    type="submit">
+            Submit
+            </button>
         </form>
         <div class="group hbox" id="login-options">
-            <a class="nav-button" href="/join">create account</a>
-            {# TODO: this is going to redirect to forgetting pwd page #}
-            <a class="nav-button" href="/">forgot password</a>
+            <a href="/join">create account</a>
+            <a href="/changepass">forgot password</a>
+            <a href="/backup">recover account</a>
         </div>
     </div>
 {% endblock %}
