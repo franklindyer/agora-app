@@ -4,7 +4,7 @@ USER root
 
 RUN apt-get -y update
 RUN apt-get install -y sqlite3 libsqlite3-dev
-RUN python3 -m pip install flask markdown requests
+RUN python3 -m pip install flask markdown requests html_sanitizer
 
 RUN mkdir /app
 ENV AP /app

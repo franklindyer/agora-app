@@ -1,6 +1,7 @@
 import os
 import sys
 from flask import Flask, render_template, request, redirect, g, send_file
+from html_sanitizer import Sanitizer
 import markdown
 
 sys.path.insert(1, './params')
@@ -57,7 +58,7 @@ def handleAgoraError(err):
 
 app = Flask(__name__)
 app.debug = True
-
+sanitizer = Sanitizer()     # We're using the library's default configuration
 
 @app.errorhandler(AgoraException)
 def agoraError(err):
@@ -111,7 +112,7 @@ def post(pid):
 def get_post_content(pid):
     postInfo = agoraModel.getPost(pid)
     md_content = agoraFM.getPost(postInfo['filename'])
-    html_content = markdown.markdown(md_content)
+    html_content = sanitizer.sanitize(markdown.markdown(md_content))
     postInfo["content"] = html_content
     postInfo["raw_content"] = md_content
     g.data.update(postInfo)
