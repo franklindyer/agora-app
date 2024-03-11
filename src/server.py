@@ -318,7 +318,7 @@ def upload_image_post():
     data = request.form
     title = data['title']
     imgID = agoraModel.uploadImage(g.sessionToken, title, imgData)
-    return redirect(f'/userimg/{imgID}')
+    return redirect('/files')
 
 @app.route('/upload')
 def upload_image_get():
@@ -327,7 +327,7 @@ def upload_image_get():
 @app.route('/files')
 def files():
     if g.data['logged_in_user'] is None:
-        return redirect('/')
+        return redirect('/login')
     userInfo = agoraModel.getMyUser(g.sessionToken)
     g.data.update(userInfo)
     return render_template('files.html', data=g.data)

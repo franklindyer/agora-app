@@ -26,8 +26,8 @@
         </div>
 
         <p class="sub-info">Reputation: {{ data['votes'] }}</p>
-        <fieldset>
-            <form method="post" action="/vote/{{ data['pid'] }}">
+        <form method="post" action="/vote/{{ data['pid'] }}">
+            <fieldset>
                 <legend>How do you feel about this post?</legend>
                 <div>
                     <input type="radio" name="vote" id="like-butt" value="like">
@@ -42,8 +42,8 @@
                     <label for="unlike-butt">Neutral</label>
                 </div>
                 <input type="submit" value="submit">
-            </form>
-        </fieldset>
+            </fieldset>
+        </form>
         
         {% include "comment-section.html" %}
     </div>
