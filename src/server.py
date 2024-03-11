@@ -55,21 +55,14 @@ def handleAgoraError(err):
         "error": type(err).__name__
     }
 
-def agoraerror(pageserver):
-    def wrapper(*args):
-        try:
-            pageserver(*args)
-        except AgoraException as err:
-            g.data['logged_in_user'] = None
-            g.data.update(handleAgoraError(err))
-            return render_template('error.html', data=g.data)
-
 app = Flask(__name__)
 app.debug = True
 
 
 @app.errorhandler(AgoraException)
 def agoraError(err):
+    if isinstance(err, AgoraEInvalidToken) or isinstance(err, AgoraENotLoggedIn):
+        return redirect('/login')
     g.data.update(handleAgoraError(err))
     return render_template('error.html', data=g.data)
 
@@ -304,20 +297,20 @@ def admin_deleteuser(uid):
     agoraModel.adminDelete(g.sessionToken, uid, data["password"])
     return redirect("/")
 
-@app.route('/like/<pid>', methods=['POST'])
-def like_post(pid):
-    agoraModel.like(g.sessionToken, pid)
-    return redirect(f"/post/{pid}")
-
-@app.route('/unlike/<pid>', methods=['POST'])
-def unlike_post(pid):
-    agoraModel.unlike(g.sessionToken, pid)
-    return redirect(f"/post/{pid}")
-
-@app.route('/dislike/<pid>', methods=['POST'])
-def dislike_post(pid):
-    agoraModel.dislike(g.sessionToken, pid)
-    return redirect(f"/post/{pid}")
+@app.route('/vote/<pid>', methods=['POST'])
+def vote(pid):
+    data = request.form
+    if 'vote' in data:
+        match data['vote']:
+            case 'like': 
+                agoraModel.like(g.sessionToken, pid)
+            case 'dislike': 
+                agoraModel.dislike(g.sessionToken, pid) 
+            case 'unlike': 
+                agoraModel.unlike(g.sessionToken, pid)
+            case _: 
+                print('help!')
+    return redirect(f'/post/{pid}')
 
 @app.route('/upload', methods=['POST'])
 def upload_image_post():
