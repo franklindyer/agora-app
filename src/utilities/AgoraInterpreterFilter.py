@@ -28,7 +28,7 @@ class AgoraInterpreterFilter:
         if acceptable:
             recovery = self.generateToken("backup")
             hrecovery = hashlib.sha256(recovery.encode()).hexdigest()
-            uid = self.db.createUser(emailAddress, username, hpassword, hrecovery)
+            uid = self.db.createUser(emailAddress, username, hpassword, hrecovery, "0"*IMG_RANDOM_ID_LENGTH)
             confirm = self.generateToken("creation")
             confirmUrl = f'{self.host}/join/{confirm}'
             self.eml.confirmAccountEmail(emailAddress, confirmUrl, recovery)

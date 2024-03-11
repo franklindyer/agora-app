@@ -95,11 +95,19 @@ def users():
 @app.route('/user/<uid>')
 def user(uid):
     userInfo = {}
-    if g.data['logged_in_user'] is None or uid != str(g.data['logged_in_user']['uid']):
-        userInfo = agoraModel.getUser(uid)
-    else:
-        userInfo = agoraModel.getMyUser(g.sessionToken)
+    myInfo = None
+        
+    userInfo = agoraModel.getUser(uid)
+
+    if g.data['logged_in_user'] is not None:
+        myInfo = agoraModel.getMyUser(g.sessionToken) 
+        
+        if uid == str(g.data['logged_in_user']['uid']):
+            userInfo = myInfo
+
     g.data.update(userInfo)
+    g.data['logged_in_user'] = myInfo
+
     return render_template('profile.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/post/<pid>')
@@ -370,12 +378,18 @@ def get_search(querytype, query):
 @app.route('/friend/<uid>', methods=['POST'])
 def friend(uid):
     agoraModel.friendRequest(g.sessionToken, uid)
-    return redirect(f"/user/{uid}")
+    data = request.form
+    if 'redirect' in data:
+        return redirect(data['redirect'])
+    return redirect('/account')
 
 @app.route('/unfriend/<uid>', methods=['POST'])
 def unfriend(uid):
     agoraModel.unfriend(g.sessionToken, uid)
-    return redirect(f"/user/{uid}")
+    data = request.form
+    if 'redirect' in data:
+        return redirect(data['redirect'])
+    return redirect('/account')
 
 @app.route('/report')
 def bug_report_get():

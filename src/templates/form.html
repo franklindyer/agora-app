@@ -21,3 +21,18 @@
     <input type="submit" value="update {{ option }}">
 </form>
 {% endmacro %}
+
+{% macro simple_post(target, text, label_l, label_r, redirect) %}
+<form method="post" action="{{ target }}">
+    {% if label_l is not none %}
+        <label for="{{ label_l }}-button">{{ label_l }}</label>
+    {% endif %}
+    <button id="{{ label }}-button">{{ text }}</button>
+    {% if label_r is not none %}
+        <label for="{{ label_r }}-button">{{ label_r }}</label>
+    {% endif %}
+    {% if redirect is not none %}
+        <input type="hidden" name="redirect" value="{{ redirect }}">
+    {% endif %}
+</form>
+{% endmacro %}
