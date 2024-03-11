@@ -65,7 +65,7 @@ def agoraError(err):
     if isinstance(err, AgoraEInvalidToken) or isinstance(err, AgoraENotLoggedIn):
         return redirect('/login')
     g.data.update(handleAgoraError(err))
-    return render_template('error.html', data=g.data)
+    return render_template('error.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.before_request
 def agoraPreproc():
@@ -332,7 +332,6 @@ def files():
     userInfo = agoraModel.getMyUser(g.sessionToken)
     g.data.update(userInfo)
     return render_template('files.html', data=g.data)
-    
 
 @app.route('/deleteimg', methods=['POST'])
 def delete_image():
