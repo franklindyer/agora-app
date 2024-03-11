@@ -1,0 +1,10 @@
+{% macro thumbnail_view(user) %}
+<div class="hbox padded">
+    <img class="thumbnail profile-picture" src="/userimg/{{ user['pfp'] }}">
+    <div class="vbox">
+        <a href="/user/{{ user['uid'] }}">@{{ user['username'] }}</a>
+        {{ caller() }}
+    </div>
+</div>
+{% endmacro %}
+
