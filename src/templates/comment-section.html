@@ -5,12 +5,23 @@
    
     {# write comment box #}
     <div class="hbox">
-        <form method="post" action="/comment/{{ data['pid'] }}">
+        <form id="comment-submission-form" method="post" action="/comment/{{ data['pid'] }}">
             <textarea
                 name="content"
                 minlength="{{ limits['comment'][0] }}"
                 maxlength="{{ limits['comment'][1] }}"></textarea>
-            <input type="submit" value="post">
+            <script>
+                function onSubmit(token) {
+                    document.getElementById("comment-submission-form").submit();
+                }
+            </script>
+            <button class="g-recaptcha" 
+                    data-sitekey="{{ data['recaptcha_sitekey'] }}" 
+                    data-callback="onSubmit" 
+                    data-action="submit" 
+                    type="submit">
+            Submit
+            </button>
         </form>
     </div>
 

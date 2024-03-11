@@ -1,6 +1,7 @@
 import os
 import sys
 from flask import Flask, render_template, request, redirect, g, send_file
+from html_sanitizer import Sanitizer
 import markdown
 
 sys.path.insert(1, './params')
@@ -57,7 +58,7 @@ def handleAgoraError(err):
 
 app = Flask(__name__)
 app.debug = True
-
+sanitizer = Sanitizer()     # We're using the library's default configuration
 
 @app.errorhandler(AgoraException)
 def agoraError(err):
@@ -111,7 +112,7 @@ def post(pid):
 def get_post_content(pid):
     postInfo = agoraModel.getPost(pid)
     md_content = agoraFM.getPost(postInfo['filename'])
-    html_content = markdown.markdown(md_content)
+    html_content = sanitizer.sanitize(markdown.markdown(md_content))
     postInfo["content"] = html_content
     postInfo["raw_content"] = md_content
     g.data.update(postInfo)
@@ -155,7 +156,7 @@ def login_get():
 @app.route('/login', methods=['POST'])
 def login_post():
     data = request.form
-    sessionToken = agoraModel.login(data['username'], data['password'])
+    sessionToken = agoraModel.login(data['username'], data['password'], data['g-recaptcha-response'])
     resp = redirect("/account")
     resp.set_cookie("session", sessionToken)
     return resp
@@ -245,7 +246,7 @@ def new_post():
 @app.route('/write', methods=['POST'])
 def write_post():
     data = request.form
-    pid = agoraModel.writePost(g.sessionToken, data["title"], data["content"])
+    pid = agoraModel.writePost(g.sessionToken, data["title"], data["content"], data["g-recaptcha-response"])
     return redirect(f'/post/{pid}')
 
 @app.route('/edit/<pid>')
@@ -267,7 +268,7 @@ def delete_post(pid):
 @app.route('/comment/<pid>', methods=['POST'])
 def write_comment(pid):
     data = request.form
-    agoraModel.comment(g.sessionToken, pid, data['content'])
+    agoraModel.comment(g.sessionToken, pid, data['content'], data['g-recaptcha-response'])
     return redirect(f"/post/{pid}")
 
 @app.route('/deletecomment/<cid>', methods=['POST'])

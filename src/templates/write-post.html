@@ -35,7 +35,18 @@
             {% else %}
                 action="/edit/{{ data['pid'] }}"
             {% endif %}>
-            <input type="submit" value="post">
+            <script>
+                function onSubmit(token) {
+                    document.getElementById("editable-post-form").submit();
+                }
+            </script>
+            <button class="g-recaptcha" 
+                    data-sitekey="{{ data['recaptcha_sitekey'] }}" 
+                    data-callback="onSubmit" 
+                    data-action="submit" 
+                    type="submit">
+            Submit
+            </button>
         </form>
     </div>
 </div>
