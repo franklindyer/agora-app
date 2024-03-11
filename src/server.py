@@ -1,7 +1,7 @@
 import os
 import sys
 from flask import Flask, render_template, request, redirect, g, send_file
-from html_sanitizer import Sanitizer
+import html_sanitizer
 import markdown
 
 sys.path.insert(1, './params')
@@ -58,7 +58,13 @@ def handleAgoraError(err):
 
 app = Flask(__name__)
 app.debug = True
-sanitizer = Sanitizer()     # We're using the library's default configuration
+
+sanitizerSettings = dict(html_sanitizer.sanitizer.DEFAULT_SETTINGS)
+sanitizerSettings['tags'].add('img')
+sanitizerSettings['tags'].add('center')
+sanitizerSettings['empty'].add('img')
+sanitizerSettings['attributes'].update({'img': ('src',)})
+sanitizer = html_sanitizer.Sanitizer(settings=sanitizerSettings)     # We're using the library's default configuration
 
 @app.errorhandler(AgoraException)
 def agoraError(err):
