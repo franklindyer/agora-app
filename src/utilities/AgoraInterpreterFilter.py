@@ -111,7 +111,9 @@ class AgoraInterpreterFilter:
         self.fm.editPost(filename, content)
 
     def deletePost(self, pid):
+        filename = self.db.getPostInfo(pid)["filename"]
         self.db.deletePost(pid)
+        self.fm.deletePost(filename)
     
     def uploadImage(self, uid, title, extension, imgData):
         accessid = self.generateToken('imgid')
