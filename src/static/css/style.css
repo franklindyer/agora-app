@@ -31,16 +31,17 @@ pre {
     white-space: pre-wrap;
 }
 
+fieldset, textarea {
+    border-style: solid;
+    border-color: lightgray;
+    border-width: thin;
+}
+
 .hbox {
 /* a box for displaying things spaced horizontally */
     width: auto;
     display: flex;
     flex-direction: row;
-
-    /*
-    border-style: solid;
-    border-color: orange;
-    */
 }
 
 .vbox {
@@ -48,11 +49,6 @@ pre {
     width: auto;
     display: flex;
     flex-direction: column;
-
-    /*
-    border-style: solid;
-    border-color: blue;
-    */
 }
 
 .padded {
@@ -114,11 +110,6 @@ pre {
 
 .group {
     margin: 2%;
-
-    /*
-    border-style: solid;
-    border-color: green;
-    */
 }
 
 .wrapper {
