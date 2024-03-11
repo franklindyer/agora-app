@@ -156,7 +156,7 @@ def login_get():
 @app.route('/login', methods=['POST'])
 def login_post():
     data = request.form
-    sessionToken = agoraModel.login(data['username'], data['password'])
+    sessionToken = agoraModel.login(data['username'], data['password'], data['g-recaptcha-response'])
     resp = redirect("/account")
     resp.set_cookie("session", sessionToken)
     return resp
@@ -246,7 +246,7 @@ def new_post():
 @app.route('/write', methods=['POST'])
 def write_post():
     data = request.form
-    pid = agoraModel.writePost(g.sessionToken, data["title"], data["content"])
+    pid = agoraModel.writePost(g.sessionToken, data["title"], data["content"], data["g-recaptcha-response"])
     return redirect(f'/post/{pid}')
 
 @app.route('/edit/<pid>')
@@ -268,7 +268,7 @@ def delete_post(pid):
 @app.route('/comment/<pid>', methods=['POST'])
 def write_comment(pid):
     data = request.form
-    agoraModel.comment(g.sessionToken, pid, data['content'])
+    agoraModel.comment(g.sessionToken, pid, data['content'], data['g-recaptcha-response'])
     return redirect(f"/post/{pid}")
 
 @app.route('/deletecomment/<cid>', methods=['POST'])

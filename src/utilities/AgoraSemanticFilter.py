@@ -59,7 +59,8 @@ class AgoraSemanticFilter(AgoraFilter):
 
 
 
-    def login(self, username, hpassword):
+    def login(self, username, hpassword, captcha):
+        self.verifyCaptcha(captcha)
         uid = self.db.passwordCorrect(username, hpassword)
         if uid is None:
             raise AgoraEIncorrectCreds
@@ -185,7 +186,8 @@ class AgoraSemanticFilter(AgoraFilter):
 
 
 
-    def writePost(self, sessionToken, title, content):
+    def writePost(self, sessionToken, title, content, captcha):
+        self.verifyCaptcha(captcha)
         uid = self.doLogin(sessionToken)
         self.applyTimeLimit(uid)
         self.fm.logif(LOG_CREATE_POST, f"User {uid} wrote a new post")
@@ -266,7 +268,8 @@ class AgoraSemanticFilter(AgoraFilter):
 
 
 
-    def comment(self, sessionToken, pid, content):
+    def comment(self, sessionToken, pid, content, captcha):
+        self.verifyCaptcha(captcha)
         uid = self.doLogin(sessionToken)
         self.applyTimeLimit(uid)
         if self.db.postExists(pid) is None:
