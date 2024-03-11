@@ -281,6 +281,8 @@ class AgoraDatabaseManager:
 
     def deletePost(self, pid):
         self.execute("DELETE FROM posts WHERE pid = ?", (pid,))
+        self.execute("DELETE FROM comments WHERE post = ?", (pid,))
+        self.execute("DELETE FROM votes WHERE postid = ?", (pid,))
 
     def deleteImage(self, accessid):
         self.execute("DELETE FROM images WHERE accessid = ?", (accessid,))
