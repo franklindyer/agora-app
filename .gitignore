@@ -4,3 +4,5 @@ src/volumes
 **/__pycache__
 build-and-run.sh
 MYTODO.md
+**/.*
+**/.env

@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+    agora:
+        build: .
+        ports:
+        - "${AGORA_PORT}:8080"
+        volumes:
+        - ./src/volumes:/app/volumes
+        - ./src/templates:/app/templates
+        - ./src/static:/app/static
+        environment:
+            - HOST=${HOST:?HOST must be set!}
+            - MAILGUN_KEY=${MAILGUN_KEY:?MAILGUN_KEY must be set!}
+            - RECAPTCHA_SITEKEY=${RECAPTCHA_SITEKEY:?RECAPTCHA_SITEKEY must be set!}
+            - RECAPTCHA_SERVERKEY=${RECAPTCHA_SERVERKEY:?RECAPTCHA_SERVERKEY must be set!}
+            - DEV_EMAILS=${DEV_EMAILS:?DEV_EMAILS must be set!}
