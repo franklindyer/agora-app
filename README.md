@@ -34,23 +34,14 @@ To add a (empty) database, run the following from inside of `volumes`:
 ```
 sqlite3 agora.db < ../params/agora.schema
 ```
-To build with docker, run the following in the top level of the repository (where the `Dockerfile` is):
-```
-sudo docker build -t <YOUR_NAME>/agora-app:latest .
-```
-and to run your image:
-```
-sudo docker run -p 8080:8080 \
-                -v ./src/volumes:/app/volumes \
-                -v ./src/templates:/app/templates \
-                -v ./src/static:/app/static \
-                -e HOST="<THE DOMAIN YOU ARE USING>" \
-                -e MAILGUN_KEY="<YOUR MAILGUN KEY>" \
-                -e RECAPTCHA_SITEKEY="<YOUR RECAPTCHA SITEKEY>" \
-                -e RECAPTCHA_SERVERKEY="<YOUR RECAPTCHA SERVERKEY>" \
-                -e DEV_EMAILS="<LIST OF DEVELOPER EMAILS>"
-                <YOUR_NAME>/agora-app:latest
-```
-Notes:
-* The `-p` parameter essentially links a port on your machine to one of Docker's internal ports. `1234:8080` maps your machine's port `1234` to Docker's port `8080`. For this command to work, you must use Docker's `8080` port.
+You can run this with Docker Compose. First you need to define a few environment variables in a file called `.env` in the project root. (It should be gitignored, since it will have some sensitive info in it.) The following environment variables must be defined there:
+
+- `AGORA_PORT`: the physical port on your machine to map onto the Docker image's virtual port
+- `HOST`: the domain name at which you're serving the app
+- `MAILGUN_KEY`: the API key that you're using for Mailgun
+- `RECAPTCHA_SITEKEY`: your reCaptcha site key
+- `RECAPTCHA_SERVERKEY`: your reCaptcha server key
+- `DEV_EMAILS`: a comma-separated list of emails of people you would like to receive bug report emails for the Agora instance
+
+Then, just run `docker compose up`!
 
