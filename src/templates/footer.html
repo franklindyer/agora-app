@@ -1,10 +1,12 @@
+{% import 'manage-files.html' as files %}
 <hr>
 
 <nav>
+    {{ files.new_post_button() }}
+    <p>See my code on <a href="https://github.com/franklindyer/agora-app" target="_blank" rel="noopener noreferrer">GitHub</a>!</p>
     <form action="/report" method="get">
         <input type="submit" value="report a bug">
     </form>
-    <p>See my code on <a href="https://github.com/franklindyer/agora-app" target="_blank" rel="noopener noreferrer">GitHub</a>!</p>
 </nav>
 
 
