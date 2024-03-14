@@ -161,8 +161,11 @@ class AgoraSemanticFilter(AgoraFilter):
         self.applyTimeLimit(uid)
         return self.next.changePicture(uid, imageId)
     
-    def changeEmail(self, sessionToken, emailAddress):
+    def changeEmail(self, sessionToken, emailAddress, hpassword):
         uid = self.doLogin(sessionToken)
+        uname = self.db.getPublicUser(uid)['username']
+        if self.db.passwordCorrect(uname, hpassword) is None:
+            raise AgoraEIncorrectCreds
         self.applyTimeLimit(uid)
         otherOwner = self.db.emailExists(emailAddress)  # We don't raise an error when uid is None, in order to avoid disclosing emails
         return self.next.changeEmail(uid, emailAddress, otherOwner is None)

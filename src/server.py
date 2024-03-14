@@ -189,8 +189,8 @@ def account_post():
         agoraModel.changeUsername(g.sessionToken, data['username'])
     if "pfp" in data:
         agoraModel.changePicture(g.sessionToken, data['pfp'])
-    if "email" in data:
-        agoraModel.changeEmail(g.sessionToken, data['email'])
+    if "email" in data and "password" in data:
+        agoraModel.changeEmail(g.sessionToken, data['email'], data["password"])
     return redirect("/account")
 
 @app.route('/settings')
