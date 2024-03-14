@@ -14,9 +14,16 @@
 
     {% elif msg == 'confirm-verify-account' -%}
     <p>Your account has been verified!</p>
+    <p>NOTICE! The following is a backup recovery code for your account. Store it in a safe place NOW, because it will not be made visible to you again. You will need it to change your email in the future.</p>
+    <p>{{ data['backup'] }}</p>
 
     {% elif msg == 'backup-sent-email' %}
     <p>Please check your new email for a link to change the email associated with your account.</p>
+    
+    {% elif msg == 'confirm-new-email' %}
+    <p>Your new email address has been verified!</p>
+    <p>NOTICE! The following is a brand-new backup recovery code for your account. Store it in a safe place NOW, because it will not be made visible to you again. You will need it to change your email in the future.</p>
+    <p>{{ data['backup'] }}</p>
 
     {% elif msg == 'recovery-sent-email' %}
     <p>Please check your email for a link to reset your password.</p>

@@ -31,12 +31,14 @@ class AgoraInterpreterFilter:
             uid = self.db.createUser(emailAddress, username, hpassword, hrecovery, "0"*IMG_RANDOM_ID_LENGTH)
             confirm = self.generateToken("creation")
             confirmUrl = f'{self.host}/join/{confirm}'
-            self.eml.confirmAccountEmail(emailAddress, confirmUrl, recovery)
-            self.db.createToken(uid, confirm, "creation")
+            self.eml.confirmAccountEmail(emailAddress, confirmUrl)
+            self.db.createToken(uid, confirm, "creation", data=recovery)
     
     def confirmCreate(self, uid, creationToken):
+        recovery = self.db.tokenData(creationToken)
         self.db.expireToken(creationToken)
         self.db.verifyUser(uid)
+        return recovery
 
     def login(self, uid):
         session = self.generateToken("session")
@@ -91,8 +93,8 @@ class AgoraInterpreterFilter:
         self.db.setEmail(uid, newEmail)
         recovery = self.generateToken("recovery")
         hrecovery = hashlib.sha256(recovery.encode()).hexdigest()
-        self.eml.newRecoveryToken(newEmail, recovery)
         self.db.setBackup(uid, hrecovery)
+        return recovery
 
     def changeUsername(self, uid, username):
         self.db.setUsername(uid, username)

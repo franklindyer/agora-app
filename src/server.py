@@ -141,8 +141,9 @@ def join_post():
 
 @app.route('/join/<token>')
 def join_confirm(token):
-    agoraModel.confirmCreate(token)
-    return redirect('/')
+    backup = agoraModel.confirmCreate(token)
+    g.data["backup"] = backup
+    return render_template('info.html', data=g.data, msg='confirm-verify-account')
 
 @app.route('/leave', methods=['POST'])
 def leave_post():
@@ -241,8 +242,9 @@ def change_password_post(token):
 
 @app.route('/confirmemail/<token>')
 def confirm_email(token):
-    agoraModel.confirmEmail(token)
-    return redirect("/account")
+    backup = agoraModel.confirmEmail(token)
+    g.data['backup'] = backup
+    return render_template('info.html', data=g.data, msg='confirm-new-email')
 
 @app.route('/write')
 def new_post():
