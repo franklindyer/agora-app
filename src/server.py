@@ -165,7 +165,7 @@ def login_post():
     data = request.form
     sessionToken = agoraModel.login(data['username'], data['password'], data['g-recaptcha-response'])
     resp = redirect("/account")
-    resp.set_cookie("session", sessionToken)
+    resp.set_cookie("session", sessionToken, samesite="Strict")
     return resp
 
 @app.route('/logout', methods=['POST'])
