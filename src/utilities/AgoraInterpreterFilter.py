@@ -45,8 +45,8 @@ class AgoraInterpreterFilter:
         self.db.createToken(uid, session, "session")
         return session
 
-    def logout(self, sessionToken):
-        self.db.expireToken(sessionToken)
+    def logout(self, uid):
+        self.db.expireAllSessions(uid)
 
     def deleteAccount(self, uid, emailAddress):
         confirm = self.generateToken("deletion")

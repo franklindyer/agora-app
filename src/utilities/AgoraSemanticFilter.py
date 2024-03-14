@@ -72,9 +72,10 @@ class AgoraSemanticFilter(AgoraFilter):
         return self.next.login(uid)
 
     def logout(self, sessionToken):
-        if not self.db.tokenExists(sessionToken, "session"):
+        uid = self.db.tokenExists(sessionToken, "session")
+        if uid is None:
             raise AgoraEInvalidToken
-        return self.next.logout(sessionToken)
+        return self.next.logout(uid)
 
 
 

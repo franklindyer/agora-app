@@ -206,6 +206,9 @@ class AgoraDatabaseManager:
     def expireToken(self, token):
         self.execute("DELETE FROM tokens WHERE value = ?", (token,))
 
+    def expireAllSessions(self, uid):
+        self.execute("DELETE FROM tokens WHERE owner = ? AND type='session'", (uid,))
+
     def getTokenAgeSeconds(self, token):
         res = self.query("SELECT JULIANDAY('now')-JULIANDAY(issued) as delta FROM tokens WHERE value=?", (token,))
         if res is None:
