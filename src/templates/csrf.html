@@ -1,0 +1,11 @@
+{% if "csrf" in data %}
+<script>
+    var csrfInput = document.createElement("input");
+    csrfInput.setAttribute("type", "hidden");
+    csrfInput.setAttribute("name", "csrf");
+    csrfInput.setAttribute("value", "{{ data['csrf'] }}");
+    document.forms.forEach((form) => {
+        form.appendChild(csrfInput);
+    });
+</script>
+{% endif %}

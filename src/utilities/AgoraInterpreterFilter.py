@@ -21,6 +21,10 @@ class AgoraInterpreterFilter:
     def generateToken(self, ttype):
         return ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(TOKEN_LENGTHS[ttype]))
 
+    def replenishCSRF(self, uid):
+        newCSRF = self.generateToken('csrf')
+        self.db.replaceCSRF(uid, newCSRF)
+
     def createAccount(self, emailAddress, username, hpassword, acceptable):
         old_uid = self.db.emailExists(emailAddress)
         if not old_uid is None:
@@ -43,6 +47,7 @@ class AgoraInterpreterFilter:
     def login(self, uid):
         session = self.generateToken("session")
         self.db.createToken(uid, session, "session")
+        self.replenishCSRF(uid)
         return session
 
     def logout(self, uid):
@@ -141,6 +146,7 @@ class AgoraInterpreterFilter:
         self.db.insertComment(uid, pid, content)
 
     def deleteComment(self, cid):
+        self.replenishCSRF(uid)
         return self.db.deleteComment(cid)
     
     def like(self, uid, pid):

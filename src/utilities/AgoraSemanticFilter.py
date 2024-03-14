@@ -77,7 +77,16 @@ class AgoraSemanticFilter(AgoraFilter):
             raise AgoraEInvalidToken
         return self.next.logout(uid)
 
+    def getCSRF(self, sessionToken):
+        uid = self.db.tokenExists(sessionToken, "session")
+        if uid is None:
+            return ""
+        return self.db.getCSRF(uid)
 
+    def replenishCSRF(self, sessionToken):
+        uid = self.db.tokenExists(sessionToken, "session")
+        if uid is not None:
+            return self.next.replenishCSRF(uid)
 
     def deleteAccount(self, sessionToken, hpassword):
         uid = self.db.tokenExists(sessionToken, "session")

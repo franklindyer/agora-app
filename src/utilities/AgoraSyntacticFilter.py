@@ -101,6 +101,12 @@ class AgoraSyntacticFilter(AgoraFilter):
         self.validateToken(sessionToken, "session")
         return self.next.logout(sessionToken)
 
+    def getCSRF(self, sessionToken):
+        return self.next.getCSRF(sessionToken)
+    
+    def replenishCSRF(self, sessionToken):
+        return self.next.replenishCSRF(sessionToken)
+
 
 
     def deleteAccount(self, sessionToken, password):

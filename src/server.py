@@ -1,6 +1,7 @@
 import os
 import sys
 from flask import Flask, render_template, request, redirect, g, send_file
+from functools import wraps
 import html_sanitizer
 import markdown
 
@@ -66,6 +67,24 @@ sanitizerSettings['empty'].add('img')
 sanitizerSettings['attributes'].update({'img': ('src',)})
 sanitizer = html_sanitizer.Sanitizer(settings=sanitizerSettings)     # We're using the library's default configuration
 
+def issue_csrf(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        agoraModel.replenishCSRF(g.sessionToken)
+        csrf = agoraModel.getCSRF(g.sessionToken)
+        g.data["csrf"] = csrf
+        return f(*args, **kwargs)
+    return wrap
+
+def require_csrf(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        form = request.form
+        if not "csrf" in form or form["csrf"] != agoraModel.getCSRF(g.sessionToken):
+            raise AgoraEInvalidToken
+        return f(*args, **kwargs)
+    return wrap
+
 @app.errorhandler(AgoraException)
 def agoraError(err):
     if isinstance(err, AgoraEInvalidToken) or isinstance(err, AgoraENotLoggedIn):
@@ -93,6 +112,7 @@ def users():
     return "Coming soon..."
 
 @app.route('/user/<uid>')
+@issue_csrf
 def user(uid):
     userInfo = {}
     myInfo = None
@@ -111,6 +131,7 @@ def user(uid):
     return render_template('profile.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/post/<pid>')
+@issue_csrf
 def post(pid):
     get_post_content(pid)
     return render_template('post.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
@@ -174,6 +195,7 @@ def logout():
     return render_template('info.html', data=g.data, msg='logout')
 
 @app.route('/account')
+@issue_csrf
 def account_get():
     if g.data['logged_in_user'] is not None:
         data = agoraModel.getMyUser(g.sessionToken)
@@ -181,6 +203,7 @@ def account_get():
     return redirect('/login')
 
 @app.route('/account', methods=['POST'])
+@require_csrf
 def account_post():
     data = request.form
     if "status" in data:
@@ -194,6 +217,7 @@ def account_post():
     return redirect("/account")
 
 @app.route('/settings')
+@issue_csrf
 def settings_get():
     if g.data['logged_in_user'] is not None:
         userInfo = agoraModel.getMyUser(g.sessionToken)
@@ -221,6 +245,7 @@ def change_password_request_get():
     return render_template('reset-password.html', data=g.data)
 
 @app.route('/changepass', methods=['POST'])
+@require_csrf
 def change_password_request_post():
     data = request.form
     if "email" in data:
@@ -233,6 +258,7 @@ def change_password_get(token):
     return render_template('new-password.html', data=g.data)
 
 @app.route('/changepass/<token>', methods=['POST'])
+@require_csrf
 def change_password_post(token):
     data = request.form
     if "password" in data:
@@ -247,66 +273,78 @@ def confirm_email(token):
     return render_template('info.html', data=g.data, msg='confirm-new-email')
 
 @app.route('/write')
+@issue_csrf
 def new_post():
     g.data['new_post'] = True
     return render_template('write-post.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/write', methods=['POST'])
+@require_csrf
 def write_post():
     data = request.form
     pid = agoraModel.writePost(g.sessionToken, data["title"], data["content"], data["g-recaptcha-response"])
     return redirect(f'/post/{pid}')
 
 @app.route('/edit/<pid>')
+@issue_csrf
 def edit_post_view(pid):
     get_post_content(pid)
     return render_template('write-post.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/edit/<pid>', methods=['POST'])
+@require_csrf
 def edit_post(pid):
     data = request.form
     agoraModel.editPost(g.sessionToken, pid, data["title"], data["content"])
     return redirect(f"/post/{pid}")
 
 @app.route('/deletepost/<pid>', methods=['POST'])
+@require_csrf
 def delete_post(pid):
     agoraModel.deletePost(g.sessionToken, pid)
     return redirect("/files")
 
 @app.route('/comment/<pid>', methods=['POST'])
+@require_csrf
 def write_comment(pid):
     data = request.form
     agoraModel.comment(g.sessionToken, pid, data['content'], data['g-recaptcha-response'])
     return redirect(f"/post/{pid}")
 
 @app.route('/deletecomment/<cid>', methods=['POST'])
+@require_csrf
 def delete_comment(cid):
     pid = agoraModel.deleteComment(g.sessionToken, cid)
     return redirect(f"/post/{pid}")
 
 @app.route('/admin/user/<uid>')
+@issue_csrf
 def admin_userview(uid):
     userInfo = agoraModel.adminGetUser(g.sessionToken, uid)
     g.data.update(userInfo)
     return render_template('admin_userview.html', data=g.data)
 
 @app.route('/admin/suspend/<uid>', methods=['POST'])
+@require_csrf
 def admin_suspend(uid):
     agoraModel.adminSuspend(g.sessionToken, uid)
     return redirect(f"/admin/user/{uid}")
 
 @app.route('/admin/unsuspend/<uid>', methods=['POST'])
+@require_csrf
 def admin_unsuspend(uid):
     agoraModel.adminUnsuspend(g.sessionToken, uid)
     return redirect(f"/admin/user/{uid}")
 
 @app.route('/admin/deleteuser/<uid>', methods=['POST'])
+@require_csrf
 def admin_deleteuser(uid):
     data = request.form
     agoraModel.adminDelete(g.sessionToken, uid, data["password"])
     return redirect("/")
 
 @app.route('/vote/<pid>', methods=['POST'])
+@require_csrf
 def vote(pid):
     data = request.form
     if 'vote' in data:
@@ -322,6 +360,7 @@ def vote(pid):
     return redirect(f'/post/{pid}')
 
 @app.route('/upload', methods=['POST'])
+@require_csrf
 def upload_image_post():
     imgData = request.files['file']
     data = request.form
@@ -330,10 +369,12 @@ def upload_image_post():
     return redirect('/files')
 
 @app.route('/upload')
+@issue_csrf
 def upload_image_get():
     return render_template('upload.html', data=g.data)
 
 @app.route('/files')
+@issue_csrf
 def files():
     if g.data['logged_in_user'] is None:
         return redirect('/login')
@@ -342,6 +383,7 @@ def files():
     return render_template('files.html', data=g.data)
 
 @app.route('/deleteimg', methods=['POST'])
+@require_csrf
 def delete_image():
     data = request.form
     if 'delete' in data:
@@ -377,6 +419,7 @@ def get_search(querytype, query):
     g.data['querytype'] = querytype
 
 @app.route('/friend/<uid>', methods=['POST'])
+@require_csrf
 def friend(uid):
     agoraModel.friendRequest(g.sessionToken, uid)
     data = request.form
@@ -385,6 +428,7 @@ def friend(uid):
     return redirect('/account')
 
 @app.route('/unfriend/<uid>', methods=['POST'])
+@require_csrf
 def unfriend(uid):
     agoraModel.unfriend(g.sessionToken, uid)
     data = request.form
@@ -397,6 +441,7 @@ def bug_report_get():
     return render_template('report.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/report', methods=['POST'])
+@require_csrf
 def bug_report_post():
     data = request.form
     if "content" in data:
