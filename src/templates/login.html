@@ -1,31 +1,12 @@
+{% import 'form.html' as forms %}
+
 {% extends 'base.html' %}
 
 <h1>{% block title %}login{% endblock %}</h1>
 
 {% block content %}
     <div class="group center-option-box vbox">
-        <form method="post" id="login-form" class="group">
-            <div>
-                <label for="username">username:</label>
-                <input type="text" name="username" required>
-            </div>
-            <div>
-                <label for="password">password:</label>
-                <input type="password" name="password" required>
-            </div>
-            <script>
-                function onSubmit(token) {
-                    document.getElementById("login-form").submit();
-                }
-            </script>
-            <button class="g-recaptcha" 
-                    data-sitekey="{{ data['recaptcha_sitekey'] }}" 
-                    data-callback="onSubmit" 
-                    data-action="submit" 
-                    type="submit">
-            Submit
-            </button>
-        </form>
+        {{ forms.login(data, limits) }}
         <div class="group hbox" id="login-options">
             <a href="/join">create account</a>
             <a href="/changepass">forgot password</a>

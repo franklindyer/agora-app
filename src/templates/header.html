@@ -1,3 +1,5 @@
+{% import 'form.html' as forms %}
+
 <nav>
     <div id="header-login-options" class="hbox padded">
         {% if data['logged_in_user'] is none -%}
@@ -13,9 +15,7 @@
             <div class="vbox">
                 <a href="/user/{{ data['logged_in_user']['uid'] }}">
                     @{{ data['logged_in_user']['username'] }}</a>
-                <form action="/logout" method="post">
-                    <input type="submit" value="logout" name="logout">
-                </form>
+                {{ forms.logout() }}
             </div>
         {% endif %}
     </div>
@@ -25,12 +25,8 @@
         alt="the agora logo"></a>
 
     <div class="hbox padded">
-        <form action="/browse/posts" method="get">
-            <button name="post" value="" type="submit">browse posts</button>
-        </form>
-        <form action="/browse/users" method="get">
-            <button name="user" value="" type="submit">browse users</button>
-        </form>
+        {{ forms.get_all_posts() }}
+        {{ forms.get_all_users() }}
 	</div>
 
 </nav>

@@ -1,4 +1,4 @@
-{% from 'form.html' import update_existing_form %}
+{% import 'form.html' as forms %}
 {% import 'manage-files.html' as files %}
 
 {% extends 'base.html' %}
@@ -10,18 +10,9 @@
 <div class="group">
     <h1>Settings for {{ data['username'] }}:</h1>
     <div class="vbox padded">
-        {{ update_existing_form(limits, data, 'username', '/account') }}
-        <form method="post" action="/account">
-            <label for="update-email">Change your email: </label>
-            <input name="email" value="{{ data['email'] }}"></input>
-            <input name="password" type="password" value=""></input>
-            <input type="submit" value="request">
-        </form>
-        <form method="post" action="/changepass">
-            <label for="reset-password">Request a password reset email: </label>
-            <input type="hidden" name="email" value="{{ data['email'] }}">
-            <input type="submit" value="request">
-        </form>
+        {{ forms.update_existing_form(limits, data, 'username', '/account') }}
+        {{ forms.update_existing_form(limits, data, 'email', '/account') }}
+        {{ forms.request_password_reset_email_implicit(data) }}
         {{ files.manage_files_button() }}
     </div>
 </div>
