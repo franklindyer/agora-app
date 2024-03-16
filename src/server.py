@@ -255,7 +255,7 @@ def change_password_request_post():
 @app.route('/changepass/<token>')
 def change_password_get(token):
     g.data['token'] = token
-    return render_template('new-password.html', data=g.data)
+    return render_template('new-password.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/changepass/<token>', methods=['POST'])
 @require_csrf
@@ -402,12 +402,12 @@ def search():
 @app.route('/browse/users')
 def browse_users():
     get_search('user', "")
-    return render_template('browse.html', data=g.data)
+    return render_template('browse.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/browse/posts')
 def browse_posts():
     get_search('post', "")
-    return render_template('browse.html', data=g.data)
+    return render_template('browse.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 def get_search(querytype, query):
     results = []
