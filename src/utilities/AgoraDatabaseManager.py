@@ -80,6 +80,8 @@ class AgoraDatabaseManager:
         res = self.query("SELECT filename FROM images WHERE accessid = ?", (imgId,))
         return (None if res is None else res[0]['filename'])
 
+
+
     def tokenExists(self, token, type):
         res = self.query("SELECT owner FROM tokens WHERE value = ? AND type = ?", (token, type,))
         return (None if res is None else res[0]['owner'])
@@ -87,6 +89,14 @@ class AgoraDatabaseManager:
     def tokenData(self, token):
         res = self.query("SELECT data FROM tokens WHERE value = ?", (token,))
         return (None if res is None else res[0]['data'])
+
+    def getCSRF(self, uid):
+        res = self.query("SELECT value FROM tokens WHERE type='csrf' AND owner = ?", (uid,))
+        return (None if res is None else res[0]['value'])
+
+    def replaceCSRF(self, uid, value):
+        self.execute("DELETE FROM tokens WHERE type='csrf' AND owner = ?", (uid,))
+        self.execute("INSERT INTO tokens (owner, value, type) VALUES (?, ?, 'csrf')", (uid, value,))
 
 
    
@@ -205,6 +215,9 @@ class AgoraDatabaseManager:
 
     def expireToken(self, token):
         self.execute("DELETE FROM tokens WHERE value = ?", (token,))
+
+    def expireAllSessions(self, uid):
+        self.execute("DELETE FROM tokens WHERE owner = ? AND type='session'", (uid,))
 
     def getTokenAgeSeconds(self, token):
         res = self.query("SELECT JULIANDAY('now')-JULIANDAY(issued) as delta FROM tokens WHERE value=?", (token,))

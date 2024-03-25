@@ -21,6 +21,10 @@ class AgoraInterpreterFilter:
     def generateToken(self, ttype):
         return ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(TOKEN_LENGTHS[ttype]))
 
+    def replenishCSRF(self, uid):
+        newCSRF = self.generateToken('csrf')
+        self.db.replaceCSRF(uid, newCSRF)
+
     def createAccount(self, emailAddress, username, hpassword, acceptable):
         old_uid = self.db.emailExists(emailAddress)
         if not old_uid is None:
@@ -31,20 +35,23 @@ class AgoraInterpreterFilter:
             uid = self.db.createUser(emailAddress, username, hpassword, hrecovery, "0"*IMG_RANDOM_ID_LENGTH)
             confirm = self.generateToken("creation")
             confirmUrl = f'{self.host}/join/{confirm}'
-            self.eml.confirmAccountEmail(emailAddress, confirmUrl, recovery)
-            self.db.createToken(uid, confirm, "creation")
+            self.eml.confirmAccountEmail(emailAddress, confirmUrl)
+            self.db.createToken(uid, confirm, "creation", data=recovery)
     
     def confirmCreate(self, uid, creationToken):
+        recovery = self.db.tokenData(creationToken)
         self.db.expireToken(creationToken)
         self.db.verifyUser(uid)
+        return recovery
 
     def login(self, uid):
         session = self.generateToken("session")
         self.db.createToken(uid, session, "session")
+        self.replenishCSRF(uid)
         return session
 
-    def logout(self, sessionToken):
-        self.db.expireToken(sessionToken)
+    def logout(self, uid):
+        self.db.expireAllSessions(uid)
 
     def deleteAccount(self, uid, emailAddress):
         confirm = self.generateToken("deletion")
@@ -91,8 +98,8 @@ class AgoraInterpreterFilter:
         self.db.setEmail(uid, newEmail)
         recovery = self.generateToken("recovery")
         hrecovery = hashlib.sha256(recovery.encode()).hexdigest()
-        self.eml.newRecoveryToken(newEmail, recovery)
         self.db.setBackup(uid, hrecovery)
+        return recovery
 
     def changeUsername(self, uid, username):
         self.db.setUsername(uid, username)
@@ -139,6 +146,7 @@ class AgoraInterpreterFilter:
         self.db.insertComment(uid, pid, content)
 
     def deleteComment(self, cid):
+        self.replenishCSRF(uid)
         return self.db.deleteComment(cid)
     
     def like(self, uid, pid):

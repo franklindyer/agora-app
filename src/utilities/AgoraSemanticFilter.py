@@ -72,11 +72,21 @@ class AgoraSemanticFilter(AgoraFilter):
         return self.next.login(uid)
 
     def logout(self, sessionToken):
-        if not self.db.tokenExists(sessionToken, "session"):
+        uid = self.db.tokenExists(sessionToken, "session")
+        if uid is None:
             raise AgoraEInvalidToken
-        return self.next.logout(sessionToken)
+        return self.next.logout(uid)
 
+    def getCSRF(self, sessionToken):
+        uid = self.db.tokenExists(sessionToken, "session")
+        if uid is None:
+            return ""
+        return self.db.getCSRF(uid)
 
+    def replenishCSRF(self, sessionToken):
+        uid = self.db.tokenExists(sessionToken, "session")
+        if uid is not None:
+            return self.next.replenishCSRF(uid)
 
     def deleteAccount(self, sessionToken, hpassword):
         uid = self.db.tokenExists(sessionToken, "session")
@@ -161,8 +171,11 @@ class AgoraSemanticFilter(AgoraFilter):
         self.applyTimeLimit(uid)
         return self.next.changePicture(uid, imageId)
     
-    def changeEmail(self, sessionToken, emailAddress):
+    def changeEmail(self, sessionToken, emailAddress, hpassword):
         uid = self.doLogin(sessionToken)
+        uname = self.db.getPublicUser(uid)['username']
+        if self.db.passwordCorrect(uname, hpassword) is None:
+            raise AgoraEIncorrectCreds
         self.applyTimeLimit(uid)
         otherOwner = self.db.emailExists(emailAddress)  # We don't raise an error when uid is None, in order to avoid disclosing emails
         return self.next.changeEmail(uid, emailAddress, otherOwner is None)

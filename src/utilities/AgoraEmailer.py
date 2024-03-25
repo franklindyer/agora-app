@@ -23,19 +23,14 @@ class AgoraEmailer:
         }
         res = requests.post(f"https://api.mailgun.net/v3/{self.host}/messages", auth=auth, data=form)
 
-    def confirmAccountEmail(self, receiver, url, backup):
+    def confirmAccountEmail(self, receiver, url):
         subject = "Confirm your Agora account"
-        message = f"Confirm your new Agora account by visiting the following page:\n{url}\nYour account backup recovery code is {backup}. Don't lose it!"
+        message = f"Confirm your new Agora account by visiting the following page:\n{url}\nYou will be given a new backup code for your account when you visit this page."
         self.sendEmail(receiver, subject, message)
 
     def recoverAccountEmail(self, receiver, url):
         subject = "Recover your Agora account"
         message = f"Reset your Agora password by visiting the following page:\n{url}"
-        self.sendEmail(receiver, subject, message)
-
-    def newRecoveryToken(self, receiver, recovery):
-        subject = "New recovery token"
-        message = f"You have recently changed your email or used your former recovery token.\n Here is your new recovery token: {recovery}"
         self.sendEmail(receiver, subject, message)
 
     def changeAccountEmail(self, receiver, url):
