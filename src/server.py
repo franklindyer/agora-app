@@ -80,7 +80,10 @@ def require_csrf(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         form = request.form
+        print(form["csrf"], flush=True)
+        print(agoraModel.getCSRF(g.sessionToken), flush=True)
         if not "csrf" in form or form["csrf"] != agoraModel.getCSRF(g.sessionToken):
+            print("CSRF problem", flush=True)
             raise AgoraEInvalidToken
         return f(*args, **kwargs)
     return wrap
