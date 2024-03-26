@@ -5,14 +5,13 @@
 <h1>{% block title %}login{% endblock %}</h1>
 
 {% block content %}
-    <div class="vbox padded h-centered">
-        <div class="center-form-area">
-            {{ forms.login(data, limits) }}
-        </div>
-        <div class="hbox" id="login-options">
-            <a href="/join">create account</a>
-            <a href="/changepass">forgot password</a>
-            <a href="/backup">recover account</a>
-        </div>
-    </div>
+
+<div class="login-form-box">
+    {{ forms.login(data, limits) }}
+    <ul id="login-options">
+        <li><a href="/join">create account</a></li>
+        <li><a href="/changepass">forgot password</a></li>
+        <li><a href="/backup">recover account</a></li>
+    </ul>
+</div>
 {% endblock %}

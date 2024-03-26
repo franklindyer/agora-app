@@ -21,119 +21,38 @@
 {# whether the profile we're viewing is our own profile #}
 {% set mine = (self is not none) and (self['uid'] == uid) %}
 
-<div class="group">
-    <div class="hbox padded">
-        <div id="profile-post-stack" class="vbox padded">
-            
-            {# profile info area #}
-            <div class="hbox padded">
-                
-                {# profile picture #}
-                <img class="small-img profile-picture" 
-                    src="/userimg/{{ pfp }}" 
-                    alt="the user's profile picture">
-                
-                <div class="vbox padded">
-                    {# username #}
-                    <div class="username-main">@{{ username }}</div>
-                    
-                    {# status #}
-                    {% if mine %}
-                        <div class="option-main status-main">
-                            {{ forms.profile_option(limits, data, "status") }}
-                        </div>
-                        {{ forms.settings_button() }}
-                    {% else %}
-                        <div class="status-main">{{ status }}</div>
-                    {% endif %}
-                </div>
-            </div>
+<div id="profile-page">
+    <!-- general user info &/or options stack -->
+    <ul id="profile-info-stack">
+        <li><img id="main-profile-picture"
+            src="/userimg/{{ pfp }}" 
+            alt="the user's profile picture"></li>
 
-            {# posts list #}
-            <h2>Posts: {{ posts | length }}</h2>
-            {{ files.public_post_list(posts) }}
+        <li id="main-username">@{{ username }}</li>
 
-            {% if mine %}
-                {{ files.manage_files_button() }}
-            {% endif %}
-        </div>
+        {% if mine %}
+            <li id="main-status">{{ forms.profile_option(limits, data, 'status') }}</li>
+            <li id="profile-settings-button">{{ forms.settings_button() }}</li>
+        {% else %}
+            <li id="main-status">{{ status }}</li>
+        {% endif %}
+    </ul>
 
-        <div class="vbox padded">
-            {% if mine %} {# pending friend requests #}
-                <h2>Friend Requests: {{ data['foryou'] | length }}</h2>
-                <div class="vbox padded">
-                    {% for f in data['foryou'].values() %}
-                        <div class="vbox padded">
-                        {% call users.thumbnail_view(f) %}
-                            <div class="hbox padded">
-                                {{ forms.simple_post(
-                                    target='/friend/' ~ f['uid'], 
-                                    text='accept',
-                                ) }}
+    {% include 'friends.html' %}
 
-                                {{ forms.simple_post(
-                                    target='/unfriend/' ~ f['uid'], 
-                                    text='reject',
-                                ) }}
-                            </div>
-                        {% endcall %}
-                        </div>
-                    {% endfor %}
-                </div>
+    <!-- post list and file management -->
+    <ul id="post-area">
+        <li><h2>Posts: {{ posts | length }}</h2></li>
+        {% if mine %}
+            <li>{{ files.private_post_list(data) }}</li>
+        {% else %}
+            <li>{{ files.public_post_list(posts) }}</li>
+        {% endif %}
 
-            {% else %} {# friend management buttons #}
-                <div>
-                    {% if uid in self['friends'] %}
-                        {{ forms.simple_post(
-                            target='/unfriend/' ~ uid, 
-                            text='X', 
-                            label_l='remove friend', 
-                        ) }}
-
-                    {% elif uid in self['foryou'] %}
-                        <div class="vbox padded">
-                        @{{ username }} wants to be your friend!
-                        {% call users.thumbnail_view(data) %}
-                            <div class="hbox padded">
-                                {{ forms.simple_post(
-                                    target='/friend/' ~ uid, text='accept'
-                                ) }}
-
-                                {{ forms.simple_post(
-                                    target='/unfriend/' ~ uid, text='reject'
-                                ) }}
-                            </div>
-                        {% endcall %}
-                        </div>
-
-                    {% elif uid in self['fromyou'] %}
-                    <div class="hbox padded">
-                        Friend request sent. 
-                        {{ forms.simple_post(
-                            target='/unfriend/' ~ uid, 
-                            text='unsend', 
-                        ) }}
-                    </div>
-                    {% else %}
-                        {{ forms.simple_post(
-                            target='/friend/' ~ uid, 
-                            text='+', 
-                            label_r='add friend', 
-                        ) }}
-                    {% endif %}
-                </div>
-            {% endif %}
-            
-            {# friends list #}
-            <h2>Friends: {{ data['friends'] | length }}</h2>
-            <div class="vbox padded">
-            {% for (uid, info) in data['friends'].items() %}
-                {% call users.thumbnail_view(info) %}
-                {% endcall %}
-            {% endfor %}
-            </div>
-        </div>
-    </div>
+        {% if mine %}
+            <li>{{ files.manage_files_button() }}</li>
+        {% endif %}
+    </ul>
 </div>
 
 {% endblock %}

@@ -6,20 +6,16 @@
 
 {% block content %}
 
-<div class="group">
-    <div class="vbox padded">
-        <h1>Submit a bug report<h1>
-        <h2>Please describe the bug you found in as much detail as possible:<h2>
-        <div class="post-box">
-            <textarea 
-                form="bug-report-form" 
-                name="content"
-                minlength="{{ limits['bug-report'][0] }}"
-                maxlength="{{ limits['bug-report'][1] }}"
-                required ></textarea>
-        </div>
-       {{ forms.bug_report_submit() }} 
-    </div>
+<h1>Submit a bug report</h1>
+<p>Please describe the bug you found in as much detail as possible:</p>
+<div class="post-body">
+    <textarea 
+        form="bug-report-form" 
+        name="content"
+        minlength="{{ limits['bug-report'][0] }}"
+        maxlength="{{ limits['bug-report'][1] }}"
+        required ></textarea>
+    {{ forms.bug_report_submit() }} 
 </div>
 
 {% endblock %}

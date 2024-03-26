@@ -7,8 +7,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     setUpPostEditing();
     verifyInputMatch();
-    updatePasswordCheck();
     adjustTimeZone();
+    updateSettingPasswordCheck();
 }, false);
 
 /**
@@ -44,13 +44,12 @@ function adjustTimeZone() {
  * This function makes a password verification field appear if the user is trying to update 
  * their email. This can be further abstracted in the future.
  */
-function updatePasswordCheck() {
+function updateSettingPasswordCheck() {
     const emailForm = document.getElementById('update-existing-email');
     if(emailForm) {
         const passwordField = document.getElementById('password-field');
-        passwordField.style.setProperty('display', 'none');
         emailForm.addEventListener('input', () => {
-            passwordField.style.setProperty('display', 'block');
+            passwordField.style.setProperty('visibility', 'visible');
         });
     }
 }

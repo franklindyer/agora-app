@@ -1,33 +1,30 @@
 {% import 'form.html' as forms %}
 
 <nav>
-    <div id="header-login-options" class="hbox padded">
-        {% if data['logged_in_user'] is none -%}
-             <a href="/login">log in</a>
-        {% else -%}
-            <img class="thumbnail profile-picture"
-                    {% if data['logged_in_user']['pfp'] is none  %} 
-                        src="{{ url_for('static', filename='img/default-pfp.png') }}" 
-                    {% else %}
-                        src="/userimg/{{ data['logged_in_user']['pfp'] }}"
-                    {% endif %}
-                    alt="the user's profile picture">
-            <div class="vbox">
-                <a href="/user/{{ data['logged_in_user']['uid'] }}">
-                    @{{ data['logged_in_user']['username'] }}</a>
-                {{ forms.logout() }}
-            </div>
-        {% endif %}
-    </div>
-    
-    <a href="/"><img class="thumbnail" 
-        src="{{ url_for('static', filename='img/agora-logo.png') }}" 
-        alt="the agora logo"></a>
 
-    <div class="hbox padded">
-        {{ forms.get_all_posts() }}
-        {{ forms.get_all_users() }}
-	</div>
+<div id="header-session-info">
+    {% if data['logged_in_user'] is none -%}
+         <a href="/login">log in</a>
+    {% else -%}
+        <img id="header-profile-picture"
+                src="/userimg/{{ data['logged_in_user']['pfp'] }}"
+                alt="the user's profile picture">
+        <div id="header-session-options">
+            <a href="/user/{{ data['logged_in_user']['uid'] }}">
+                @{{ data['logged_in_user']['username'] }}</a>
+            {{ forms.logout() }}
+        </div>
+    {% endif %}
+</div>
+
+<a class="home-button" href="/"><img class="home-button"
+    src="{{ url_for('static', filename='img/agora-logo.png') }}" 
+    alt="the agora logo" ></a>
+
+<div id="browse-buttons">
+    {{ forms.get_all_posts() }}
+    {{ forms.get_all_users() }}
+</div>
 
 </nav>
 

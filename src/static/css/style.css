@@ -1,90 +1,158 @@
-/* general */
+/**
+ * This document has general styling for all HTML elements on Agora. Many of these are grouped
+ * in an extensible way so that they can be re-used by multiple elements. When a style is re-
+ * used for multiple styles, a selector for the element is appended to the list above that 
+ * style. 
 
+ * Some styles have names before their description (e.g., 'group', 'hbox', etc.) which refer
+ * to a deprecated organization theme that used to be implemented. This organization may come 
+ * into play again, however, if I decide to move forward with Jinja-style templates to create
+ * the CSS file dynamically.
+ */
+
+/* variables for values used through all templates */
 :root {
-/* variables for use through all templates */
     --thumbnail-size: 50px;
-    --browse-button-size: 7.5em;
+    --small-img-size: 250px;
 }
 
 * {
 	font-family: monaco, monospace;
 }
 
+body {
+    width: 98vw;
+}
+
 hr {
     border-style: dashed;
 }
 
-h2, h3 {
-    padding: 0%;
-    margin: 0%;
+/* border around text boxes */
+fieldset, 
+textarea, 
+.comment,
+.post-body,
+.write-post-title,
+.write-post-box
+{
+    border: solid lightgray thin;
 }
 
-fieldset, textarea {
-    border-style: solid;
-    border-color: lightgray;
-    border-width: thin;
+/* border around images */
+#header-profile-picture,
+#main-profile-picture,
+.user-view > img
+{
+    border: solid thin;
 }
 
-.hbox {
-/* a box for displaying things spaced horizontally */
-    width: auto;
-    display: flex;
-    flex-direction: row;
+#main-profile-picture {
+    width: var(--small-img-size);
+    height: var(--small-img-size);
 }
 
-.vbox {
-/* a box for displaying things spaced vertically */
-    width: auto;
-    display: flex;
-    flex-direction: column;
+.comment, 
+#login-options > li
+{
+   padding: 0% 1%;
+   margin: 1% 0%;
 }
 
-.padded {
-    column-gap: 1em;
-    row-gap: 1em;
-}
-
-.centered {
+.login-form-box {
     text-align: center;
     align-items: center;
-    justify-content: center;
 }
 
-.hbox.h-centered {
-    justify-content: center;
+#profile-page {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-auto-rows: auto;
+    grid-template-rows: calc(var(--small-img-size) / 2) calc(var(--small-img-size) / 2) auto;
 }
 
-.hbox.v-centered {
-    align-items: center;
+#profile-info-stack {
+    grid-row: 1 / 2;
+    grid-column: 1;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: start;
+    column-gap: 1em;
+    max-height: var(--small-img-size);
 }
 
-.vbox.v-centered {
-    justify-content: center;
+#main-status {
+    width: 50vw;
 }
 
-.vbox.h-centered {
-    align-items: center;
+#profile-friends-stack {
+    grid-row: 1;
+    grid-column: 2;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -ms-overflow-style: none;
 }
 
-.text-box {
-/* TODO: This might be generalized more (without padding, etc.) */
-    border-style: solid;
-    border-color: lightgray;
-    border-width: thin;
-    padding: 0% 1%;
-    margin: 1% 0%;
+#profile-friends-stack::-webkit-scrollbar {
+    display: none;
 }
 
-.naked-list {
-/* list with no bullets or indentation */
+#friends-list {
+    grid-row: 2 / 3;
+    grid-column: 2;
+}
+
+#post-area {
+    grid-row: 3;
+    grid-column: 1;
+}
+
+/* naked-list: list with no bullets or indentation */
+#comment-list, 
+#results-list, 
+.comment-header, 
+.post-metadata, 
+#login-options, 
+#settings-list, 
+.existing-option-field,
+#profile-info-stack,
+#profile-friends-stack,
+#friends-list,
+.posts-list,
+#post-area,
+.image-list,
+#login-form-options,
+#create-account-form-options
+{
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-.thumbnail {
-    width: var(--thumbnail-size);
-    height: var(--thumbnail-size);
+/* display the items in a list horizontally and center them vertically */
+.comment-header, 
+.post-metadata, 
+#login-options 
+{
+    display: inline-flex;
+    align-items: center;
+}
+
+.existing-option-field {
+    display: inline-flex;
+    align-items: end;
+}
+
+.existing-option-field.confirm {
+    visibility: collapse;
+    display: inline;
+}
+
+.existing-option-field.confirm > li {
+    margin-top: 0%;
+    padding: 0%;
 }
 
 .small-img {
@@ -92,6 +160,7 @@ fieldset, textarea {
     height: 250px;
 }
 
+/* image(s) for error page */
 .error-image {
     margin: auto;
     height: 300px;
@@ -99,73 +168,151 @@ fieldset, textarea {
     margin-top: 50px;
 }
 
-.group {
-    margin: 2%;
-}
-
 .wrapper {
-    display: flex;
-    min-height: 98vh;
-    flex-direction: column;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-rows: auto;
 }
-
-.footer {
-    margin-top: auto;
-}
-
-/* header and footer */
 
 nav {
-    display: flex;
-    padding: 0.5% 2%;
+    display: grid;
     align-items: center;
-    justify-content: space-between;
+    grid-template-columns: 1fr 1fr 1fr;
     min-height: var(--thumbnail-size);
+    margin: 0% 1%;
 }
 
-#header-login-options {
-    min-width: calc(2 * var(--browse-button-size));
+.header {
+    grid-row: 1;
+    align-self: start;
 }
 
-/* forms (general) */
+/* middle grid item, centered */
+.content {
+    grid-row: 2;
+    align-self: center;
+    min-height: 75vh;
+}
+
+/* bottom grid item, flush along bottom edge */
+.footer {
+    grid-row: 3;
+    align-self: end;
+}
+
+/* leftmost grid item, flush along left edge */
+#header-session-info, 
+#new-post-footer 
+{
+    grid-column: 1;
+    justify-self: start;
+}
+
+.home-button, 
+#repo-link-footer 
+{
+    grid-column: 2;
+    justify-self: center;
+}
+
+#browse-buttons, 
+#bug-report-footer 
+{
+    grid-column: 3;
+    justify-self: end;
+}
+
+/* group: a general grouping with a small margin around grouped items */
+.wrapper, 
+.content
+{
+    margin: 1%;
+}
+
+/* hbox: a box for displaying things horizontally */
+#header-session-info, 
+#browse-buttons, 
+.user-view,
+.posts-list > li
+{
+    width: auto;
+    display: flex;
+    flex-direction: row;
+}
+
+/* vbox: a box for displaying things vertically */
+#header-session-options, 
+#results-list, 
+.login-form-box
+{
+    width: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* padded: padding between hbox or vbox values */
+#header-session-info, 
+#browse-buttons, 
+#results-list, 
+.comment-header, 
+.post-metadata, 
+.existing-option-field,
+.posts-list > li,
+.user-view
+{
+    column-gap: 1em;
+    row-gap: 1em;
+}
+
+/* thumbnail: smallest image size */
+.home-button, 
+#header-profile-picture, 
+.user-view > img 
+{
+    width: var(--thumbnail-size);
+    height: var(--thumbnail-size);
+}
 
 .input-field {
     display: flex;
     flex-direction: column;
-    justify-content: left;
-    width: 50vw;
+    width: 30vw;
     font-style: italic;
-    margin: 1% 0%;
 }
 
+.input-field > label {
+    text-align: left;
+}
+
+/* inline alert for when a field fails verification (e.g. passwords do not match) */
 #match-notice {
     display: none;
     color: red;
     size: 0.9em;
 }
 
-.captcha-submit {
-    display: flex;
-    justify-content: center;
-}
-
-
-/* login & create account */
-
-.center-form-area * {
+/* slight vertical spacing between elements */
+.captcha-submit,
+.center-form-area *,
+#post-area > li,
+.posts-list > li,
+#profile-friends-stack > li,
+#friends-list > li,
+.single-line-option,
+.post-body,
+.existing-option-field > li,
+#login-form-options > li,
+#create-account-form-options > li
+{
     margin: 1% 0%;
 }
 
 #login-options {
-    width: 40vw;
+    width: 33vw;
     text-align: center;
     justify-content: space-between;
-    margin-top: 1%;
 }
 
-/* profile & account */
-
+/* inline editable and filled in single-option forms for easy viewing and changing */
 .editable-profile-option * {
     margin: 0%;
     padding: 0%;
@@ -192,31 +339,23 @@ nav {
     display: hidden;
 }
 
-.username-main, .username-main * {
+#main-username {
     font-size: 24px;
     font-weight: bold;
 }
 
-.option-main, .option-main * {
+.option-main, 
+.option-main * 
+{
     font-size: 18px;
 }
 
-.profile-picture {
-	border-style: solid;
-    border-width: thin;
-}
-
-#profile-post-stack {
-    width: 70%;
-}
-
-#friend-list {
-    margin-top: 0%;
-}
-
-/* post */
-
-.sub-info {
+/* a smaller font size for less prominent bits of information */
+.post-metadata, 
+.post-reputation, 
+.comment-header, 
+.timestamp
+{
     font-size: 0.90em;
 }
 
@@ -228,31 +367,31 @@ nav {
     font-style: oblique 5deg;
 }
 
-.post-box {
-    border-style: solid;
-    border-color: lightgray;
-    border-width: thin;
+.post-body {
     padding: 1%;
-    height: 100%;
     overflow: auto;
     overflow-wrap: break-word;
+    width: inherit;
 }
 
-div.post-box > textarea {
+div.post-body > textarea {
     resize: none;
-    padding: 0%;
     margin: 0%;
+    padding: 0%;
     border: none;
     width: 100%;
-    /* TODO: this is going to be dynamically sized with js (later) */
-    height: 47vh;
+    height: 50vh;
 }
 
-div.post-box > textarea:focus-visible {
+div.post-body > textarea:focus-visible {
     outline: transparent;
 }
 
-.post-box.post-title {
+.post-body > p {
+    width: 93vw;
+}
+
+.write-post-title {
     height: 1em;
     overflow: hidden;
 }

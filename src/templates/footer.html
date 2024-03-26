@@ -3,8 +3,8 @@
 <hr>
 
 <nav>
-    {{ files.new_post_button() }}
-    <p>See my code on <a href="https://github.com/franklindyer/agora-app" target="_blank" rel="noopener noreferrer">GitHub</a>!</p>
-    {{ forms.bug_report_button() }}
+    <span id="new-post-footer">{{ files.new_post_button() }}</span>
+    <p id="repo-link-footer" >See my code on <a href="https://github.com/franklindyer/agora-app" target="_blank" rel="noopener noreferrer">GitHub</a>!</p>
+    <div id="bug-report-footer">{{ forms.bug_report_button() }}</div>
 </nav>
 

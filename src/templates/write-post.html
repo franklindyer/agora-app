@@ -17,43 +17,34 @@
 
 {% set new_post = data['new_post'] %}
 
-<div class="group">
-    <div class="vbox padded">
-        <div class="hbox padded">
-            {{ files.manage_files_button() }}
-        </div>
-        <div class="post-box post-title">
-            <textarea 
-                form="editable-post-form"
-                {% if new_post %}
-                    id="post-title-box"
-                {% else %}
-                    id="post-title-box-{{ data['pid'] }}"
-                {% endif %}
-                name="title"
-                minlength="{{ limits['post-title'][0] }}"
-                maxlength="{{ limits['post-title'][1] }}"
-                required
-                >{{ data['title'] }}</textarea>
-        </div>
+{{ files.manage_files_button() }}
 
-        <div class="post-box">
-            <textarea 
-                form="editable-post-form"
-                {% if new_post %}
-                    id="post-text-box"
-                {% else %}
-                    id="post-text-box-{{ data['pid'] }}"
-                {% endif %}
-                name="content"
-                minlength="{{ limits['post-body'][0] }}"
-                maxlength="{{ limits['post-body'][1] }}"
-                >{{ data['raw_content'] }}</textarea>
-        </div>
-        
-        {{ forms.editable_post(data) }}
-    </div>
-</div>
+<div class="post-body write-post-title"><textarea 
+    form="editable-post-form"
+    {% if new_post %}
+        id="post-title-box"
+    {% else %}
+        id="post-title-box-{{ data['pid'] }}"
+    {% endif %}
+    name="title"
+    minlength="{{ limits['post-title'][0] }}"
+    maxlength="{{ limits['post-title'][1] }}"
+    required
+    >{{ data['title'] }}</textarea></div>
+
+<div class="post-body"><textarea
+    form="editable-post-form"
+    {% if new_post %}
+        id="post-text-box"
+    {% else %}
+        id="post-text-box-{{ data['pid'] }}"
+    {% endif %}
+    name="content"
+    minlength="{{ limits['post-body'][0] }}"
+    maxlength="{{ limits['post-body'][1] }}"
+    >{{ data['raw_content'] }}</textarea></div>
+
+{{ forms.editable_post(data) }}
 
 {% endblock %}
 
