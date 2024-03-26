@@ -1,10 +1,10 @@
 {% if "csrf" in data %}
-<script>
-    var csrfInput = document.createElement("input");
-    csrfInput.setAttribute("type", "hidden");
-    csrfInput.setAttribute("name", "csrf");
-    csrfInput.setAttribute("value", "{{ data['csrf'] }}");
-    document.forms.forEach((form) => {
+<script defer>
+    Array.prototype.forEach.call(document.forms, (form) => {
+        var csrfInput = document.createElement("input");
+        csrfInput.setAttribute("type", "hidden");
+        csrfInput.setAttribute("name", "csrf");
+        csrfInput.setAttribute("value", "{{ data['csrf'] }}");
         form.appendChild(csrfInput);
     });
 </script>
