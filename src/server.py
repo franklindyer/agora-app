@@ -437,6 +437,7 @@ def unfriend(uid):
     return redirect('/account')
 
 @app.route('/report')
+@issue_csrf
 def bug_report_get():
     return render_template('report.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
