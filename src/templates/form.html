@@ -1,12 +1,167 @@
-{% macro update_existing_form(limits, data, option, target) %}
-<form method="post" action="{{ target }}" autocomplete="off">
-    <label for="{{ option }}">New {{ option }}:</label>
-    <input type="{{ option }}"
-           name="{{ option }}" 
-           value="{{ data[option] }}"
-           minlength="{{ limits[option][0] }}"
-           maxlength="{{ limits[option][1] }}" >
-    <input type="submit" value="update">
+{# search and browse #}
+{% macro search(data, limits) %}
+<form method="post" action="/search">
+    <label for="post">Search {{ data['querytype'] }}s:</label>
+    <input 
+        type="text" 
+        name="{{ data['querytype'] }}" 
+        minlength="{{ limits['query'][0] }}"
+        maxlength="{{ limits['query'][1] }}">
+    <input type="submit" value="search">
+</form>
+{% endmacro %}
+
+{% macro get_all_posts() %}
+<form action="/browse/posts" method="get">
+    <button name="post" value="" type="submit">browse posts</button>
+</form>
+{% endmacro %}
+
+{% macro get_all_users() %}
+<form action="/browse/users" method="get">
+    <button name="user" value="" type="submit">browse users</button>
+</form>
+{% endmacro %}
+
+
+{# comments #}
+{% macro write_comment(data, limits) %}
+<form id="comment-submission-form" method="post" action="/comment/{{ data['pid'] }}">
+    <textarea
+        name="content"
+        minlength="{{ limits['comment'][0] }}"
+        maxlength="{{ limits['comment'][1] }}"></textarea>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("comment-submission-form").submit();
+        }
+    </script>
+    {{ captcha_submit_button(data) }}
+</form>
+{% endmacro %}
+
+{% macro delete_comment(data, limits, comment) %}
+<form method="post" action="/deletecomment/{{ comment['cid'] }}">
+    <input type="submit" value="X">
+</form>
+{% endmacro %}
+
+
+{# account creation #}
+{% macro create_account(data, limits) %}
+<script>
+    function onSubmit(token) {
+        document.getElementById("create-account-form").submit();
+    }
+</script>
+<form id="create-account-form" method="post" class="group">
+    <div class="vbox">
+        <label for="username">username:</label>
+        <input type="text" 
+               name="username"
+               minlength="{{ limits['username'][0] }}" 
+               maxlength="{{ limits['username'][1] }}" 
+               required />
+    </div>
+    <div class="vbox">
+        {{ password_field(limits) }}
+    </div>
+    <div class="vbox">
+        <label for="email">email:</label>
+        <input type="email" name="email" required />
+    </div>
+    {{ captcha_submit_button(data) }}
+</form>
+{% endmacro %}
+
+
+{# login #}
+{% macro login(data, limits) %}
+<form method="post" id="login-form" class="group">
+    <div>
+        <label for="username">username:</label>
+        <input type="text" name="username" required>
+    </div>
+    <div>
+        <label for="password">password:</label>
+        <input type="password" name="password" required>
+    </div>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("login-form").submit();
+        }
+    </script>
+    {{ captcha_submit_button(data) }}
+</form>
+{% endmacro %}
+
+
+{# logout #}
+{% macro logout() %}
+<form method="post" id="logout-form" action="/logout">
+    <input type="submit" value="logout">
+</form>
+{% endmacro %}
+
+
+{# password reset #}
+{% macro new_password(data, limits) %}
+<form method="post" action="/changepass/{{ data['token'] }}">
+    {{ password_field(limits) }}
+    <input type="submit" value="change password">
+</form>
+{% endmacro %}
+
+{% macro request_password_reset_email() %}
+<form method="post" action="/changepass">
+    <label for="email">email:</label>
+    <input type="email" name="email" required>
+    <input type="submit" value="request">
+</form>
+{% endmacro %}
+
+{% macro request_password_reset_email_implicit(data) %}
+<form method="post" action="/changepass">
+    <label for="reset-password">Request a password reset email: </label>
+    <input type="hidden" name="email" value="{{ data['email'] }}">
+    <input type="submit" value="request">
+</form>
+{% endmacro %}
+
+
+{# post reading and writing #}
+{% macro edit_post_button(data) %}
+<form method="get" action="/edit/{{ data['pid'] }}">
+    <input type="submit" value="edit post">
+</form>
+{% endmacro %}
+
+{% macro post_voting_section(data) %}
+<form method="post" action="/vote/{{ data['pid'] }}">
+    <fieldset>
+        <legend>How do you feel about this post?</legend>
+        <div>
+            <input type="radio" name="vote" id="like-butt" value="like">
+            <label for="like-butt">like</label>
+        </div>
+        <div>
+            <input type="radio" name="vote" id="dislike-butt" value="dislike">
+            <label for="dislike-butt">dislike</label>
+        </div>
+        <div>
+            <input type="radio" name="vote" id="unlike-butt" value="unlike">
+            <label for="unlike-butt">neutral</label>
+        </div>
+        <input type="submit" value="submit">
+    </fieldset>
+</form>
+{% endmacro %}
+
+
+{# profile #}
+{% macro settings_button() %}
+<form method="get" action="/settings">
+    <input type="submit" value="settings">
 </form>
 {% endmacro %}
 
@@ -22,7 +177,79 @@
 </form>
 {% endmacro %}
 
-{% macro simple_post(target, text, label_l, label_r, redirect) %}
+
+{# account recovery #}
+{% macro recover_account() %}
+<form method="post" action="/backup">
+    <label for="email">email:</label>
+    <input type="email" name="email" required>
+    <label for="code">recovery code:</label>
+    <input type="text" name="code" required>
+    <input type="submit" value="request">
+</form>
+{% endmacro %}
+
+
+{# bug reports #}
+{% macro bug_report_button() %}
+<form action="/report" method="get">
+    <input type="submit" value="report a bug">
+</form>
+{% endmacro %}
+
+{% macro bug_report_submit() %}
+<form id="bug-report-form" method="post">
+    <input type="submit" value="submit">
+</form>
+{% endmacro %}
+
+
+{% macro new_image() %}
+<form method="post" action="/upload" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <label for="title">Filename:</label>
+    <input type="text" name="title" value="" required>
+    <button>upload</button>
+</form>
+{% endmacro %}
+
+{% macro editable_post(data) %}
+<form id="editable-post-form" method="post" 
+    {% if data['new_post'] %}
+        action="/write"
+    {% else %}
+        action="/edit/{{ data['pid'] }}"
+    {% endif %}>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("editable-post-form").submit();
+        }
+    </script>
+    <button class="g-recaptcha" 
+            data-sitekey="{{ data['recaptcha_sitekey'] }}" 
+            data-callback="onSubmit" 
+            data-action="submit" 
+            type="submit">
+    Submit
+    </button>
+</form>
+{% endmacro %}
+
+{# general and helpers #}
+{% macro update_existing_form(limits, data, option, target) %}
+<form method="post" action="{{ target }}" autocomplete="off">
+    <label for="{{ option }}">new {{ option }}:</label>
+    <input type="{{ option }}"
+           name="{{ option }}" 
+           value="{{ data[option] }}"
+           minlength="{{ limits[option][0] }}"
+           maxlength="{{ limits[option][1] }}" >
+    <input type="submit" value="update">
+</form>
+{% endmacro %}
+
+
+{% macro simple_post(target, data, text, label_l, label_r) %}
 <form method="post" action="{{ target }}">
     {% if label_l is not none %}
         <label for="{{ label_l }}-button">{{ label_l }}</label>
@@ -31,8 +258,27 @@
     {% if label_r is not none %}
         <label for="{{ label_r }}-button">{{ label_r }}</label>
     {% endif %}
-    {% if redirect is not none %}
+    {% if ('redirect' in data) and (redirect is not none) %}
         <input type="hidden" name="redirect" value="{{ redirect }}">
     {% endif %}
 </form>
 {% endmacro %}
+
+{% macro captcha_submit_button(data) %}
+<button 
+    class="g-recaptcha" 
+    data-sitekey="{{ data['recaptcha_sitekey'] }}" 
+    data-callback="onSubmit" 
+    data-action="submit" 
+    type="submit">submit</button>
+{% endmacro %}
+
+{% macro password_field(limits) %}
+<label for="password">password:</label>
+<input type="password" 
+       name="password" 
+       minlength="{{ limits['password'][0] }}" 
+       maxlength="{{ limits['password'][1] }}" 
+       required />
+{% endmacro %}
+

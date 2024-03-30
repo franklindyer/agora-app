@@ -1,3 +1,5 @@
+{% import 'form.html' as forms %}
+
 {% set comments = data['comments'] %}
 
 <div class="vbox padded">
@@ -5,24 +7,7 @@
    
     {# write comment box #}
     <div class="hbox">
-        <form id="comment-submission-form" method="post" action="/comment/{{ data['pid'] }}">
-            <textarea
-                name="content"
-                minlength="{{ limits['comment'][0] }}"
-                maxlength="{{ limits['comment'][1] }}"></textarea>
-            <script>
-                function onSubmit(token) {
-                    document.getElementById("comment-submission-form").submit();
-                }
-            </script>
-            <button class="g-recaptcha" 
-                    data-sitekey="{{ data['recaptcha_sitekey'] }}" 
-                    data-callback="onSubmit" 
-                    data-action="submit" 
-                    type="submit">
-            Submit
-            </button>
-        </form>
+        {{ forms.write_comment(data, limits) }}
     </div>
 
     <ul class="naked-list">
@@ -38,9 +23,7 @@
                 {# If the logged in user is the author, a delete button will appear #}
                 {% if (data['logged_in_user'] is not none) and
                     (data['logged_in_user']['uid'] == c['uid']) -%}
-                    <form method="post" action="/deletecomment/{{ c['cid'] }}">
-                        <input type="submit" value="X">
-                    </form>
+                    {{ forms.delete_comment(data, limits, c) }}
                 {% endif %}
             </div>
             <p>{{ c['content'] }}</p>

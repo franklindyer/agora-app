@@ -47,7 +47,6 @@ class AgoraInterpreterFilter:
     def login(self, uid):
         session = self.generateToken("session")
         self.db.createToken(uid, session, "session")
-        self.replenishCSRF(uid)
         return session
 
     def logout(self, uid):
@@ -146,7 +145,6 @@ class AgoraInterpreterFilter:
         self.db.insertComment(uid, pid, content)
 
     def deleteComment(self, cid):
-        self.replenishCSRF(uid)
         return self.db.deleteComment(cid)
     
     def like(self, uid, pid):

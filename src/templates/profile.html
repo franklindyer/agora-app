@@ -42,9 +42,7 @@
                         <div class="option-main status-main">
                             {{ forms.profile_option(limits, data, "status") }}
                         </div>
-                        <form method="get" action="/settings">
-                            <input type="submit" value="settings">
-                        </form>
+                        {{ forms.settings_button() }}
                     {% else %}
                         <div class="status-main">{{ status }}</div>
                     {% endif %}
@@ -71,13 +69,11 @@
                                 {{ forms.simple_post(
                                     target='/friend/' ~ f['uid'], 
                                     text='accept',
-                                    redirect='/account'
                                 ) }}
 
                                 {{ forms.simple_post(
                                     target='/unfriend/' ~ f['uid'], 
                                     text='reject',
-                                    redirect='/account'
                                 ) }}
                             </div>
                         {% endcall %}
@@ -92,7 +88,6 @@
                             target='/unfriend/' ~ uid, 
                             text='X', 
                             label_l='remove friend', 
-                            redirect='/user/' ~ uid
                         ) }}
 
                     {% elif uid in self['foryou'] %}
@@ -117,7 +112,6 @@
                         {{ forms.simple_post(
                             target='/unfriend/' ~ uid, 
                             text='unsend', 
-                            redirect='/user/' ~ uid
                         ) }}
                     </div>
                     {% else %}
@@ -125,7 +119,6 @@
                             target='/friend/' ~ uid, 
                             text='+', 
                             label_r='add friend', 
-                            redirect='/user/' ~ uid
                         ) }}
                     {% endif %}
                 </div>

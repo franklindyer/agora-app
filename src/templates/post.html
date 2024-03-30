@@ -1,8 +1,12 @@
+{% import 'form.html' as forms %}
+
 {% extends 'base.html' %}
 
 <h1>{% block title %}{{ data['title'] }}{% endblock %}</h1>
 
 {% block content %}
+{% set mine = (data['logged_in_user'] is not none) and
+              (data['logged_in_user']['uid'] == data['owner']) %}
 <div class="group">
 
     <h1>{{ data['title'] }}</h1>
@@ -13,11 +17,8 @@
             <p class="timestamp">{{ data['timestamp'] }}</p>
             
             {# If the logged in user is the author, an edit button will appear #}
-            {% if (data['logged_in_user'] is not none) and
-                  (data['logged_in_user']['uid'] == data['owner']) -%}
-                <form method="get" action="/edit/{{ data['pid'] }}">
-                    <input type="submit" value="edit post">
-                </form>
+            {% if mine %}
+                {{ forms.edit_post_button(data) }}
             {% endif %}
         </div>
 
@@ -26,25 +27,7 @@
         </div>
 
         <p class="sub-info">Reputation: {{ data['votes'] }}</p>
-        <form method="post" action="/vote/{{ data['pid'] }}">
-            <fieldset>
-                <legend>How do you feel about this post?</legend>
-                <div>
-                    <input type="radio" name="vote" id="like-butt" value="like">
-                    <label for="like-butt">Like</label>
-                </div>
-                <div>
-                    <input type="radio" name="vote" id="dislike-butt" value="dislike">
-                    <label for="dislike-butt">Dislike</label>
-                </div>
-                <div>
-                    <input type="radio" name="vote" id="unlike-butt" value="unlike">
-                    <label for="unlike-butt">Neutral</label>
-                </div>
-                <input type="submit" value="submit">
-            </fieldset>
-        </form>
-        
+        {{ forms.post_voting_section(data) }}
         {% include "comment-section.html" %}
     </div>
 

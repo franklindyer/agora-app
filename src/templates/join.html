@@ -1,43 +1,12 @@
+{% import 'form.html' as forms %}
+
 {% extends 'base.html' %}
 
 <h1>{% block title %}create account{% endblock %}</h1>
 
 {% block content %}
     <div class="group center-option-box vbox">
-        <script>
-            function onSubmit(token) {
-                document.getElementById("create-account-form").submit();
-            }
-        </script>
-        <form id="create-account-form" method="post" class="group">
-            <div class="vbox">
-                <label for="username">username:</label>
-                <input type="text" 
-                       name="username"
-                       minlength="{{ limits['username'][0] }}" 
-                       maxlength="{{ limits['username'][1] }}" 
-                       required />
-            </div>
-            <div class="vbox">
-                <label for="password">password:</label>
-                <input type="password" 
-                       name="password" 
-                       minlength="{{ limits['password'][0] }}" 
-                       maxlength="{{ limits['password'][1] }}" 
-                       required />
-            </div>
-            <div class="vbox">
-                <label for="email">email:</label>
-                <input type="email" name="email" required />
-            </div>
-            <button class="g-recaptcha" 
-                    data-sitekey="{{ data['recaptcha_sitekey'] }}" 
-                    data-callback="onSubmit" 
-                    data-action="submit" 
-                    type="submit">
-                Submit
-            </button>
-        </form>
+    {{ forms.create_account(data, limits) }}
     </div>
 {% endblock %}
 
