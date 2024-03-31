@@ -179,7 +179,7 @@ def leave_confirm(token):
 
 @app.route('/login')
 def login_get():
-    return render_template('login.html', data=g.data)
+    return render_template('login.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/login', methods=['POST'])
 def login_post():
@@ -231,7 +231,7 @@ def settings_post():
 
 @app.route('/backup')
 def backup_get():
-    return render_template('recover-account.html', data=g.data)
+    return render_template('recover-account.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/backup', methods=['POST'])
 def backup_post():
@@ -242,7 +242,7 @@ def backup_post():
 
 @app.route('/changepass')
 def change_password_request_get():
-    return render_template('reset-password.html', data=g.data)
+    return render_template('reset-password.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/changepass', methods=['POST'])
 @require_csrf
@@ -371,7 +371,7 @@ def upload_image_post():
 @app.route('/upload')
 @issue_csrf
 def upload_image_get():
-    return render_template('upload.html', data=g.data)
+    return render_template('upload.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/files')
 @issue_csrf
