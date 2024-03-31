@@ -1,10 +1,24 @@
 'use strict';
 
+/**
+ * These actions will be carried out when the page is finished loading.
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    setUpPostEditing();
+}, false);
+
 /*
-Goal: use js to save progress of post and report writing, so that if a user leaves / refreshes the page / has to log in again, the post / report will be waiting for them when they return.
+Goal: create a "confirmation" field that will be used when a user is entering important 
+      information (such as their email or password) that we want to verify is the same 
+      information entered both times.
 */
 
-document.addEventListener('DOMContentLoaded', function() {
+/**
+ * This function will check if the page has elements to indicate that we are writing or editing 
+ * a post, and if so, will set up localStorage to save the progress of the post during editing. 
+ * The post area will also be populated with any currently associated localStorage values.
+ */
+function setUpPostEditing() {
     const titleContainer = document.getElementsByClassName('post-box')[0];
     const bodyContainer = document.getElementsByClassName('post-box')[1];
     if(titleContainer && bodyContainer) { // We are writing or editing a post
@@ -29,17 +43,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         body.value = localStorage.getItem(body.id);
     }
-}, false);
+    return;
+}
+
+/*
+Goal: Create timestamps for user-visible actions that are based on a user's time zone.
+*/
 
 /*
 Goal: combine all reCaptcha scripts into one function defined here.
 */
 
 /*
-Goal: create a text box that can be used for posts, report writing, comments, status box, etc. that will resize itself dynamically as its content grows and shrinks.
-*/
-
-/*
-Goal: create a "confirmation" field that will be used when a user is entering important information (such as their email or password) that we want to verify is the same information entered both times.
+Goal: create a text box that can be used for posts, report writing, comments, status box, etc. 
+      that will resize itself dynamically as its content grows and shrinks.
 */
 
