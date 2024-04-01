@@ -5,6 +5,7 @@
  */
 document.addEventListener('DOMContentLoaded', function() {
     setUpPostEditing();
+    verifyInputMatch();
 }, false);
 
 /*
@@ -12,6 +13,25 @@ Goal: create a "confirmation" field that will be used when a user is entering im
       information (such as their email or password) that we want to verify is the same 
       information entered both times.
 */
+
+function verifyInputMatch() {
+    const ogField = document.getElementById('password');
+    const cnfField = document.getElementById('password-confirm');
+    if(ogField && cnfField) {
+        cnfField.addEventListener('input', () => {
+            const match_notice = document.getElementById('match-notice');
+            const submit = document.getElementById('captcha-submit');
+            if((cnfField.value == '') || (cnfField.value == ogField.value)) {
+                match_notice.style.setProperty('display', 'none');
+                submit.disabled = false;
+            } else {
+                match_notice.style.setProperty('display', 'block');
+                submit.disabled = true;
+            }
+        });
+    }
+}
+
 
 /**
  * This function will check if the page has elements to indicate that we are writing or editing 

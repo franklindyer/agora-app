@@ -250,7 +250,8 @@
 {% macro captcha_submit_button(data) %}
 <div class="captcha-submit">
     <button 
-        class="g-recaptcha" 
+        class="g-recaptcha"
+        id="captcha-submit"
         data-sitekey="{{ data['recaptcha_sitekey'] }}" 
         data-callback="onSubmit" 
         data-action="submit" 
@@ -265,8 +266,11 @@
            name="{{ type }}"
            id="{{ ('%s-confirm' % type) if verify else type }}"
            minlength="{{ limits[type][0] }}" 
-           maxlength="{{ limits[type][1] }}" 
+           maxlength="{{ limits[type][1] }}"
            required>
+    {% if verify %}
+        <p id="match-notice">{{ type }}s do not match</p>
+    {% endif %}
 </div>
 {% endmacro %}
 

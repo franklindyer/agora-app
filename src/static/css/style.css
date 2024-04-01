@@ -139,6 +139,12 @@ nav {
     margin: 1% 0%;
 }
 
+#match-notice {
+    display: none;
+    color: red;
+    size: 0.9em;
+}
+
 .captcha-submit {
     display: flex;
     justify-content: center;
