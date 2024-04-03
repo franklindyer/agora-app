@@ -180,6 +180,10 @@ class AgoraDatabaseManager:
         info["comments"] = [] if res is None else [c for c in res]
         return info
 
+    def getPostOpinion(self, uid, pid):
+        res = self.query("SELECT likes FROM votes WHERE owner = ? AND postid = ?", (uid, pid,))
+        return res[0]['likes']
+
     def getNumImages(self, uid):
         res = self.query("SELECT COUNT(*) as cnt FROM images WHERE owner = ?", (uid,))
         return res[0]['cnt']

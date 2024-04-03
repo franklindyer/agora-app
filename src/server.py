@@ -143,6 +143,8 @@ def get_post_content(pid):
     postInfo["content"] = html_content
     postInfo["raw_content"] = md_content
     g.data.update(postInfo)
+    if g.data['logged_in_user'] is not None:
+        g.data["likes"] = agoraModel.getPostOpinion(g.sessionToken, pid)
     
 @app.route('/userimg/<accessid>')
 def user_image(accessid):
