@@ -27,6 +27,10 @@
         </div>
 
         <p class="sub-info">Reputation: {{ data['votes'] }}</p>
+        <!-- The below is just a placeholder for however we decide to reflect opinion on the frontend -->
+        {% if "you_like" in data %}
+        <p>Your opinion about this post: {{ data['you_like'] }}</p>
+        {% endif %}
         {{ forms.post_voting_section(data) }}
         {% include "comment-section.html" %}
     </div>
