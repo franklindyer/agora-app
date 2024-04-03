@@ -189,7 +189,11 @@ class AgoraDatabaseManager:
         return res[0]["owner"]
 
     def searchUser(self, substr):
-        res = self.query("SELECT U.uid, U.username, U.pfp, (SELECT COUNT(*) FROM posts P WHERE U.uid = P.owner) as nposts FROM users U WHERE username LIKE '%' || ? || '%' ORDER BY nposts DESC LIMIT ?", (substr, QUERY_MAX_RESULTS))
+        res = None
+        if QUERY_RANDOMIZE_USERS:
+            res = self.query("SELECT uid, username, pfp FROM users WHERE username LIKE '%' || ? || '%' ORDER BY RANDOM() LIMIT ?", (substr, QUERY_MAX_RESULTS))
+        else:
+            res = self.query("SELECT U.uid, U.username, U.pfp, (SELECT COUNT(*) FROM posts P WHERE U.uid = P.owner) as nposts FROM users U WHERE username LIKE '%' || ? || '%' ORDER BY nposts DESC LIMIT ?", (substr, QUERY_MAX_RESULTS))
         return (None if res is None else [r for r in res])
 
     def searchPost(self, substr):
