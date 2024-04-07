@@ -1,19 +1,34 @@
 'use strict';
 
 /**
- * These actions will be carried out when the page is finished loading.
+ * These actions will be carried out when the page is finished loading. This setup will likely
+ * be changed in the future, but it's working for now on a small scale.
  */
 document.addEventListener('DOMContentLoaded', function() {
     setUpPostEditing();
     verifyInputMatch();
+    updatePasswordCheck();
 }, false);
 
-/*
-Goal: create a "confirmation" field that will be used when a user is entering important 
-      information (such as their email or password) that we want to verify is the same 
-      information entered both times.
-*/
+/**
+ * This function makes a password verification field appear if the user is trying to update 
+ * their email. This can be further abstracted in the future.
+ */
+function updatePasswordCheck() {
+    const emailForm = document.getElementById('update-existing-email');
+    if(emailForm) {
+        const passwordField = document.getElementById('password-field');
+        passwordField.style.setProperty('display', 'none');
+        emailForm.addEventListener('input', () => {
+            passwordField.style.setProperty('display', 'block');
+        });
+    }
+}
 
+/**
+ * This function enables the behavior of the password confirmation field if on the account
+ * creation page. This can be further abstracted in the future.
+ */
 function verifyInputMatch() {
     const ogField = document.getElementById('password');
     const cnfField = document.getElementById('password-confirm');
@@ -32,10 +47,9 @@ function verifyInputMatch() {
     }
 }
 
-
 /**
- * This function will check if the page has elements to indicate that we are writing or editing 
- * a post, and if so, will set up localStorage to save the progress of the post during editing. 
+ * This function will check if the page has elements to indicate that we are writing or editing
+ * a post, and if so, will set up localStorage to save the progress of the post during editing.
  * The post area will also be populated with any currently associated localStorage values.
  */
 function setUpPostEditing() {
