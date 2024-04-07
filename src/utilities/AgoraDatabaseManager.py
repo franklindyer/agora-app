@@ -145,7 +145,7 @@ class AgoraDatabaseManager:
 
     def isUserSuspended(self, uid):
         res = self.query("SELECT suspended FROM users WHERE uid = ?", (uid,))
-        return (res[0]['suspended'] == 1)
+        return (res[0]['suspended'] == 1) if res is not None else False
     
     def isUserConfirmed(self, uid):
         res = self.query("SELECT confirmed FROM users WHERE uid = ?", (uid,))
@@ -157,6 +157,8 @@ class AgoraDatabaseManager:
 
     def getPrivateUser(self, uid, concise=False):
         res = self.query("SELECT uid, username, email, pfp, status, suspended, admin FROM users WHERE uid = ?", (uid,))
+        if res is None:
+            return
         info = res[0]
         if concise:
             return info
