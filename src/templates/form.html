@@ -178,13 +178,20 @@
 {% endmacro %}
 
 
-{# account recovery #}
+{# account settings #}
 {% macro recover_account() %}
 <form method="post" action="/backup">
     <label for="email">email:</label>
     <input type="email" name="email" required>
     <label for="code">recovery code:</label>
     <input type="text" name="code" required>
+    <input type="submit" value="request">
+</form>
+{% endmacro %}
+
+{% macro delete_account(limits) %}
+<form method="post" action="/leave">
+    {{ password_field(limits) }}
     <input type="submit" value="request">
 </form>
 {% endmacro %}
