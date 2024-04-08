@@ -5,8 +5,10 @@
 <h1>{% block title %}create account{% endblock %}</h1>
 
 {% block content %}
-    <div class="group center-option-box vbox">
-    {{ forms.create_account(data, limits) }}
+    <div class="vbox h-centered">
+        <div class="center-form-area">
+            {{ forms.create_account(data, limits) }}
+        </div>
     </div>
 {% endblock %}
 

@@ -143,6 +143,8 @@ def get_post_content(pid):
     postInfo["content"] = html_content
     postInfo["raw_content"] = md_content
     g.data.update(postInfo)
+    if g.data['logged_in_user'] is not None:
+        g.data["you_like"] = agoraModel.getPostOpinion(g.sessionToken, pid)
     
 @app.route('/userimg/<accessid>')
 def user_image(accessid):
@@ -183,7 +185,7 @@ def leave_confirm(token):
 
 @app.route('/login')
 def login_get():
-    return render_template('login.html', data=g.data)
+    return render_template('login.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/login', methods=['POST'])
 def login_post():
@@ -235,7 +237,7 @@ def settings_post():
 
 @app.route('/backup')
 def backup_get():
-    return render_template('recover-account.html', data=g.data)
+    return render_template('recover-account.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/backup', methods=['POST'])
 def backup_post():
@@ -246,7 +248,7 @@ def backup_post():
 
 @app.route('/changepass')
 def change_password_request_get():
-    return render_template('reset-password.html', data=g.data)
+    return render_template('reset-password.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/changepass', methods=['POST'])
 @require_csrf
@@ -375,7 +377,7 @@ def upload_image_post():
 @app.route('/upload')
 @issue_csrf
 def upload_image_get():
-    return render_template('upload.html', data=g.data)
+    return render_template('upload.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
 
 @app.route('/files')
 @issue_csrf

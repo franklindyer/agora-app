@@ -21,7 +21,7 @@
     {% elif data['error'] == "AgoraEInvalidTitle" %}
         Your title is invalid. Please make sure that any post titles are between {{ limits['post-title'][0] }} and {{ limits['post-title'][1] }} characters, and that any image titles are between {{ limits['image-title'][0] }} and {{ limits['image-title'][1] }} characters and include an extension.
     {% elif data['error'] == "AgoraEInvalidReport" %}
-        Your report could not be submitted. Please make sure that it is between {{ limits['report'][0] }} and {{ limits['report'][1] }} characters.
+        Your report could not be submitted. Please make sure that it is between {{ limits['bug-report'][0] }} and {{ limits['bug-report'][1] }} characters.
     {% elif data['error'] == "AgoraEInvalidPost" %}
         Your post could not be submitted. Please make sure that your post content is between {{ limits['post-body'][0] }} and {{ limits['post-body'][1] }} characters.
     {% elif data['error'] == "AgoraEInvalidStatus" %}
