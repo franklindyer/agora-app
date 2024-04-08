@@ -137,19 +137,48 @@
 {% endmacro %}
 
 {% macro post_voting_section(data) %}
+
+{% set opinion = 0 %}
+{% if 'you_like' in data %}
+    {% set opinion = data['you_like'] %}
+{% endif %}
 <form method="post" action="/vote/{{ data['pid'] }}">
     <fieldset>
         <legend>How do you feel about this post?</legend>
         <div>
-            <input type="radio" name="vote" id="like-butt" value="like">
+            <input 
+                type="radio" 
+                name="vote" 
+                id="like-butt" 
+                value="like"
+                {% if opinion == 1 %}
+                    checked
+                {% endif %}
+                >
             <label for="like-butt">like</label>
         </div>
         <div>
-            <input type="radio" name="vote" id="dislike-butt" value="dislike">
+            <input 
+                type="radio" 
+                name="vote" 
+                id="dislike-butt" 
+                value="dislike"
+                {% if opinion == -1 %}
+                    checked
+                {% endif %}
+                >
             <label for="dislike-butt">dislike</label>
         </div>
         <div>
-            <input type="radio" name="vote" id="unlike-butt" value="unlike">
+            <input 
+                type="radio" 
+                name="vote" 
+                id="unlike-butt" 
+                value="unlike"
+                {% if opinion == 0 %}
+                    checked
+                {% endif %}
+                >
             <label for="unlike-butt">neutral</label>
         </div>
         <input type="submit" value="submit">

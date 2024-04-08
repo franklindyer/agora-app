@@ -145,7 +145,13 @@ class AgoraSyntacticFilter(AgoraFilter):
         if not self.isValidId(pid):
             raise AgoraENoSuchPost
         return self.next.getPost(int(pid))
-    
+   
+    def getPostOpinion(self, sessionToken, pid):
+        self.validateToken(sessionToken, "session")
+        if not self.isValidId(pid):
+            raise AgoraENoSuchPost
+        return self.next.getPostOpinion(sessionToken, int(pid))
+ 
     def getImage(self, imageId):
         if not self.isValidImgId(imageId):
             raise AgoraENoSuchImage

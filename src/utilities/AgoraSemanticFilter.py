@@ -140,7 +140,13 @@ class AgoraSemanticFilter(AgoraFilter):
         if self.db.postExists(pid) is None:
             raise AgoraENoSuchPost
         return self.db.getPostInfo(pid)
-    
+   
+    def getPostOpinion(self, sessionToken, pid):
+        if self.db.postExists(pid) is None:
+            raise AgoraENoSuchPost
+        uid = self.doLogin(sessionToken)
+        return self.db.getPostOpinion(uid, pid) 
+ 
     def getImage(self, imageId):
         loc = self.db.imgExists(imageId)
         if loc is None:
