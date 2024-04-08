@@ -259,11 +259,19 @@
 
 
 {# general and helpers #}
-{% macro update_existing_form(limits, data, option, target) %}
-<form method="post" action="{{ target }}" autocomplete="off">
-    <div class="hbox padded v-centered">
-        {{ field(option, limits) }}
-        <div><input type="submit" value="update"></div>
+{% macro update_existing_form(limits, data, option, target, password) %}
+<form id="update-existing-{{ option }}" method="post" action="{{ target }}" autocomplete="off">
+    <div class="vbox">
+        <div class="hbox padded v-centered">
+            {{ field(option, limits) }}
+            <div><input type="submit" value="update"></div>
+            {% if password %}
+                <p>(password required)</p>
+            {% endif %}
+        </div>
+        {% if password %}
+            {{ field('password', limits) }}
+        {% endif %}
     </div>
 </form>
 {% endmacro %}
@@ -296,7 +304,7 @@
 {% endmacro %}
 
 {% macro field(type, limits, verify) %}
-<div class="input-field">
+<div id="{{ type }}-field" class="input-field">
     <label for="{{ type }}">{{ ('confirm %s:' % type) if verify else ('%s:' % type) }}</label>
     <input type="{{ type }}" 
            name="{{ type }}"
