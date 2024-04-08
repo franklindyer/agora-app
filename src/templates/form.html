@@ -205,6 +205,13 @@
 </form>
 {% endmacro %}
 
+{% macro delete_account(limits) %}
+<form method="post" action="/leave">
+    {{ password_field(limits) }}
+    <input type="submit" value="request">
+</form>
+{% endmacro %}
+
 
 {# bug reports #}
 {% macro bug_report_button() %}

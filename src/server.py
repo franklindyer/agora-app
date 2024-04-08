@@ -168,6 +168,10 @@ def join_confirm(token):
     g.data["backup"] = backup
     return render_template('info.html', data=g.data, msg='confirm-verify-account')
 
+@app.route('/leave')
+def leave_get():
+    return render_template('leave.html', data=g.data, limits=INPUT_LENGTH_LIMITS)
+
 @app.route('/leave', methods=['POST'])
 def leave_post():
     formdata = request.form

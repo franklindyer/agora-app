@@ -1,0 +1,15 @@
+{% import 'form.html' as forms %}
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="group">
+
+<h1>{% block title %}Delete account{% endblock %}</h1>
+
+<p>Enter your password to request an account deletion email. Then, follow the link in the email
+to confirm the deletion of your Agora account.</p>
+{{ forms.delete_account(limits) }} 
+
+</div>
+{% endblock %}
