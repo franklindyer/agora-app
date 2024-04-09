@@ -207,7 +207,7 @@
 
 {% macro delete_account(limits) %}
 <form method="post" action="/leave">
-    {{ password_field(limits) }}
+    {{ field('password', limits) }}
     <input type="submit" value="request">
 </form>
 {% endmacro %}
