@@ -8,25 +8,27 @@
 {% set mine = (data['logged_in_user'] is not none) and
               (data['logged_in_user']['uid'] == data['owner']) %}
 
-<h1>{{ data['title'] }}</h1>
+<div class="post-page">
+    <h1>{{ data['title'] }}</h1>
 
-<ul class="post-metadata">
-    <li><a class="author" href="/user/{{ data['owner'] }}">@{{ data['username'] }}</a></li>
-    <li><p class="timestamp">{{ data['timestamp'] }}</p></li>
-    
-    {# If the logged in user is the author, an edit button will appear #}
-    {% if mine %}
-        <li>{{ forms.edit_post_button(data) }}</li>
-    {% endif %}
-</ul>
+    <ul class="post-metadata">
+        <li><a class="author" href="/user/{{ data['owner'] }}">@{{ data['username'] }}</a></li>
+        <li><p class="timestamp">{{ data['timestamp'] }}</p></li>
+        
+        {# If the logged in user is the author, an edit button will appear #}
+        {% if mine %}
+            <li>{{ forms.edit_post_button(data) }}</li>
+        {% endif %}
+    </ul>
 
-<div class="post-body">
-    {{ data['content'] | safe }}
+    <div class="post-body">
+        {{ data['content'] | safe }}
+    </div>
+
+    <p class="post-reputation">Reputation: {{ data['votes'] }}</p>
+    {{ forms.post_voting_section(data) }}
+    {% include "comment-section.html" %}
 </div>
-
-<p class="post-reputation">Reputation: {{ data['votes'] }}</p>
-{{ forms.post_voting_section(data) }}
-{% include "comment-section.html" %}
 
 {% endblock %}
 
