@@ -46,7 +46,7 @@ textarea,
 .comment,
 .post-body,
 .write-post-title,
-.write-post-box
+.write-post-body
 {
     border: solid lightgray thin;
 }
@@ -385,14 +385,14 @@ form > input[type=submit],
     box-sizing: border-box;
 }
 
-#write-post-title {
+.write-post-title {
     margin-bottom: 1%;
     height: 1em;
     overflow: hidden;
 }
 
 .post-body,
-#write-post-body
+.write-post-body
 {
     overflow: auto;
     overflow-wrap: break-word;
@@ -400,14 +400,14 @@ form > input[type=submit],
 }
 
 .post-body,
-#write-post-body,
-#write-post-title
+.write-post-body,
+.write-post-title
 {
     resize: none;
     padding: 1%;
 }
 
-#write-post-body:focus-visible {
+.write-post-body:focus-visible {
     outline: transparent;
 }
 

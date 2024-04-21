@@ -21,7 +21,7 @@
 
     {{ files.manage_files_button() }}
 
-    <textarea id="write-post-title"
+    <textarea class="post-box write-post-title"
         form="editable-post-form"
         {% if new_post %}
             id="post-title-box"
@@ -34,7 +34,7 @@
         required
     >{{ data['title'] }}</textarea>
 
-    <textarea id="write-post-body"
+    <textarea class="post-box write-post-body"
         form="editable-post-form"
         {% if new_post %}
             id="post-text-box"
