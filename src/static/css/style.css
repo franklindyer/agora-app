@@ -302,6 +302,7 @@ nav {
 
 /* slight vertical spacing between elements */
 .captcha-submit,
+form > input[type=submit],
 .center-form-area *,
 #post-area > li,
 .posts-list > li,

@@ -6,10 +6,10 @@
 
 {% block content %}
 
-<h1>Submit a bug report</h1>
-<p>Please describe the bug you found in as much detail as possible:</p>
-<div class="post-body">
-    <textarea 
+<div class="post-page">
+    <h1>Submit a bug report</h1>
+    <p>Please describe the bug you found in as much detail as possible:</p>
+    <textarea class="post-body" 
         form="bug-report-form" 
         name="content"
         minlength="{{ limits['bug-report'][0] }}"
