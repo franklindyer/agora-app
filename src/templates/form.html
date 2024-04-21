@@ -42,7 +42,7 @@
 
 {% macro delete_comment(data, limits, comment) %}
 <form method="post" action="/deletecomment/{{ comment['cid'] }}">
-    <input type="submit" value="X">
+    <input class="delete-button" type="submit" value="X">
 </form>
 {% endmacro %}
 
@@ -55,11 +55,13 @@
     }
 </script>
 <form id="create-account-form" method="post">
-    {{ field('username', limits) }}
-    {{ field('password', limits) }}
-    {{ field('password', limits, true) }}
-    {{ field('email', limits) }}
-    {{ captcha_submit_button(data) }}
+    <ul id="create-account-form-options">
+        <li>{{ field('username', limits) }}</li>
+        <li>{{ field('password', limits) }}</li>
+        <li>{{ field('password', limits, true) }}</li>
+        <li>{{ field('email', limits) }}</li>
+        <li>{{ captcha_submit_button(data) }}</li>
+    </ul>
 </form>
 {% endmacro %}
 
@@ -72,9 +74,11 @@
     }
 </script>
 <form method="post" id="login-form">
-    {{ field('username', limits) }}
-    {{ field('password', limits) }}
-    {{ captcha_submit_button(data) }}
+    <ul id="login-form-options">
+        <li>{{ field('username', limits) }}</li>
+        <li>{{ field('password', limits) }}</li>
+        <li>{{ captcha_submit_button(data) }}</li>
+    </ul>
 </form>
 {% endmacro %}
 
@@ -259,20 +263,21 @@
 
 
 {# general and helpers #}
+
 {% macro update_existing_form(limits, data, option, target, password) %}
 <form id="update-existing-{{ option }}" method="post" action="{{ target }}" autocomplete="off">
-    <div class="vbox">
-        <div class="hbox padded v-centered">
-            {{ field(option, limits) }}
-            <div><input type="submit" value="update"></div>
-            {% if password %}
-                <p>(password required)</p>
-            {% endif %}
-        </div>
-        {% if password %}
-            {{ field('password', limits) }}
-        {% endif %}
-    </div>
+<ul class="existing-option-field">
+    <li>{{ field(option, limits) }}</li>
+    <li><input type="submit" value="update"></li>
+    {% if password %}
+        <li>(password required)</li>
+    {% endif %}
+</ul>
+{% if password %}
+<ul class="existing-option-field confirm">
+    <li>{{ field('password', limits) }}</li>
+</ul>
+{% endif %}
 </form>
 {% endmacro %}
 

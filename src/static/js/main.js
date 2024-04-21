@@ -7,8 +7,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     setUpPostEditing();
     verifyInputMatch();
-    updatePasswordCheck();
     adjustTimeZone();
+    updateSettingPasswordCheck();
 }, false);
 
 /**
@@ -44,13 +44,12 @@ function adjustTimeZone() {
  * This function makes a password verification field appear if the user is trying to update 
  * their email. This can be further abstracted in the future.
  */
-function updatePasswordCheck() {
+function updateSettingPasswordCheck() {
     const emailForm = document.getElementById('update-existing-email');
     if(emailForm) {
         const passwordField = document.getElementById('password-field');
-        passwordField.style.setProperty('display', 'none');
         emailForm.addEventListener('input', () => {
-            passwordField.style.setProperty('display', 'block');
+            passwordField.style.setProperty('visibility', 'visible');
         });
     }
 }
@@ -83,10 +82,9 @@ function verifyInputMatch() {
  * The post area will also be populated with any currently associated localStorage values.
  */
 function setUpPostEditing() {
-    const titleContainer = document.getElementsByClassName('post-box')[0];
-    const bodyContainer = document.getElementsByClassName('post-box')[1];
-    if(titleContainer && bodyContainer) { // We are writing or editing a post
-        const title = titleContainer.children[0];
+    const title = document.getElementsByClassName('post-box')[0];
+    const body = document.getElementsByClassName('post-box')[1];
+    if(title && body) { // We are writing or editing a post
         if(!localStorage.getItem(title.id)) {
             /* if there's no existing localStorage entry of this type, then create one and 
                populate it with whatever value exists within the post already */
@@ -98,7 +96,6 @@ function setUpPostEditing() {
         });
         title.value = localStorage.getItem(title.id);
 
-        const body = bodyContainer.children[0];
         if(!localStorage.getItem(body.id)) {
             localStorage.setItem(body.id, body.value);
         }

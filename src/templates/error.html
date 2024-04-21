@@ -4,56 +4,53 @@
 
 {% block content %}
 
-<div class="group">
+{% if data['error'] == "AgoraEInvalidEmail" %}
+    Invalid email address. Please write your full email address and make sure that it is spelled correctly.
+{% elif data['error'] == "AgoraEInvalidUsername" %}
+    Invalid username. Please ensure that your username is between {{ limits['username'][0] }} and {{ limits['username'][1] }} characters long.
+{% elif data['error'] == "AgoraEInvalidPassword" %}
+    Invalid password. Please ensure that your password is between {{ limits['password'][0] }} and {{ limits['password'][1] }} characters long.
+{% elif data['error'] == "AgoraEInvalidToken" %}
+    Oops! It looks like you aren't logged in. <a href='/login'>Login now.</a>
+{% elif data['error'] == "AgoraEAreYouHuman" %}
+    You failed a captcha. Are you even human, bro???
+{% elif data['error'] == "AgoraEBadImage" %}
+    The image you tried to upload was invalid. Try uploading a smaller image.
+{% elif data['error'] == "AgoraEInvalidTitle" %}
+    Your title is invalid. Please make sure that any post titles are between {{ limits['post-title'][0] }} and {{ limits['post-title'][1] }} characters, and that any image titles are between {{ limits['image-title'][0] }} and {{ limits['image-title'][1] }} characters and include an extension.
+{% elif data['error'] == "AgoraEInvalidReport" %}
+    Your report could not be submitted. Please make sure that it is between {{ limits['bug-report'][0] }} and {{ limits['bug-report'][1] }} characters.
+{% elif data['error'] == "AgoraEInvalidPost" %}
+    Your post could not be submitted. Please make sure that your post content is between {{ limits['post-body'][0] }} and {{ limits['post-body'][1] }} characters.
+{% elif data['error'] == "AgoraEInvalidStatus" %}
+    Your status could not be updated. Please make sure that your new status is between {{ limits['status'][0] }} and {{ limits['status'][1] }} characters.
+{% elif data['error'] == "AgoraEInvalidComment" %}
+    Your comment could not be submitted. Please make sure that your comment is between {{ limits['comment'][0] }} and {{ limits['comment'][1] }} characters.
+{% elif data['error'] == "AgoraEInvalidQuery" %}
+    Your search query is invalid. Please make sure that any search term is between {{ limits['query'][0] }} and {{ limits['query'][1] }} characters.
+{% elif data['error'] == "AgoraETooSoon" %}
+    Woah there! You're trying to do too many things, too fast. Take a breather before you make any more updates to your profile, edit any of your posts, or post any more comments.
+{% elif data['error'] == "AgoraEIncorrectCreds" %}
+    No account was found matching those credentials.
+{% elif data['error'] == "AgoraEIncorrectCode" %}
+    That code is invalid.
+{% elif data['error'] == "AgoraENoSuchUser" %}
+    No such user was found.
+{% elif data['error'] == "AgoraENoSuchPost" %}
+    No such post was found.
+{% elif data['error'] == "AgoraENoSuchImage" %}
+    No such image was found.
+{% elif data['error'] == "AgoraENoSuchComment" %}
+    No such comment was found.
+{% elif data['error'] == "AgoraENotLoggedIn" %}
+    You're not logged in. <a href="/login">Click here</a> to login.
+{% elif data['error'] == "AgoraENotAuthorized" %}
+    I'm sorry Dave, I'm afraid you can't do that.
+{% else %}
+    An unknown error occurred. D'oh!
+{% endif %}
 
-    {% if data['error'] == "AgoraEInvalidEmail" %}
-        Invalid email address. Please write your full email address and make sure that it is spelled correctly.
-    {% elif data['error'] == "AgoraEInvalidUsername" %}
-        Invalid username. Please ensure that your username is between {{ limits['username'][0] }} and {{ limits['username'][1] }} characters long.
-    {% elif data['error'] == "AgoraEInvalidPassword" %}
-        Invalid password. Please ensure that your password is between {{ limits['password'][0] }} and {{ limits['password'][1] }} characters long.
-    {% elif data['error'] == "AgoraEInvalidToken" %}
-        Oops! It looks like you aren't logged in. <a href='/login'>Login now.</a>
-    {% elif data['error'] == "AgoraEAreYouHuman" %}
-        You failed a captcha. Are you even human, bro???
-    {% elif data['error'] == "AgoraEBadImage" %}
-        The image you tried to upload was invalid. Try uploading a smaller image.
-    {% elif data['error'] == "AgoraEInvalidTitle" %}
-        Your title is invalid. Please make sure that any post titles are between {{ limits['post-title'][0] }} and {{ limits['post-title'][1] }} characters, and that any image titles are between {{ limits['image-title'][0] }} and {{ limits['image-title'][1] }} characters and include an extension.
-    {% elif data['error'] == "AgoraEInvalidReport" %}
-        Your report could not be submitted. Please make sure that it is between {{ limits['bug-report'][0] }} and {{ limits['bug-report'][1] }} characters.
-    {% elif data['error'] == "AgoraEInvalidPost" %}
-        Your post could not be submitted. Please make sure that your post content is between {{ limits['post-body'][0] }} and {{ limits['post-body'][1] }} characters.
-    {% elif data['error'] == "AgoraEInvalidStatus" %}
-        Your status could not be updated. Please make sure that your new status is between {{ limits['status'][0] }} and {{ limits['status'][1] }} characters.
-    {% elif data['error'] == "AgoraEInvalidComment" %}
-        Your comment could not be submitted. Please make sure that your comment is between {{ limits['comment'][0] }} and {{ limits['comment'][1] }} characters.
-    {% elif data['error'] == "AgoraEInvalidQuery" %}
-        Your search query is invalid. Please make sure that any search term is between {{ limits['query'][0] }} and {{ limits['query'][1] }} characters.
-    {% elif data['error'] == "AgoraETooSoon" %}
-        Woah there! You're trying to do too many things, too fast. Take a breather before you make any more updates to your profile, edit any of your posts, or post any more comments.
-    {% elif data['error'] == "AgoraEIncorrectCreds" %}
-        No account was found matching those credentials.
-    {% elif data['error'] == "AgoraEIncorrectCode" %}
-        That code is invalid.
-    {% elif data['error'] == "AgoraENoSuchUser" %}
-        No such user was found.
-    {% elif data['error'] == "AgoraENoSuchPost" %}
-        No such post was found.
-    {% elif data['error'] == "AgoraENoSuchImage" %}
-        No such image was found.
-    {% elif data['error'] == "AgoraENoSuchComment" %}
-        No such comment was found.
-    {% elif data['error'] == "AgoraENotLoggedIn" %}
-        You're not logged in. <a href="/login">Click here</a> to login.
-    {% elif data['error'] == "AgoraENotAuthorized" %}
-        I'm sorry Dave, I'm afraid you can't do that.
-    {% else %}
-        An unknown error occurred. D'oh!
-    {% endif %}
+<center><img class="error-image" src="{{ url_for('static', filename='img/404-0.jpeg') }}" alt="404"></center>
 
-    <center><img class="error-image" src="{{ url_for('static', filename='img/404-0.jpeg') }}" alt="404"></center>
-
-</div>
 {% endblock %}
 

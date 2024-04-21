@@ -4,51 +4,48 @@
 
 {% block content %}
 
-<div class="group">
-
-    {% if msg == 'confirm-sent-email' -%}
+{% if msg == 'confirm-sent-email' -%}
     <p>Thanks for creating an account! Please check your email for a confirmation link to finish your account setup.</p>
 
-    {% elif msg == 'confirm-delete-account' -%}
+{% elif msg == 'confirm-delete-account' -%}
     <p>Your account has been deleted.</p>
 
-    {% elif msg == 'confirm-verify-account' -%}
+{% elif msg == 'confirm-verify-account' -%}
     <p>Your account has been verified!</p>
     <p>NOTICE! The following is a backup recovery code for your account. Store it in a safe place NOW, because it will not be made visible to you again. You will need it to change your email in the future.</p>
     <p>{{ data['backup'] }}</p>
 
-    {% elif msg == 'backup-sent-email' %}
+{% elif msg == 'backup-sent-email' %}
     <p>Please check your new email for a link to change the email associated with your account.</p>
-    
-    {% elif msg == 'confirm-new-email' %}
+
+{% elif msg == 'confirm-new-email' %}
     <p>Your new email address has been verified!</p>
     <p>NOTICE! The following is a brand-new backup recovery code for your account. Store it in a safe place NOW, because it will not be made visible to you again. You will need it to change your email in the future.</p>
     <p>{{ data['backup'] }}</p>
 
-    {% elif msg == 'recovery-sent-email' %}
+{% elif msg == 'recovery-sent-email' %}
     <p>Please check your email for a link to reset your password.</p>
 
-    {% elif msg == 'confirm-password-reset' %}
+{% elif msg == 'confirm-password-reset' %}
     <p>Your password has been successfully reset.</p>
 
-    {% elif msg == 'confirm-report-submitted' %}
+{% elif msg == 'confirm-report-submitted' %}
     <p>Thank you for submitting a bug report!</p>
 
-    {% elif msg == 'leave-sent-email' %}
+{% elif msg == 'leave-sent-email' %}
     <p>Check your email for a link to permanently delete your account, once and for all... unless you change your mind, that is.</p>
 
-    {% elif msg == 'goodbye' %}
+{% elif msg == 'goodbye' %}
     <p>We hate to see you go (but we love to watch you leave).</p>
 
-    {% elif msg == 'logout' %}
+{% elif msg == 'logout' %}
     <p>You have been logged out. It'S a GoOd iDeA tO cLoSe AlL bRoWsEr WiNdOwS nOw.</p>
 
-    {% else -%}
+{% else -%}
     <p> /\_/\ </p>
     <p>( o.o )</p>
     <p>ooooooo</p>
 
-    {% endif %}
-</div>
+{% endif %}
 
 {% endblock %}

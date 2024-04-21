@@ -1,0 +1,79 @@
+{% import 'form.html' as forms %}
+{% import 'manage-files.html' as files %}
+{% import 'user.html' as users %}
+
+{# some user vars for readability #}
+{% set uid = data['uid'] %}
+{% set username = data['username'] %}
+{% set pfp = data['pfp'] %}
+
+{# the logged in user #}
+{% set self = data['logged_in_user'] if data['logged_in_user'] is not none else none %}
+
+{# whether the profile we're viewing is our own profile #}
+{% set mine = (self is not none) and (self['uid'] == uid) %}
+
+<ul id="profile-friends-stack">
+{% if mine %}
+    <!-- pending friend requests -->
+    <h2>Friend Requests: {{ data['foryou'] | length }}</h2>
+    {% for f in data['foryou'].values() %}
+        <li class="friend-request">
+            {% call users.thumbnail_view(f) %}
+                {{ forms.simple_post(
+                    target='/friend/' ~ f['uid'], 
+                    text='accept',
+                ) }}
+
+                {{ forms.simple_post(
+                    target='/unfriend/' ~ f['uid'], 
+                    text='reject',
+                ) }}
+            {% endcall %}
+        </li>
+    {% endfor %}
+
+{% else %}
+    <!-- friend management buttons (send/accept/reject request) -->
+    {% if uid in self['friends'] %}
+        <li>{{ forms.simple_post(
+            target='/unfriend/' ~ uid, 
+            text='X', 
+            label_l='remove friend', 
+        ) }}</li>
+
+    {% elif uid in self['foryou'] %}
+        <li>@{{ username }} wants to be your friend!</li>
+        <li>{% call users.thumbnail_view(data) %}
+                {{ forms.simple_post(
+                    target='/friend/' ~ uid, text='accept'
+                ) }}
+
+                {{ forms.simple_post(
+                    target='/unfriend/' ~ uid, text='reject'
+                ) }}
+        {% endcall %}</li>
+
+    {% elif uid in self['fromyou'] %}
+        <li>Friend request sent. 
+        {{ forms.simple_post(
+            target='/unfriend/' ~ uid, 
+            text='unsend', 
+        ) }}</li>
+    {% else %}
+        <li>{{ forms.simple_post(
+            target='/friend/' ~ uid, 
+            text='+', 
+            label_r='add friend', 
+        ) }}</li>
+    {% endif %}
+{% endif %}
+</ul>
+            
+{# friends list #}
+<ul id="friends-list">
+    <li><h2>Friends: {{ data['friends'] | length }}</h2></li>
+    {% for (uid, info) in data['friends'].items() %}
+        <li>{% call users.thumbnail_view(info) %}{% endcall %}</li>
+    {% endfor %}
+</ul>

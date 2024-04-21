@@ -1,10 +1,10 @@
 {% macro manage_files_button() %}
-    <div class="hbox padded v-centered">
-        <form method="get" action="/files">
+    <form method="get" action="/files">
+        <div class="single-line-option">
             <label for="manage-files">Manage posts and images:</label>
             <input type="submit" id="manage-files" value="manage">
-        </form>
-    </div>
+        </div>
+    </form>
 {% endmacro %}
 
 
@@ -14,48 +14,42 @@
 
 
 {% macro new_image_button() %}
-    <form method="get" action="/upload"><input type="submit" value="new image"></form>
+    <form method="get" action="/upload">
+        <div class="single-line-option"><input type="submit" value="new image"></div>
+    </form>
 {% endmacro %}
 
 
 {% macro image_list(images) %}
     <form method="post" action="/account">
-        <div class="vbox padded">
-            <ul class="naked-list">
-                {% for image in images %}
-                    {% set iid = image['accessid'] %}
-                    <li>
-                        <div class="hbox padded">
-                            <button name="delete" 
-                                value="{{ iid }}" 
-                                type="submit" 
-                                form="delete-form">X</button>
-                            
-                            <input type="radio" name="pfp" value="{{ iid }}">
-                        
-                            <a href="/userimg/{{ iid }}">{{ image['title'] }}</a>
-                        </div>
-                    </li>
-                {% endfor %}
-                {# option to use default profile picture #}
-                <li>
-                    <div class="hbox padded">
-                        <input type="radio" name="pfp" value="0000000000" id="default-pfp">
-                        <label for="default-pfp">default picture</label> 
-                    </div>
+        <ul class="image-list">
+            {% for image in images %}
+                {% set iid = image['accessid'] %}
+                <li class="single-line-option">
+                    <button name="delete" 
+                        value="{{ iid }}" 
+                        type="submit" 
+                        form="delete-form">X</button>
+                    
+                    <input type="radio" name="pfp" value="{{ iid }}">
+                
+                    <a href="/userimg/{{ iid }}">{{ image['title'] }}</a>
                 </li>
-            </ul>
-            <div>
-                <input type="submit" value="set profile picture">
-            </div>
-        </div>
+            {% endfor %}
+            {# option to use default profile picture #}
+            <li class="single-line-option">
+                <input type="radio" name="pfp" value="0000000000" id="default-pfp">
+                <label for="default-pfp">default picture</label> 
+            </li>
+        </ul>
+        <input type="submit" value="set profile picture">
     </form>
     <form method="post" action="/deleteimg" id="delete-form"></form>
 {% endmacro %}
 
 
 {% macro public_post_list(posts) %}
-    <ul class="naked-list">
+    <ul class="posts-list">
     {% for post in posts %}
         <li><a href="/post/{{ post['pid'] }}">{{ post['title'] }}</a></li>
     {% endfor %}
@@ -63,16 +57,14 @@
 {% endmacro %}
 
 {% macro private_post_list(data) %}
-    <ul class="naked-list">
+    <ul class="posts-list">
     {% for post in data['posts'] %}
         {% set pid = post['pid'] %}
         <li>
-            <div class="hbox padded">
-                <form method="post" action="/deletepost/{{ pid }}">
-                    <input type="submit" value="X">
-                </form>
-                <a href="/post/{{ pid }}">{{ post['title'] }}</a>
-            </div>
+            <form method="post" action="/deletepost/{{ pid }}">
+                <input type="submit" value="X">
+            </form>
+            <a href="/post/{{ pid }}">{{ post['title'] }}</a>
         </li>
     {% endfor %}
     </ul>

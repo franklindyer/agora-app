@@ -5,25 +5,15 @@
 
 {% block content %}
 
-<div class="group vbox padded">
-    {# images list #}
-    <div class="vbox padded">
-        <div class="hbox padded v-centered">
-            <h2>Images: {{ data['images'] | length }}</h2>
-            {{ files.new_image_button() }}
-        </div>
-        {{ files.image_list(data['images']) }}
-    </div>
-    
-    {# posts list #}
-    <div class="vbox padded">
-        <div class="hbox padded v-centered">
-            <h2>Posts: {{ data['posts'] | length }}</h2>
-            {{ files.new_post_button() }}
-        </div>
-        {{ files.private_post_list(data) }}
-    </div>
-</div> 
+{# images list #}
+<h2>Images: {{ data['images'] | length }}</h2>
+{{ files.new_image_button() }}
+{{ files.image_list(data['images']) }}
 
- {% endblock %}
+{# posts list #}
+<h2>Posts: {{ data['posts'] | length }}</h2>
+{{ files.new_post_button() }}
+{{ files.private_post_list(data) }}
+
+{% endblock %}
 

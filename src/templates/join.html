@@ -5,10 +5,8 @@
 <h1>{% block title %}create account{% endblock %}</h1>
 
 {% block content %}
-    <div class="vbox h-centered">
-        <div class="center-form-area">
-            {{ forms.create_account(data, limits) }}
-        </div>
-    </div>
+<div class="login-form-box">
+    {{ forms.create_account(data, limits) }}
+</div>
 {% endblock %}
 

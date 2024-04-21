@@ -7,30 +7,28 @@
 {% block content %}
 {% set mine = (data['logged_in_user'] is not none) and
               (data['logged_in_user']['uid'] == data['owner']) %}
-<div class="group">
 
+<div class="post-page">
     <h1>{{ data['title'] }}</h1>
 
-    <div class="vbox padded">
-        <div class="sub-info">
-            <a class="author" href="/user/{{ data['owner'] }}">@{{ data['username'] }}</a>
-            <p class="timestamp">{{ data['timestamp'] }}</p>
-            
-            {# If the logged in user is the author, an edit button will appear #}
-            {% if mine %}
-                {{ forms.edit_post_button(data) }}
-            {% endif %}
-        </div>
+    <ul class="post-metadata">
+        <li><a class="author" href="/user/{{ data['owner'] }}">@{{ data['username'] }}</a></li>
+        <li><p class="timestamp">{{ data['timestamp'] }}</p></li>
+        
+        {# If the logged in user is the author, an edit button will appear #}
+        {% if mine %}
+            <li>{{ forms.edit_post_button(data) }}</li>
+        {% endif %}
+    </ul>
 
-        <div class="post-box">
-            {{ data['content'] | safe }}
-        </div>
-
-        <p class="sub-info">Reputation: {{ data['votes'] }}</p>
-        {{ forms.post_voting_section(data) }}
-        {% include "comment-section.html" %}
+    <div class="post-body">
+        {{ data['content'] | safe }}
     </div>
 
+    <p class="post-reputation">Reputation: {{ data['votes'] }}</p>
+    {{ forms.post_voting_section(data) }}
+    {% include "comment-section.html" %}
 </div>
+
 {% endblock %}
 

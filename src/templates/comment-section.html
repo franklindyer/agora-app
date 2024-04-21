@@ -1,33 +1,30 @@
 {% import 'form.html' as forms %}
+{% import 'user.html' as users %}
 
 {% set comments = data['comments'] %}
 
-<div class="vbox padded">
-    <h2>Comments ({{ comments | length }}):</h2>
-   
-    {# write comment box #}
-    <div class="hbox">
-        {{ forms.write_comment(data, limits) }}
-    </div>
+<h2>Comments ({{ comments | length }}):</h2>
 
-    <ul class="naked-list">
-    {% for c in comments %}
-        
-        {# single comment #}
-        <li><div class="vbox text-box">
+{# write comment box #}
+{{ forms.write_comment(data, limits) }}
 
-            {# comment header #}
-            <div class="hbox padded v-centered">
-                <a href="/user/{{ c['uid'] }}">@{{ c['username'] }}</a>
-                <p class="timestamp">{{ c['timestamp'] }}</p>
-                {# If the logged in user is the author, a delete button will appear #}
-                {% if (data['logged_in_user'] is not none) and
-                    (data['logged_in_user']['uid'] == c['uid']) -%}
-                    {{ forms.delete_comment(data, limits, c) }}
-                {% endif %}
-            </div>
-            <p>{{ c['content'] }}</p>
-        </div></li>
-    {% endfor %}
-    </ul>
-</div>
+<ul id="comment-list">
+{% for c in comments %}
+    
+    {# single comment #}
+    <li class="comment">
+
+        {# comment header #}
+        <ul class="comment-header">
+            <li><a href="/user/{{ c['uid'] }}">@{{ c['username'] }}</a></li>
+            <li><p class="timestamp">{{ c['timestamp'] }}</p></li>
+            {# If the logged in user is the author, a delete button will appear #}
+            {% if (data['logged_in_user'] is not none) and
+                (data['logged_in_user']['uid'] == c['uid']) -%}
+                <li>{{ forms.delete_comment(data, limits, c) }}</li>
+            {% endif %}
+        </ul>
+        <p class="body">{{ c['content'] }}</p>
+    </li>
+{% endfor %}
+</ul>

@@ -5,10 +5,8 @@
 <h1>{% block title %}browse {{ data['querytype'] }}s{% endblock %}</h1>
 
 {% block content %}
-    {# posts list #}
-    <div class="group vbox padded">
-        {{ forms.search(data, limits) }}
-        <h1>All {{ data['querytype'] }}s:</h1>
-        {% include 'results.html' %}
-    </div>
+
+    <span class="search-bar">{{ forms.search(data, limits) }}</span>
+    <h1>All {{ data['querytype'] }}s:</h1>
+    {% include 'results.html' %}
 {% endblock %}
