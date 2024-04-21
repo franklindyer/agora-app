@@ -10,7 +10,9 @@
     <body>
         <div class="wrapper">
             <div class="header">{% include 'header.html' %}</div>
+            <hr id="header-divide">
             <div class="content">{% block content %} {% endblock %}</div>
+            <hr id="footer-divide">
             <div class="footer">{% include 'footer.html' %}</div>
         </div>
     </body>
