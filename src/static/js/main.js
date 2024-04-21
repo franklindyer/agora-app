@@ -8,7 +8,37 @@ document.addEventListener('DOMContentLoaded', function() {
     setUpPostEditing();
     verifyInputMatch();
     updatePasswordCheck();
+    adjustTimeZone();
 }, false);
+
+/**
+ * This function searches the page for timestamp elements and then updates the timezone in each
+ * element to be the user's local time.
+ */
+function adjustTimeZone() {
+    const timestamps = document.getElementsByClassName('timestamp');
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    var length = timestamps.length;
+    var i = 0;
+    for(i; i < length; i++) {
+        /* the date and time value saved on the server (UTC) vs the user's local time zone */
+        var dateServer = new Date(timestamps[i].innerHTML + 'Z');
+        var dateUser = new Date(dateServer.toLocaleString('en-US', { timeZone: timeZone }));
+        
+        const formattedDate = dateUser.toLocaleDateString('en-US', {
+            weekday: 'long', 
+            month: 'long', 
+            day: 'numeric', 
+            year: 'numeric' 
+        });
+        const formattedTime = dateUser.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        timestamps[i].innerHTML = formattedDate + ' at ' + formattedTime;
+    }
+}
 
 /**
  * This function makes a password verification field appear if the user is trying to update 
@@ -79,10 +109,6 @@ function setUpPostEditing() {
     }
     return;
 }
-
-/*
-Goal: Create timestamps for user-visible actions that are based on a user's time zone.
-*/
 
 /*
 Goal: combine all reCaptcha scripts into one function defined here.
