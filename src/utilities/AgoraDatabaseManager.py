@@ -28,7 +28,8 @@ class AgoraDatabaseManager:
         return cur
 
     def pool_query(self, query, args=()):
-        cur = self.cur().execute(query, args)
+        mod_query = "WITH usersPreproc AS (SELECT * FROM users WHERE deleted=0) " + query
+        cur = self.cur().execute(mod_query, args)
         res = [x for x in cur.fetchall()]
         cur.close()
         return (res if len(res) > 0 else None)
@@ -46,27 +47,27 @@ class AgoraDatabaseManager:
 
 
     def usernameExists(self, username):
-        res = self.query("SELECT uid FROM users WHERE username = ?", (username,))
+        res = self.query("SELECT uid FROM usersPreproc WHERE username = ?", (username,))
         return (None if res is None else res[0]['uid'])
 
     def emailExists(self, emailAddress):
-        res = self.query("SELECT uid FROM users WHERE email = ?", (emailAddress,))
+        res = self.query("SELECT uid FROM usersPreproc WHERE email = ?", (emailAddress,))
         return (None if res is None else res[0]['uid'])
 
     def passwordCorrect(self, username, hpassword):
-        res = self.query("SELECT uid FROM users WHERE username = ? AND hpassword = ?", (username, hpassword,))
+        res = self.query("SELECT uid FROM usersPreproc WHERE username = ? AND hpassword = ?", (username, hpassword,))
         return (None if res is None else res[0]['uid'])
 
 
 
     def getRecovery(self, hrecovery):
-        res = self.query("SELECT uid FROM users WHERE hrecovery = ?", (hrecovery,))
+        res = self.query("SELECT uid FROM usersPreproc WHERE hrecovery = ?", (hrecovery,))
         return (None if res is None else res[0]['uid'])
 
 
 
     def userExists(self, uid):
-        res = self.query("SELECT uid FROM users WHERE uid = ?", (uid,))
+        res = self.query("SELECT uid FROM usersPreproc WHERE uid = ?", (uid,))
         return (None if res is None else uid)
 
     def postExists(self, pid):
@@ -102,7 +103,7 @@ class AgoraDatabaseManager:
 
    
     def getPfp(self, uid):
-        res1 = self.query("SELECT pfp FROM users WHERE uid = ?", (uid,))
+        res1 = self.query("SELECT pfp FROM usersPreproc WHERE uid = ?", (uid,))
         res2 = self.query("SELECT accessid FROM images WHERE imgid = ?", (res1[0]['pfp'],))
         # TODO: Debugging
         if res2 is None:
@@ -122,11 +123,11 @@ class AgoraDatabaseManager:
         return [] if res is None else [tup['user1'] for tup in res] 
 
     def getPublicUserThumbnail(self, uid):
-        res = self.query("SELECT uid, username, status, pfp FROM users WHERE uid = ?", (uid,))
+        res = self.query("SELECT uid, username, status, pfp FROM usersPreproc WHERE uid = ?", (uid,))
         return None if res is None else res[0]
 
     def getPublicUser(self, uid):
-        res = self.query("SELECT uid, username, status, suspended, pfp FROM users WHERE uid = ?", (uid,))
+        res = self.query("SELECT uid, username, status, suspended, pfp FROM usersPreproc WHERE uid = ?", (uid,))
         info = res[0]
         res = self.query("SELECT pid, title FROM posts WHERE owner = ?", (uid,))
         info["posts"] = [] if res is None else [post for post in res]
@@ -134,7 +135,7 @@ class AgoraDatabaseManager:
         return info
 
     def getUserLastAction(self, uid):        
-        res = self.query("SELECT JULIANDAY('now')-JULIANDAY(lastaction) as delta FROM users WHERE uid=?", (uid,))
+        res = self.query("SELECT JULIANDAY('now')-JULIANDAY(lastaction) as delta FROM usersPreproc WHERE uid=?", (uid,))
         if res is None:
             return None
         else:
@@ -144,19 +145,19 @@ class AgoraDatabaseManager:
         self.execute("UPDATE users SET lastaction=CURRENT_TIMESTAMP WHERE uid=?", (uid,))
 
     def isUserSuspended(self, uid):
-        res = self.query("SELECT suspended FROM users WHERE uid = ?", (uid,))
+        res = self.query("SELECT suspended FROM usersPreproc WHERE uid = ?", (uid,))
         return (res[0]['suspended'] == 1) if res is not None else False
     
     def isUserConfirmed(self, uid):
-        res = self.query("SELECT confirmed FROM users WHERE uid = ?", (uid,))
+        res = self.query("SELECT confirmed FROM usersPreproc WHERE uid = ?", (uid,))
         return (res[0]['confirmed'] == 1)
 
     def isUserAdmin(self, uid):
-        res = self.query("SELECT admin FROM users WHERE uid = ?", (uid,))
+        res = self.query("SELECT admin FROM usersPreproc WHERE uid = ?", (uid,))
         return (res[0]['admin'] == 1)
 
     def getPrivateUser(self, uid, concise=False):
-        res = self.query("SELECT uid, username, email, pfp, status, suspended, admin FROM users WHERE uid = ?", (uid,))
+        res = self.query("SELECT uid, username, email, pfp, status, suspended, admin FROM usersPreproc WHERE uid = ?", (uid,))
         if res is None:
             return
         info = res[0]
@@ -174,11 +175,11 @@ class AgoraDatabaseManager:
         return info
 
     def getPostInfo(self, pid):
-        res = self.query("SELECT P.pid, P.title, P.timestamp, P.owner, P.filename, U.username FROM posts P JOIN users U ON P.owner = U.uid WHERE P.pid = ?", (pid,))
+        res = self.query("SELECT P.pid, P.title, P.timestamp, P.owner, P.filename, U.username FROM posts P JOIN usersPreproc U ON P.owner = U.uid WHERE P.pid = ?", (pid,))
         info = res[0]
         res = self.query("SELECT SUM(likes) as votes FROM votes WHERE postid = ?", (pid,))
         info["votes"] = 0 if res[0]['votes'] is None else res[0]['votes']
-        res = self.query("SELECT U.uid, C.cid, C.content, C.timestamp, U.username FROM comments C JOIN users U on C.owner = U.uid WHERE post = ?", (pid,))
+        res = self.query("SELECT U.uid, C.cid, C.content, C.timestamp, U.username FROM comments C JOIN usersPreproc U on C.owner = U.uid WHERE post = ?", (pid,))
         info["comments"] = [] if res is None else [c for c in res]
         return info
 
@@ -199,20 +200,20 @@ class AgoraDatabaseManager:
     def searchUser(self, substr):
         res = None
         if QUERY_RANDOMIZE_USERS:
-            res = self.query("SELECT uid, username, pfp FROM users WHERE username LIKE '%' || ? || '%' ORDER BY RANDOM() LIMIT ?", (substr, QUERY_MAX_RESULTS))
+            res = self.query("SELECT uid, username, pfp FROM usersPreproc WHERE username LIKE '%' || ? || '%' ORDER BY RANDOM() LIMIT ?", (substr, QUERY_MAX_RESULTS))
         else:
-            res = self.query("SELECT U.uid, U.username, U.pfp, (SELECT COUNT(*) FROM posts P WHERE U.uid = P.owner) as nposts FROM users U WHERE username LIKE '%' || ? || '%' ORDER BY nposts DESC LIMIT ?", (substr, QUERY_MAX_RESULTS))
+            res = self.query("SELECT U.uid, U.username, U.pfp, (SELECT COUNT(*) FROM posts P WHERE U.uid = P.owner) as nposts FROM usersPreproc U WHERE username LIKE '%' || ? || '%' ORDER BY nposts DESC LIMIT ?", (substr, QUERY_MAX_RESULTS))
         return (None if res is None else [r for r in res])
 
     def searchPost(self, substr):
-        res = self.query("SELECT P.pid, P.title, P.owner, U.username FROM posts P JOIN users U ON P.owner = U.uid WHERE P.title LIKE '%' || ? || '%' ORDER BY timestamp DESC LIMIT ?", (substr, QUERY_MAX_RESULTS))
+        res = self.query("SELECT P.pid, P.title, P.owner, U.username FROM posts P JOIN usersPreproc U ON P.owner = U.uid WHERE P.title LIKE '%' || ? || '%' ORDER BY timestamp DESC LIMIT ?", (substr, QUERY_MAX_RESULTS))
         return (None if res is None else [r for r in res])
 
 
 
     def createUser(self, email, username, hpassword, hrecovery, pfp):
         self.execute("INSERT INTO users (email, username, hpassword, hrecovery, pfp) VALUES (?, ?, ?, ?, ?)", (email, username, hpassword, hrecovery, pfp,))
-        res = self.query("SELECT uid FROM users WHERE email = ?", (email,))
+        res = self.query("SELECT uid FROM usersPreproc WHERE email = ?", (email,))
         return res[0]['uid']
 
     def verifyUser(self, uid):
@@ -314,7 +315,7 @@ class AgoraDatabaseManager:
         self.execute("DELETE FROM images WHERE accessid = ?", (accessid,))
 
     def deleteUser(self, uid):
-        self.execute("DELETE FROM users WHERE uid = ?", (uid,))
+        self.execute("UPDATE users SET deleted=1 WHERE uid = ?", (uid,))
         self.execute("DELETE FROM tokens WHERE owner = ?", (uid,))
         self.execute("DELETE FROM posts WHERE owner = ?", (uid,))
         self.execute("DELETE FROM comments WHERE owner = ?", (uid,))
